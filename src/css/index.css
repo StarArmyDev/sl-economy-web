@@ -1,0 +1,133 @@
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+.navbar {
+    box-shadow: 2px 2px 5px #000000c9;
+}
+
+footer {
+    box-shadow: 0px 0px 5px #000000c9;
+    margin-top: 5%;
+    width: 100%;
+    height: 100%;
+    /*position: fixed;*/
+    bottom: 0;
+}
+
+/* Variable */
+:root {
+    --background: #2a2d32;
+    --main-color: #ffd700;
+    --main-text: #2a2d32;
+    --second-text: #fff;
+}
+
+.entity-header__name {
+    color: var(--main-color);
+}
+
+.entity-header__button-icon,
+.hoverable {
+    background-color: var(--main-color);
+}
+
+.entity-table__cell {
+    background-color: #13b9c4;
+}
+
+/* Avatar Rotación */
+
+@keyframes rotar {
+    0% {
+        box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0.6);
+        transform: translatey(0px);
+    }
+    50% {
+        box-shadow: 0 25px 15px 0 rgba(0, 0, 0, 0.2);
+        transform: translatey(-20px);
+    }
+    100% {
+        box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0.6);
+        transform: translatey(0px);
+    }
+}
+
+.entity-header__image {
+    animation: rotar 5s;
+    animation-iteration-count: infinite;
+}
+
+.caja-discord {
+    color: #9c9c9c;
+    background-color: #23272a;
+    border: 1px solid rgb(30, 32, 32);
+    border-radius: 5px;
+    padding: 4px;
+    display: inline-block;
+    text-align: center;
+}
+
+.simple-table th {
+    /*Lienas de divición*/
+    border: 1px solid var(--main-color);
+
+    padding: 15px;
+    background-color: var(--background);
+    color: var(--second-text);
+}
+
+.simple-table thead th {
+    width: 10%;
+    padding: 12px;
+
+    background-color: var(--main-color);
+    color: var(--main-text);
+}
+
+.button {
+    border-radius: 4px;
+    background-color: #13b9cf;
+    border: none;
+    color: #ffffff;
+    text-align: center;
+    font-size: 18px;
+    padding: 12px;
+    width: 100px;
+    transition: all 0.5s;
+    cursor: pointer;
+    margin: 5px;
+}
+
+.button span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+
+.button span:after {
+    content: '\00bb';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -20px;
+    transition: 0.5s;
+}
+
+.button:hover span {
+    padding-right: 20px;
+}
+
+.button:hover span:after {
+    opacity: 1;
+    right: 0;
+}
