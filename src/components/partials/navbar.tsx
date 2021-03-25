@@ -1,121 +1,123 @@
-import { Component, Fragment } from 'react';
-import { Navbar, Container, Nav, NavDropdown, Col, Row, Spinner } from 'react-bootstrap';
-import axios from 'axios';
-import iconImg from '../../img/icon.jpg';
-import { IGuildObjet } from '../../interfaces';
-import { API_URL } from '../../Constants';
+import { Fragment } from "react";
+import { Navbar, Container, Nav, NavDropdown, Col, Row, Spinner } from "react-bootstrap";
+import { useQuery, gql } from "@apollo/client";
+import iconImg from "../../img/icon.jpg";
+import { API_URL, CLIENT_ID } from "../../Constants";
 
-export default class NavBar extends Component<any> {
-    state = {
-        loading: true,
-        servers: [] as IGuildObjet[],
-        serversAdmin: [] as IGuildObjet[],
-    };
-
-    getGuilds() {
-        if (this.props.user && this.props.user.guilds && this.state.serversAdmin.length < 1 && this.state.servers.length < 1) {
-            var servers: any[] = [];
-
-            axios
-                .get(`${API_URL}/guild`)
-                .then((res) => {
-                    var guild = res.data;
-                    servers = guild;
-                })
-                .catch(() => this.setState({ loading: false }));
-
-            setTimeout(() => {
-                this.props.user.guilds.forEach(async (g: IGuildObjet) => {
-                    if ((g.permissions & 2146958591) === 2146958591 && servers.find((gd) => gd.id === g.id) && !this.state.servers.find((gd) => gd.id === g.id))
-                        this.state.servers.push(g);
-                    else if (
-                        (g.permissions & 2146958591) === 2146958591 &&
-                        !this.state.servers.find((gd) => gd.id === g.id) &&
-                        !this.state.serversAdmin.find((gd) => gd.id === g.id)
-                    )
-                        this.state.serversAdmin.push(g);
-                });
-                this.setState({ loading: false });
-            }, 200);
+export function NavBar(props: any) {
+    const USER_GUILDS = gql`
+        query UserGuilds($id: String) {
+            getUserGuilds(id: $id) {
+                admin {
+                    ...Datos
+                }
+                adminMutual {
+                    ...Datos
+                }
+                mutual {
+                    ...Datos
+                }
+            }
         }
-    }
 
-    render() {
-        if (!this.props.loading) this.getGuilds();
-        return (
-            <Navbar expand="lg" bg="dark" variant="dark">
-                <Container>
-                    <Navbar.Brand className="text-center" href="/">
-                        <img className="rounded" src={iconImg} alt="StarLight Economy Logo" style={{ width: '50%' }} />
-                    </Navbar.Brand>
-                    <Navbar.Toggle aria-controls="navbarSupportedContent" />
-                    <Navbar.Collapse id="navbarNav">
-                        <Nav>
-                            <Nav.Link href="/about">Acerca De</Nav.Link>
-                            <Nav.Link href="/invite">Agregar al Servidor</Nav.Link>
-                            <Nav.Link href="/commands">Comandos</Nav.Link>
-                        </Nav>
-                    </Navbar.Collapse>
-                    <Navbar.Collapse className="justify-content-end" id="navbarNav">
-                        <Nav>
-                            {this.props.loading ? (
-                                <Spinner animation="border" variant="warning" role="status">
-                                    <span className="sr-only">Cargando...</span>
-                                </Spinner>
-                            ) : this.props && this.props.user ? (
-                                <Fragment>
-                                    {this.state.loading ? (
-                                        <Spinner animation="border" variant="warning" />
-                                    ) : this.props && this.props.user && this.props.user.guilds && this.props.user.guilds.length > 0 ? (
-                                        <NavDropdown title="Dashboard" id="dropdown-guilds">
-                                            {this.state.servers.map((servidor: any) => (
-                                                <NavDropdown.Item key={`NI${servidor.id}`} href={`/dashboard/${servidor.id}`}>
-                                                    <Row>
-                                                        <Col lg="1" className="material-icons">
-                                                            settings
-                                                        </Col>
-                                                        <Col lg="10">{servidor.name}</Col>
-                                                    </Row>
-                                                </NavDropdown.Item>
-                                            ))}
-                                            {this.state.serversAdmin.length > 0 ? <NavDropdown.Divider /> : null}
-                                            {this.state.serversAdmin.map((servidor: any) => (
-                                                <NavDropdown.Item
-                                                    key={`NI${servidor.id}`}
-                                                    href={`https://discord.com/oauth2/authorize?client_id=696723299459268728&permissions=268437520&scope=bot&response_type=code&guild_id=${servidor.id}`}
-                                                >
-                                                    <Row>
-                                                        <Col lg="1" className="material-icons">
-                                                            add
-                                                        </Col>
-                                                        <Col lg="10">{servidor.name}</Col>
-                                                    </Row>
-                                                </NavDropdown.Item>
-                                            ))}
-                                        </NavDropdown>
+        fragment Datos on Guild {
+            id
+            name
+            icon
+            owner
+            permissions
+        }
+    `;
+    const { loading, data, error } = useQuery(USER_GUILDS, { variables: { id: props.user ? props.user._id! : "0" } });
+
+    let guilds = { admin: [], adminMutual: [], mutual: [] };
+
+    if (!loading && !error) guilds = data.getUserGuilds;
+
+    return (
+        <Navbar expand="lg" bg="dark" variant="dark">
+            <Container>
+                <Navbar.Brand className="text-center" href="/">
+                    <img className="rounded" src={iconImg} alt="StarLight Economy Logo" style={{ width: "50%" }} />
+                </Navbar.Brand>
+                <Navbar.Toggle aria-controls="navbarSupportedContent" />
+                <Navbar.Collapse id="navbarNav">
+                    <Nav>
+                        <Nav.Link href="/invite">Invitar</Nav.Link>
+                        <Nav.Link href="/commands">Comandos</Nav.Link>
+                        <Nav.Link href="/about">Acerca De</Nav.Link>
+                        <Nav.Link href="https://stats.uptimerobot.com/yX0r2hN910">Status</Nav.Link>
+                    </Nav>
+                </Navbar.Collapse>
+                <Navbar.Collapse className="justify-content-end" id="navbarNav">
+                    <Nav>
+                        {props.loading ? (
+                            <Spinner animation="border" variant="warning" role="status">
+                                <span className="sr-only">Cargando...</span>
+                            </Spinner>
+                        ) : props && props.user ? (
+                            <Fragment>
+                                {props.loading ? (
+                                    <Container className="justify-content-center">
+                                        <Spinner animation="border" variant="warning" />{" "}
+                                    </Container>
+                                ) : props && props.user && props.user.guilds && props.user.guilds.length > 0 ? (
+                                    <NavDropdown title="Dashboard" id="dropdown-guilds">
+                                        {loading ? (
+                                            <Spinner animation="border" variant="warning" role="status">
+                                                <span className="sr-only">Cargando...</span>
+                                            </Spinner>
+                                        ) : (
+                                            <Fragment>
+                                                {guilds.adminMutual.map((servidor: any) => (
+                                                    <NavDropdown.Item key={`NI${servidor.id}`} href={`/dashboard/${servidor.id}`}>
+                                                        <Row>
+                                                            <Col lg="1" className="material-icons">
+                                                                settings
+                                                            </Col>
+                                                            <Col lg="10">{servidor.name}</Col>
+                                                        </Row>
+                                                    </NavDropdown.Item>
+                                                ))}
+                                                {guilds.admin.length > 0 ? <NavDropdown.Divider /> : null}
+                                                {guilds.admin.map((servidor: any) => (
+                                                    <NavDropdown.Item
+                                                        key={`NI${servidor.id}`}
+                                                        href={`https://discord.com/oauth2/authorize?client_id=${CLIENT_ID}&permissions=268437520&scope=bot&response_type=code&guild_id=${servidor.id}`}
+                                                    >
+                                                        <Row>
+                                                            <Col lg="1" className="material-icons">
+                                                                add
+                                                            </Col>
+                                                            <Col lg="10">{servidor.name}</Col>
+                                                        </Row>
+                                                    </NavDropdown.Item>
+                                                ))}
+                                            </Fragment>
+                                        )}
+                                    </NavDropdown>
+                                ) : null}
+                                <Nav.Link href="/profile">
+                                    {props && props.user ? (
+                                        <img
+                                            className="rounded"
+                                            style={{ borderRadius: 1, margin: "0px 10px 0px 10px" }}
+                                            src={`https://cdn.discordapp.com/avatars/${props.user._id}/${props.user.avatar}.png?size=32`}
+                                            alt="Profile_Icon"
+                                        />
                                     ) : null}
-                                    <Nav.Link href="/profile">
-                                        {/*this.props && this.props.user ? (
-                                    <img
-                                        className="rounded"
-                                        style={{ borderRadius: 1, margin: '0px 10px 0px 10px' }}
-                                        src={`https://cdn.discordapp.com/avatars/${this.props.user.id}/${this.props.user.avatar}.png?size=32`}
-                                        alt="Profile_Icon"
-                                    />
-                                ) : null*/}
-                                        {this.props.user.username}
-                                    </Nav.Link>
-                                    <Nav.Link href="/logout">Cerrar Sesión</Nav.Link>
-                                </Fragment>
-                            ) : (
-                                <Fragment>
-                                    <Nav.Link href="/login">Inciar Sesión</Nav.Link>
-                                </Fragment>
-                            )}
-                        </Nav>
-                    </Navbar.Collapse>
-                </Container>
-            </Navbar>
-        );
-    }
+                                    {props.user.username}
+                                </Nav.Link>
+                                <Nav.Link href="/logout">Cerrar Sesión</Nav.Link>
+                            </Fragment>
+                        ) : (
+                            <Fragment>
+                                <Nav.Link href={`${API_URL}/oauth/login`}>Inciar Sesión</Nav.Link>
+                            </Fragment>
+                        )}
+                    </Nav>
+                </Navbar.Collapse>
+            </Container>
+        </Navbar>
+    );
 }

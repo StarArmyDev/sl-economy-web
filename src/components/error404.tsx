@@ -1,8 +1,8 @@
-import { Component } from 'react';
-import { Container, Row, Col, Button } from 'react-bootstrap';
-import { RouteChildrenProps } from 'react-router-dom';
+import { Component } from "react";
+import { Container, Row, Col, Button } from "react-bootstrap";
+import { RouteChildrenProps } from "react-router-dom";
 
-export default class Error extends Component<RouteChildrenProps> {
+export class Error404 extends Component<RouteChildrenProps> {
     return = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
         this.props.history.goBack();
@@ -15,7 +15,7 @@ export default class Error extends Component<RouteChildrenProps> {
                     <Col md={12}>
                         <h2>
                             <p>
-                                <i className="material-icons" style={{ fontSize: '300%' }}>
+                                <i className="material-icons" style={{ fontSize: "300%" }}>
                                     error_outline
                                 </i>
                             </p>

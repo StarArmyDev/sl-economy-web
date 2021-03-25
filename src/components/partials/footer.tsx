@@ -1,7 +1,7 @@
-import { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Component } from "react";
+import { Link } from "react-router-dom";
 
-export default class Footer extends Component {
+export class Footer extends Component {
     render() {
         return (
             <footer>
@@ -9,8 +9,8 @@ export default class Footer extends Component {
                     <div className="row gx-5 text-center">
                         <div className="col p-4 text-center">
                             <div className="p-1">
-                                StarLight un bot proporcionado por{' '}
-                                <Link to="https://discord.gg/VG6D4ss" target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
+                                StarLight un bot proporcionado por{" "}
+                                <Link to="/support" rel="noreferrer" style={{ textDecoration: "none" }}>
                                     StarArmy
                                 </Link>
                             </div>

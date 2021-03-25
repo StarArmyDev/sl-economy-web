@@ -1,170 +1,157 @@
-import { Component, Fragment } from 'react';
-import { Row, Container, Button, Col, ListGroup, Accordion, Spinner } from 'react-bootstrap';
-import axios from 'axios';
-import { API_URL } from '../Constants';
-import { IGuildObjet, IPerfil } from '../interfaces';
+import { Row, Container, Button, Col, ListGroup, Accordion, Spinner } from "react-bootstrap";
+import { ProfilesUserGQL, useQuery } from "../graphql";
+import { IUserObjet } from "../interfaces";
+import { API_URL } from "../Constants";
 
-export default class Profile extends Component<any> {
-    state = {
-        defaulURl:
-            'https://images-ext-1.discordapp.net/external/NAqkMZNPJgDiWBrSDqniAD1_sbWfiPqF4mgZyCtVs6s/https/discordapp.com/assets/6debd47ed13483642cf09e832ed0bc1b.png',
-        avatarURL: '',
-        loading: true,
-        serversAdmin: [] as IGuildObjet[],
-        serversComun: [] as IGuildObjet[],
-    };
-
-    componentDidMount() {
-        if (this.props.user && this.props.user.guilds) {
-            var avatar = `https://cdn.discordapp.com/avatars/${this.props.user.id}/${this.props.user.avatar}.png?size=256`;
-            this.setState({ avatarURL: avatar });
-            var dbs: IPerfil[] = [];
-            var servers: any[] = [];
-
-            axios.get(`${API_URL}/db/profile/servers/${this.props.user.id}`).then((res) => {
-                var user = res.data;
-                dbs = user;
-            });
-            axios
-                .get(`${API_URL}/guild`)
-                .then((res) => {
-                    var guild = res.data;
-                    servers = guild;
-                })
-                .catch(() => this.setState({ loading: false }));
-            setTimeout(() => {
-                this.props.user.guilds.forEach(async (g: IGuildObjet) => {
-                    if ((g.permissions & 2146958591) === 2146958591) this.state.serversAdmin.push(g);
-
-                    if (servers.find((gd) => gd.id === g.id)) {
-                        var dbS: IPerfil | undefined = dbs.find((d) => d._id.startsWith(g.id));
-                        this.state.serversComun.push({
-                            ...g,
-                            db: dbS ? { dinero: dbS.dinero, banco: dbS.banco, items: dbS.inventario.items } : { dinero: 0, banco: 0, items: [] },
-                        });
-                    }
-                });
-                this.setState({ loading: false });
-            }, 500);
-        }
+export function Profile(props: { match: any; user: IUserObjet }) {
+    if (!props.user) {
+        window.location.replace(`${API_URL}/oauth/login`);
+        return <></>;
     }
+    const defaulURl =
+        "https://images-ext-1.discordapp.net/external/NAqkMZNPJgDiWBrSDqniAD1_sbWfiPqF4mgZyCtVs6s/https/discordapp.com/assets/6debd47ed13483642cf09e832ed0bc1b.png";
+    let serversComun = [];
 
-    render() {
-        if (!this.props.user) {
-            window.location.replace(`${API_URL}/oauth/login`);
-            return <Fragment />;
-        } else if (this.state.loading) {
-            return (
-                <Container className="text-center">
-                    <Spinner animation="border" variant="warning" role="status" />
-                </Container>
-            );
-        } else
-            return (
-                <Container className="text-center">
-                    <Row className="align-items-center">
-                        <Container fluid>
-                            <div className="p-top align-middle">
-                                <Row className="align-items-center">
-                                    <Col sm className="text-center" style={{ margin: '20px 0px 20px 0px' }}>
-                                        <img className="img-fluid rounded" style={{ width: '25%' }} src={this.state.avatarURL} alt="" />
-                                    </Col>
-                                    <Col sm className="text-center">
-                                        <span className="h3" style={{ color: 'aliceblue' }}>
-                                            {this.props.user.username}{' '}
-                                            <span className="h6" style={{ color: 'rgb(21, 219, 226)' }}>
-                                                #{this.props.user.discriminator}
-                                            </span>
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const { loading, data } = useQuery(ProfilesUserGQL, { variables: { id: props.user._id } });
+
+    if (loading) {
+        return (
+            <Container className="text-center">
+                <Spinner animation="border" variant="warning" role="status" />
+            </Container>
+        );
+    } else {
+        if (serversComun.length === 0) serversComun = data.AllProfilesOfUserOnServers;
+
+        return (
+            <Container className="text-center">
+                <Row className="align-items-center">
+                    <Col lg={12}>
+                        <ins
+                            className="adsbygoogle"
+                            style={{ display: "block" }}
+                            data-ad-client="ca-pub-2365658233726619"
+                            data-ad-slot="5039508803"
+                            data-ad-format="auto"
+                            data-full-width-responsive="true"
+                        ></ins>
+                        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+                    </Col>
+                    <Container fluid>
+                        <div className="p-top align-middle">
+                            <Row className="align-items-center">
+                                <Col sm className="text-center" style={{ margin: "20px 0px 20px 0px" }}>
+                                    <img
+                                        alt=""
+                                        onError={(e: any) => {
+                                            e.target.onerror = null;
+                                            e.target.src = defaulURl;
+                                        }}
+                                        className="img-fluid rounded"
+                                        style={{ width: "25%" }}
+                                        src={`https://cdn.discordapp.com/avatars/${props.user._id}/${props.user.avatar}.png?size=256`}
+                                    />
+                                </Col>
+                                <Col sm className="text-center">
+                                    <span className="h3" style={{ color: "aliceblue" }}>
+                                        {props.user.username}{" "}
+                                        <span className="h6" style={{ color: "rgb(21, 219, 226)" }}>
+                                            #{props.user.discriminator}
                                         </span>
-                                    </Col>
-                                </Row>
-                            </div>
-                        </Container>
+                                    </span>
+                                </Col>
+                            </Row>
+                        </div>
+                    </Container>
 
-                        {/* Servidores en Común */}
-                        <Col lg="12">
-                            <ListGroup>
-                                {this.state.serversComun.length > 0 ? (
-                                    <ListGroup.Item key="LI0">
-                                        <Button variant="info" data-bs-toggle="collapse" data-bs-target=".multi-collapse" aria-expanded="false">
-                                            Ver Todos los Perfiles
-                                        </Button>
-                                    </ListGroup.Item>
-                                ) : (
-                                    <ListGroup.Item key="LI01">
+                    {/* Servidores en Común */}
+                    <Col lg="12">
+                        <ListGroup>
+                            {serversComun.length > 0 ? (
+                                <ListGroup.Item key="LI0">
+                                    <Button variant="info" data-bs-toggle="collapse" data-bs-target=".multi-collapse" aria-expanded="false">
+                                        Ver Todos los Perfiles
+                                    </Button>
+                                </ListGroup.Item>
+                            ) : (
+                                <ListGroup.Item key="LI01">
+                                    <Row className="align-items-center">
+                                        <Col sm className="text-center">
+                                            <img
+                                                alt="Icon_Server_Default"
+                                                style={{ borderRadius: "900px", width: "50%", margin: "0px 10px 0px 10px" }}
+                                                src={defaulURl}
+                                            />
+                                        </Col>
+                                        <Col sm={10} className="align-text-bottom text-center">
+                                            No hay servidores que mostrar
+                                        </Col>
+                                    </Row>
+                                </ListGroup.Item>
+                            )}
+                            {serversComun.map((servidor: { _id: string; dinero: number; banco: number }) => (
+                                <Accordion>
+                                    <ListGroup.Item key={`LI${servidor._id}`}>
                                         <Row className="align-items-center">
                                             <Col sm className="text-center">
                                                 <img
-                                                    alt="Icon_Server_Default"
-                                                    style={{ borderRadius: '900px', width: '50%', margin: '0px 10px 0px 10px' }}
-                                                    src="https://images-ext-1.discordapp.net/external/NAqkMZNPJgDiWBrSDqniAD1_sbWfiPqF4mgZyCtVs6s/https/discordapp.com/assets/6debd47ed13483642cf09e832ed0bc1b.png"
+                                                    alt="Icon_Server"
+                                                    onError={(e: any) => {
+                                                        e.target.onerror = null;
+                                                        e.target.src = defaulURl;
+                                                    }}
+                                                    style={{ borderRadius: "900px", width: "50%", margin: "0px 10px 0px 10px" }}
+                                                    src={
+                                                        props.user.guilds.findIndex((g) => g.id === servidor._id.split("-")[0]) > -1
+                                                            ? `https://cdn.discordapp.com/icons/${servidor._id.split("-")[0]}/${
+                                                                  props.user.guilds.find((g) => g.id === servidor._id.split("-")[0])!.icon
+                                                              }.png?size=256`
+                                                            : defaulURl
+                                                    }
                                                 />
                                             </Col>
-                                            <Col sm={10} className="align-text-bottom text-center">
-                                                No hay servidores que mostrar
+                                            <Col sm={8} className="align-text-bottom text-left">
+                                                {props.user.guilds.findIndex((g) => g.id === servidor._id.split("-")[0]) > -1
+                                                    ? props.user.guilds.find((g) => g.id === servidor._id.split("-")[0])!.name
+                                                    : `Servidor Desconocido (ID: ${servidor._id.split("-")[0]})`}
+                                            </Col>
+                                            <Col sm className="text-right">
+                                                <Accordion.Toggle as={Button} eventKey={`S_${servidor._id}`}>
+                                                    Perfil
+                                                </Accordion.Toggle>
+                                                <Button type="button" href={`/leaderboard/${servidor._id.split("-")[0]}`} style={{ margin: "10%" }}>
+                                                    Top
+                                                </Button>
                                             </Col>
                                         </Row>
                                     </ListGroup.Item>
-                                )}
-                                {this.state.serversComun.map((servidor: IGuildObjet) => (
-                                    <Accordion>
-                                        <ListGroup.Item key={`LI${servidor.id}`}>
-                                            <Row className="align-items-center">
-                                                <Col sm className="text-center">
-                                                    <img
-                                                        alt="Icon_Server"
-                                                        style={{ borderRadius: '900px', width: '50%', margin: '0px 10px 0px 10px' }}
-                                                        src={
-                                                            servidor.icon
-                                                                ? `https://cdn.discordapp.com/icons/${servidor.id}/${servidor.icon}.png?size=256`
-                                                                : this.state.defaulURl
-                                                        }
-                                                    />
+                                    <Accordion.Collapse className="multi-collapse" eventKey={`S_${servidor._id}`}>
+                                        <div className="card card-body">
+                                            <div className="row">
+                                                {/* Dinero */}
+                                                <Col sm>
+                                                    <div className="box-stats z-depth-3">
+                                                        <p>⭐ Dinero</p>
+                                                        <span className="text-stats"> {servidor.dinero} </span>
+                                                    </div>
                                                 </Col>
-                                                <Col sm={8} className="align-text-bottom text-left">
-                                                    {servidor.name}
+                                                {/* Banco */}
+                                                <Col sm>
+                                                    <div className="box-stats z-depth-3">
+                                                        <p>🏦 Banco</p>
+                                                        <span className="text-stats"> {servidor.banco} </span>
+                                                    </div>
                                                 </Col>
-                                                <Col sm className="text-right">
-                                                    <Accordion.Toggle as={Button} eventKey={`S_${servidor.id}`}>
-                                                        Perfil
-                                                    </Accordion.Toggle>
-                                                    <Button type="button" href={`/leaderboard/${servidor.id}`} style={{ margin: '10%' }}>
-                                                        Top
-                                                    </Button>
-                                                </Col>
-                                            </Row>
-                                        </ListGroup.Item>
-                                        <Accordion.Collapse className="multi-collapse" eventKey={`S_${servidor.id}`}>
-                                            <div className="card card-body">
-                                                <div className="row">
-                                                    {/* Dinero */}
-                                                    <Col sm>
-                                                        <div className="box-stats z-depth-3">
-                                                            <p>⭐ Dinero</p>
-                                                            <span className="text-stats"> {servidor.db?.dinero} </span>
-                                                        </div>
-                                                    </Col>
-                                                    {/* Banco */}
-                                                    <Col sm>
-                                                        <div className="box-stats z-depth-3">
-                                                            <p>🏦 Banco</p>
-                                                            <span className="text-stats"> {servidor.db?.banco} </span>
-                                                        </div>
-                                                    </Col>
-                                                </div>
                                             </div>
-                                        </Accordion.Collapse>
-                                    </Accordion>
-                                ))}
-                            </ListGroup>
-                        </Col>
-                    </Row>
-                </Container>
-            );
+                                        </div>
+                                    </Accordion.Collapse>
+                                </Accordion>
+                            ))}
+                        </ListGroup>
+                    </Col>
+                </Row>
+            </Container>
+        );
     }
 }
-/*
-Profile.propTypes = {
-    user: PropTypes.object,
-};
-*/
