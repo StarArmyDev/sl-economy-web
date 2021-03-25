@@ -3,12 +3,11 @@ import ReactDOM from "react-dom";
 import React from "react";
 import "bootswatch/dist/darkly/bootstrap.min.css";
 import reportWebVitals from "./reportWebVitals";
-import { API_URL } from "./Constants";
 import "./css/index.css";
 import App from "./App";
 
 const client = new ApolloClient({
-    uri: `${API_URL}/graphql`,
+    uri: `${process.env.REACT_APP_API_URL}/graphql`,
     credentials: "same-origin", //includes
     cache: new InMemoryCache()
 });

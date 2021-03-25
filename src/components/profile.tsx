@@ -1,11 +1,10 @@
 import { Row, Container, Button, Col, ListGroup, Accordion, Spinner } from "react-bootstrap";
 import { ProfilesUserGQL, useQuery } from "../graphql";
 import { IUserObjet } from "../interfaces";
-import { API_URL } from "../Constants";
 
 export function Profile(props: { match: any; user: IUserObjet }) {
     if (!props.user) {
-        window.location.replace(`${API_URL}/oauth/login`);
+        window.location.replace(`${process.env.REACT_APP_API_URL}/oauth/login`);
         return <></>;
     }
     const defaulURl =

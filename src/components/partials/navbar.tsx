@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import { Navbar, Container, Nav, NavDropdown, Col, Row, Spinner } from "react-bootstrap";
 import { useQuery, gql } from "@apollo/client";
 import iconImg from "../../img/icon.jpg";
-import { API_URL, CLIENT_ID } from "../../Constants";
+import { CLIENT_ID } from "../../Constants";
 
 export function NavBar(props: any) {
     const USER_GUILDS = gql`
@@ -112,7 +112,7 @@ export function NavBar(props: any) {
                             </Fragment>
                         ) : (
                             <Fragment>
-                                <Nav.Link href={`${API_URL}/oauth/login`}>Inciar Sesión</Nav.Link>
+                                <Nav.Link href={`${process.env.REACT_APP_API_URL}/oauth/login`}>Inciar Sesión</Nav.Link>
                             </Fragment>
                         )}
                     </Nav>

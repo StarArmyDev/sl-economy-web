@@ -3,7 +3,6 @@ import { Spinner, Container, ListGroup, Col, Row, Badge, Button, Card } from "re
 import { GuildGQL, ProfileGQL, useQuery } from "../graphql";
 import { IUserObjet } from "../interfaces";
 import { ConverString } from "../libs";
-//import { API_URL } from "../Constants";
 
 export function LeaderBoard(props: { match: any; user: IUserObjet; history: any }) {
     const id = props.match && props.match.params && props.match.params.id ? props.match.params.id : null;

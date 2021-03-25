@@ -2,7 +2,6 @@
     "name": "sl-economy-web",
     "version": "1.0.0",
     "private": true,
-    "proxy": "http://localhost:4000",
     "scripts": {
         "start:dev": "react-scripts start",
         "start": "serve -s build",
@@ -59,7 +58,6 @@
         "@types/jquery": "^3.5.5",
         "@types/ms": "^0.7.31",
         "@types/node-fetch": "^2.5.8",
-        "@types/react-router-dom": "^5.1.7",
-        "dotenv": "^8.2.0"
+        "@types/react-router-dom": "^5.1.7"
     }
 }
