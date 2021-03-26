@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
     <head>
-        <!-- Required meta tags -->
+        <!-- Metaetiquetas Requeridas -->
         <meta charset="UTF-8" />
         <link rel="icon" href="%PUBLIC_URL%/icon.jpg" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -20,33 +20,27 @@
             integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
             crossorigin="anonymous"
         ></script>
+        <!-- Importar JQuery -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.0/jquery.min.js"></script>
         <!-- Anuncios -->
-        <script data-ad-client="ca-pub-2365658233726619" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
         <meta name="propeller" content="23a6a417d8e96b789239fd356dcf2033" />
+        <meta name="tradetracker-site-verification" content="81180282265354b9bdda10d2e8593fe416b15987" />
+        <script data-ad-client="ca-pub-2365658233726619" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
         <!-- React -->
-        <meta name="theme-color" content="#000000" />
-        <meta name="description" content="Web site created using create-react-app" />
-        <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+        <meta name="theme-color" content="#ffd700" />
+        <meta name="description" content="Un bot enfocado para crear una economía de una comunidad en Discord totalmente en español." />
+        <link rel="apple-touch-icon" href="%PUBLIC_URL%/icon.jpg" />
         <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
+            manifest.json proporciona metadatos que se utilizan cuando su aplicación web está instalada en el
+            dispositivo móvil o el escritorio de un usuario.
+            Ver https://developers.google.com/web/fundamentals/web-app-manifest/
+        -->
         <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-        <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
-
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
         <title>StarLight Economy</title>
     </head>
     <body>
-        <noscript>You need to enable JavaScript to run this app.</noscript>
+        <noscript>Necesita habilitar JavaScript para ejecutar esta aplicación.</noscript>
         <!-- ======= Anuncios Pop y al dar clicks -->
         <script>
             (function (s, u, z, p) {
@@ -59,32 +53,32 @@
             })(document.createElement('script'), 'https://iclickcdn.com/tag.min.js', 3813351, document.body || document.documentElement);
         </script>-->
         <div id="root"></div>
-        <!-- Begin TradeTracker SuperTag Code -->
-        <script type="text/javascript">
-            var _TradeTrackerTagOptions = {
-                t: "a",
-                s: "394658",
-                chk: "e79a2d4e16897580279caccea8315fd2",
-                overrideOptions: {}
-            };
-
-            (function () {
-                var tt = document.createElement("script"),
-                    s = document.getElementsByTagName("script")[0];
-                tt.setAttribute("type", "text/javascript");
-                tt.setAttribute(
-                    "src",
-                    (document.location.protocol == "https:" ? "https" : "http") +
-                        "://tm.tradetracker.net/tag?t=" +
-                        _TradeTrackerTagOptions.t +
-                        "&amp;s=" +
-                        _TradeTrackerTagOptions.s +
-                        "&amp;chk=" +
-                        _TradeTrackerTagOptions.chk
-                );
-                s.parentNode.insertBefore(tt, s);
-            })();
-        </script>
-        <!-- End TradeTracker SuperTag Code -->
     </body>
+    <!-- Begin TradeTracker SuperTag Code -->
+    <script type="text/javascript">
+        var _TradeTrackerTagOptions = {
+            t: "a",
+            s: "394658",
+            chk: "e79a2d4e16897580279caccea8315fd2",
+            overrideOptions: {}
+        };
+
+        (function () {
+            var tt = document.createElement("script"),
+                s = document.getElementsByTagName("script")[0];
+            tt.setAttribute("type", "text/javascript");
+            tt.setAttribute(
+                "src",
+                (document.location.protocol == "https:" ? "https" : "http") +
+                    "://tm.tradetracker.net/tag?t=" +
+                    _TradeTrackerTagOptions.t +
+                    "&amp;s=" +
+                    _TradeTrackerTagOptions.s +
+                    "&amp;chk=" +
+                    _TradeTrackerTagOptions.chk
+            );
+            s.parentNode.insertBefore(tt, s);
+        })();
+    </script>
+    <!-- End TradeTracker SuperTag Code -->
 </html>

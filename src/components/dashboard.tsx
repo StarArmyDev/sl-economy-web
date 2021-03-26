@@ -25,6 +25,7 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
     const [showModal, setShowModal] = useState(false);
     const { register, errors, handleSubmit, reset, setValue } = useForm();
 
+    const [updateServerGQL] = useMutation(UpdateServerGQL);
     const [dbServer, setDbServer] = useState(null as ISistemas | null);
 
     const load = async () => {
@@ -54,8 +55,6 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
 
     const removeAlert = (alert: IAlert) => setAlert((alerts) => alerts.filter((x) => x !== alert));
 
-    const [updateServerGQL] = useMutation(UpdateServerGQL);
-
     const onSubmit = async (data: any, e: React.BaseSyntheticEvent<object, any, any> | undefined) => {
         let values: string[] = [];
 
@@ -70,6 +69,7 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                     await updateServerGQL({
                                         variables: {
                                             id,
+                                            create: true,
                                             name: `${key}.${key2}`,
                                             valueNumber: data[key][key2]
                                         }
@@ -95,6 +95,7 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                             await updateServerGQL({
                                                 variables: {
                                                     id,
+                                                    create: true,
                                                     name: `${key}.${key2}.${key3}`,
                                                     [typeof data[key][key2][key3] == "number" ? "valueNumber" : "value"]: data[key][key2][key3]
                                                 }
@@ -114,6 +115,7 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                 await updateServerGQL({
                                     variables: {
                                         id,
+                                        create: true,
                                         name: `${key}.${key2}`,
                                         [timerMs ? "valueNumber" : "value"]: timerMs ? timerMs : data[key][key2]
                                     }
@@ -129,6 +131,7 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                         await updateServerGQL({
                             variables: {
                                 id,
+                                create: true,
                                 name: key,
                                 value: data[key]
                             }
@@ -154,6 +157,7 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
             await updateServerGQL({
                 variables: {
                     id,
+                    create: true,
                     name
                 }
             })
@@ -201,10 +205,15 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                     <Row>
                                         <Col sm={12} className="p-4">
                                             <img
+                                                alt=""
+                                                onError={(e: any) => {
+                                                    e.target.onerror = null;
+                                                    e.target.src =
+                                                        "https://images-ext-1.discordapp.net/external/NAqkMZNPJgDiWBrSDqniAD1_sbWfiPqF4mgZyCtVs6s/https/discordapp.com/assets/6debd47ed13483642cf09e832ed0bc1b.png";
+                                                }}
                                                 className="rounded"
                                                 style={{ width: "15%" }}
                                                 src={`https://cdn.discordapp.com/icons/${id}/${guild.icon}.png?size=128`}
-                                                alt=""
                                             />
                                         </Col>
                                         {guild.ownerID === user?._id ? (
@@ -1652,12 +1661,14 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                             await updateServerGQL({
                                                 variables: {
                                                     id,
+                                                    create: true,
                                                     name: "pago"
                                                 }
                                             });
                                             await updateServerGQL({
                                                 variables: {
                                                     id,
+                                                    create: true,
                                                     name: "multa"
                                                 }
                                             });

@@ -2,11 +2,11 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Fragment, useEffect, useState } from "react";
 import { Container, Spinner } from "react-bootstrap";
 import { NavBar, Footer, About, Commands, Dashboard, Error403, Error404, Invite, LeaderBoard, Logout, Main, Profile, Support } from "./components";
-import { getUserDetails, useLocalStorage } from "./libs";
+import { getGuildsUser, getUserDetails, useLocalStorage } from "./libs";
 
 //=========[ Main App
 const App = () => {
-    const [loading, setLoading] = useState(true);
+    const [load, setLoading] = useState(true);
     const [user, setUser, removeLoading] = useLocalStorage("user", null);
 
     function init() {
@@ -18,16 +18,26 @@ const App = () => {
         } else setLoading(false);
     }
 
+    function reloaderGuilds() {
+        getGuildsUser()
+            .then(({ data }) => {
+                removeLoading("user");
+                setUser({ ...data, timestamp: user.timestamp, guildsTimestamp: Date.now() });
+            })
+            .catch(() => null);
+    }
+
     useEffect(() => {
-        if (user && user.timestamp && user.timestamp + 36e5 <= Date.now()) {
-            removeLoading("user");
-        }
+        if (user && user.timestamp && user.timestamp + 36e5 <= Date.now()) removeLoading("user");
+
+        if (user && user.guildsTimestamp && user.guildsTimestamp + 6e5 <= Date.now()) reloaderGuilds();
+
         init();
     });
 
     return (
         <Router>
-            <NavBar user={user} loading={loading} />
+            <NavBar user={user} loading={load} reloaderGuilds={reloaderGuilds} />
             <div className="container-fluid p-4">
                 <Switch>
                     <Route exact path="/" component={Main} />
@@ -36,7 +46,7 @@ const App = () => {
                     <Route exact path="/commands" component={Commands} />
                     <Route exact path="/error403" component={Error403} />
                     <Route exact path="/support" component={Support} />
-                    {!loading ? (
+                    {!load ? (
                         <Fragment>
                             <Route exact path="/profile" render={(props) => <Profile {...props} user={user} />} />
                             <Route exact path="/dashboard/:id" render={(props) => <Dashboard {...props} user={user} />} />

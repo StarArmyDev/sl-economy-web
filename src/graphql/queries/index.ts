@@ -152,4 +152,28 @@ export const ChannelsGuildGQL = gql`
     }
 `;
 
+export const UserGuildsGQL = gql`
+    query UserGuilds($id: String) {
+        getUserGuilds(id: $id) {
+            admin {
+                ...Datos
+            }
+            adminMutual {
+                ...Datos
+            }
+            mutual {
+                ...Datos
+            }
+        }
+    }
+
+    fragment Datos on Guild {
+        id
+        name
+        icon
+        owner
+        permissions
+    }
+`;
+
 export { useQuery };

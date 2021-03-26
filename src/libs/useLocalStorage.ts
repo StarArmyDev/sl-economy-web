@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 export function useLocalStorage(key: string, initialValue: any) {
     const [storageValue, setStorageValue] = useState(() => {
@@ -12,14 +12,14 @@ export function useLocalStorage(key: string, initialValue: any) {
 
     const setValue = (value: any) => {
         try {
-            setStorageValue(value);
+            setStorageValue({ ...value, timestamp: Date.now(), guildsTimestamp: Date.now() });
             window.localStorage.setItem(key, JSON.stringify(value));
         } catch (err) {
             console.error(err);
         }
     };
 
-    const removeValue = (value: any) => {
+    const removeValue = () => {
         try {
             window.localStorage.removeItem(key);
             setStorageValue(initialValue);

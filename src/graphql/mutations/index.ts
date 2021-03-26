@@ -1,8 +1,8 @@
 import { gql, useMutation } from "@apollo/client";
 
 export const UpdateServerGQL = gql`
-    mutation updateServerGQL($id: String!, $name: String!, $value: String, $valueNumber: Float) {
-        updateServer(id: $id, name: $name, value: $value, valueNumber: $valueNumber) {
+    mutation updateServerGQL($id: String!, $name: String!, $value: String, $valueNumber: Float, $create: Boolean = false) {
+        updateServer(id: $id, name: $name, value: $value, valueNumber: $valueNumber, createIfNotExist: $create) {
             _id
             colorname
             prefix
@@ -102,6 +102,30 @@ export const UpdateServerGQL = gql`
             }
             chatExcluido
         }
+    }
+`;
+
+export const UpdateGuildsGQL = gql`
+    mutation updateGuilds($id: String!) {
+        updateGuilds(id: $id) {
+            admin {
+                ...Datos
+            }
+            adminMutual {
+                ...Datos
+            }
+            mutual {
+                ...Datos
+            }
+        }
+    }
+
+    fragment Datos on Guild {
+        id
+        name
+        icon
+        owner
+        permissions
     }
 `;
 

@@ -1,38 +1,35 @@
-import { Fragment } from "react";
 import { Navbar, Container, Nav, NavDropdown, Col, Row, Spinner } from "react-bootstrap";
-import { useQuery, gql } from "@apollo/client";
+import { Fragment, useState } from "react";
+import { UpdateGuildsGQL, useMutation, useQuery, UserGuildsGQL } from "../../graphql";
 import iconImg from "../../img/icon.jpg";
 import { CLIENT_ID } from "../../Constants";
 
 export function NavBar(props: any) {
-    const USER_GUILDS = gql`
-        query UserGuilds($id: String) {
-            getUserGuilds(id: $id) {
-                admin {
-                    ...Datos
-                }
-                adminMutual {
-                    ...Datos
-                }
-                mutual {
-                    ...Datos
-                }
-            }
-        }
+    const { loading, data, error, refetch } = useQuery(UserGuildsGQL, { variables: { id: props.user ? props.user._id! : "0" } });
+    const [updateUserGuilds] = useMutation(UpdateGuildsGQL);
+    const [guilds, setGuilds] = useState({ admin: [], adminMutual: [], mutual: [] });
+    const [changes, setChanges] = useState(true);
 
-        fragment Datos on Guild {
-            id
-            name
-            icon
-            owner
-            permissions
-        }
-    `;
-    const { loading, data, error } = useQuery(USER_GUILDS, { variables: { id: props.user ? props.user._id! : "0" } });
+    async function reloaderGuilds() {
+        setGuilds(
+            (
+                await updateUserGuilds({
+                    variables: {
+                        id: props.user ? props.user._id! : "0"
+                    }
+                })
+            ).data.updateGuilds
+        );
+        await refetch();
+        setChanges(true);
+    }
 
-    let guilds = { admin: [], adminMutual: [], mutual: [] };
+    function loader(datos: any) {
+        setGuilds(datos);
+        setChanges(false);
+    }
 
-    if (!loading && !error) guilds = data.getUserGuilds;
+    if (!loading && !error && changes) loader(data.getUserGuilds);
 
     return (
         <Navbar expand="lg" bg="dark" variant="dark">
@@ -83,7 +80,9 @@ export function NavBar(props: any) {
                                                 {guilds.admin.map((servidor: any) => (
                                                     <NavDropdown.Item
                                                         key={`NI${servidor.id}`}
-                                                        href={`https://discord.com/oauth2/authorize?client_id=${CLIENT_ID}&permissions=268437520&scope=bot&response_type=code&guild_id=${servidor.id}`}
+                                                        href={`https://discord.com/oauth2/authorize?client_id=${CLIENT_ID}&permissions=268437520&scope=bot&response_type=code&guild_id=${
+                                                            servidor.id
+                                                        }&redirect_uri=${process.env.REACT_APP_REDIRECT_URL?.replace(/\//gi, "%2F").replace(/:/gi, "%3A")}`}
                                                     >
                                                         <Row>
                                                             <Col lg="1" className="material-icons">
@@ -93,6 +92,15 @@ export function NavBar(props: any) {
                                                         </Row>
                                                     </NavDropdown.Item>
                                                 ))}
+                                                <NavDropdown.Divider />
+                                                <NavDropdown.Item key="reloader" onClick={reloaderGuilds}>
+                                                    <Row>
+                                                        <Col lg="1" className="material-icons">
+                                                            refresh
+                                                        </Col>
+                                                        <Col lg="10">Refrescar</Col>
+                                                    </Row>
+                                                </NavDropdown.Item>
                                             </Fragment>
                                         )}
                                     </NavDropdown>
