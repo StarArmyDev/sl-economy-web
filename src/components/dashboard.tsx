@@ -209,7 +209,7 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                 onError={(e: any) => {
                                                     e.target.onerror = null;
                                                     e.target.src =
-                                                        "https://images-ext-1.discordapp.net/external/NAqkMZNPJgDiWBrSDqniAD1_sbWfiPqF4mgZyCtVs6s/https/discordapp.com/assets/6debd47ed13483642cf09e832ed0bc1b.png";
+                                                        "https://discord.com/assets/6debd47ed13483642cf09e832ed0bc1b.png";
                                                 }}
                                                 className="rounded"
                                                 style={{ width: "15%" }}

@@ -8,7 +8,7 @@ export function Profile(props: { match: any; user: IUserObjet }) {
         return <></>;
     }
     const defaulURl =
-        "https://images-ext-1.discordapp.net/external/NAqkMZNPJgDiWBrSDqniAD1_sbWfiPqF4mgZyCtVs6s/https/discordapp.com/assets/6debd47ed13483642cf09e832ed0bc1b.png";
+        "https://discord.com/assets/6debd47ed13483642cf09e832ed0bc1b.png";
     let serversComun = [];
 
     // eslint-disable-next-line react-hooks/rules-of-hooks

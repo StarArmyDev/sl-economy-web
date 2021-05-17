@@ -1,8 +1,8 @@
 import { Navbar, Container, Nav, NavDropdown, Col, Row, Spinner } from "react-bootstrap";
-import { Fragment, useState } from "react";
 import { UpdateGuildsGQL, useMutation, useQuery, UserGuildsGQL } from "../../graphql";
-import iconImg from "../../img/icon.jpg";
 import { CLIENT_ID } from "../../Constants";
+import { Fragment, useState } from "react";
+import iconImg from "../../img/icon.png";
 
 export function NavBar(props: any) {
     const { loading, data, error, refetch } = useQuery(UserGuildsGQL, { variables: { id: props.user ? props.user._id! : "0" } });

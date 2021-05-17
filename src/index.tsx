@@ -1,8 +1,8 @@
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
-import ReactDOM from "react-dom";
-import React from "react";
 import "bootswatch/dist/darkly/bootstrap.min.css";
 import reportWebVitals from "./reportWebVitals";
+import ReactDOM from "react-dom";
+import React from "react";
 import "./css/index.css";
 import App from "./App";
 
