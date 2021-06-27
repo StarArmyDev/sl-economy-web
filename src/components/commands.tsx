@@ -635,18 +635,6 @@ export function Commands() {
         <Container>
             <Row>
                 <Col md={12}>
-                    <ins
-                        className="adsbygoogle"
-                        style={{ display: "block" }}
-                        data-ad-client="ca-pub-2365658233726619"
-                        data-ad-slot="5039508803"
-                        data-ad-format="auto"
-                        data-full-width-responsive="true"
-                    ></ins>
-                    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-                </Col>
-
-                <Col md={12}>
                     <Card style={{ backgroundColor: "#1F2326" }}>
                         <Card.Body>
                             <Card.Title as="h3">Prefijo del bot</Card.Title>
@@ -775,17 +763,6 @@ export function Commands() {
                             </Tab.Container>
                         </Card.Body>
                     </Card>
-                </Col>
-                <Col md={12}>
-                    <ins
-                        className="adsbygoogle"
-                        style={{ display: "block" }}
-                        data-ad-client="ca-pub-2365658233726619"
-                        data-ad-slot="5039508803"
-                        data-ad-format="auto"
-                        data-full-width-responsive="true"
-                    ></ins>
-                    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
                 </Col>
             </Row>
         </Container>

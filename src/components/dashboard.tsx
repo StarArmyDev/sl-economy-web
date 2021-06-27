@@ -186,18 +186,6 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
         return (
             <Container>
                 <Row>
-                    <Col sm={12}>
-                        <ins
-                            className="adsbygoogle"
-                            style={{ display: "block" }}
-                            data-ad-client="ca-pub-2365658233726619"
-                            data-ad-slot="5039508803"
-                            data-ad-format="auto"
-                            data-full-width-responsive="true"
-                        ></ins>
-                        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-                    </Col>
-
                     <Col sm>
                         <Row className="text-center">
                             <Col sm={12}>
@@ -208,8 +196,7 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                 alt=""
                                                 onError={(e: any) => {
                                                     e.target.onerror = null;
-                                                    e.target.src =
-                                                        "https://discord.com/assets/6debd47ed13483642cf09e832ed0bc1b.png";
+                                                    e.target.src = "https://discord.com/assets/6debd47ed13483642cf09e832ed0bc1b.png";
                                                 }}
                                                 className="rounded"
                                                 style={{ width: "15%" }}
@@ -1692,17 +1679,7 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                         </Row>
                     </Col>
 
-                    <Col sm={2} className="text-center">
-                        <ins
-                            className="adsbygoogle"
-                            style={{ display: "block" }}
-                            data-ad-client="ca-pub-2365658233726619"
-                            data-ad-slot="9212396026"
-                            data-ad-format="auto"
-                            data-full-width-responsive="true"
-                        ></ins>
-                        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-                    </Col>
+                    <Col sm={2} className="text-center"></Col>
                 </Row>
             </Container>
         );

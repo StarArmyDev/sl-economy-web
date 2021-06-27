@@ -7,8 +7,7 @@ export function Profile(props: { match: any; user: IUserObjet }) {
         window.location.replace(`${process.env.REACT_APP_API_URL}/oauth/login`);
         return <></>;
     }
-    const defaulURl =
-        "https://discord.com/assets/6debd47ed13483642cf09e832ed0bc1b.png";
+    const defaulURl = "https://discord.com/assets/6debd47ed13483642cf09e832ed0bc1b.png";
     let serversComun = [];
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -26,17 +25,6 @@ export function Profile(props: { match: any; user: IUserObjet }) {
         return (
             <Container className="text-center">
                 <Row className="align-items-center">
-                    <Col lg={12}>
-                        <ins
-                            className="adsbygoogle"
-                            style={{ display: "block" }}
-                            data-ad-client="ca-pub-2365658233726619"
-                            data-ad-slot="5039508803"
-                            data-ad-format="auto"
-                            data-full-width-responsive="true"
-                        ></ins>
-                        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-                    </Col>
                     <Container fluid>
                         <div className="p-top align-middle">
                             <Row className="align-items-center">
