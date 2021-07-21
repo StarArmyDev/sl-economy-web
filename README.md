@@ -1,6 +1,12 @@
-# StarLight Economy Web
+# StarLight Economy React Web
+
+<div align="center">
+
+[![Banner](https://starlight-economy.live/static/media/splash.2a3d221e.png)](https://starlight-economy.live/static/media/splash.2a3d221e.png)
 
 [![time tracker](https://wakatime.com/badge/github/StarArmyDev/starlight-react.svg)](https://wakatime.com/badge/github/StarArmyDev/starlight-react)
+
+</div>
 
 La página web oficial del bot para dashboard, learboard e información general. Este proyecto fue creado con [Create React App](https://github.com/facebook/create-react-app).
 

@@ -9,17 +9,17 @@ const App = () => {
     const [load, setLoading] = useState(true);
     const [user, setUser, removeLoading] = useLocalStorage("user", null);
 
-    function init() {
+    async function init() {
         if (!user) {
-            getUserDetails()
+            await getUserDetails()
                 .then(({ data }) => setUser(data))
                 .catch(() => null);
             setLoading(false);
         } else setLoading(false);
     }
 
-    function reloaderGuilds() {
-        getGuildsUser()
+    async function reloaderGuilds() {
+        return await getGuildsUser()
             .then(({ data }) => {
                 removeLoading("user");
                 setUser({ ...data, timestamp: user.timestamp, guildsTimestamp: Date.now() });
@@ -30,7 +30,7 @@ const App = () => {
     useEffect(() => {
         if (user && user.timestamp && user.timestamp + 36e5 <= Date.now()) removeLoading("user");
 
-        if (user && user.guildsTimestamp && user.guildsTimestamp + 6e5 <= Date.now()) reloaderGuilds();
+        if (user?.guildsTimestamp && user.guildsTimestamp + 6e5 <= Date.now()) reloaderGuilds();
 
         init();
     });

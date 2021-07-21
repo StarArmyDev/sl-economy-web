@@ -14,6 +14,13 @@ interface IAlert {
     text?: string;
 }
 
+/* type FormValues = {
+    language: {
+        server: string;
+    };
+    prefix: string;
+}; */
+
 export function Dashboard(props: { match: any; user: IUserObjet }) {
     if (!window.localStorage.getItem("user")) return <Redirect to="/error403" />;
     const id = props.match && props.match.params && props.match.params.id ? props.match.params.id : null;
@@ -23,7 +30,13 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
     const [alert, setAlert] = useState([] as IAlert[]);
     const [chatExclude, setChatExclude] = useState([] as { name: string; id: string }[]);
     const [showModal, setShowModal] = useState(false);
-    const { register, errors, handleSubmit, reset, setValue } = useForm();
+    const {
+        register,
+        formState: { errors },
+        handleSubmit,
+        reset,
+        setValue
+    } = useForm();
 
     const [updateServerGQL] = useMutation(UpdateServerGQL);
     const [dbServer, setDbServer] = useState(null as ISistemas | null);
@@ -253,19 +266,16 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                 </Col>
                                                 <Col sm={12}>
                                                     <Form className="g-3 needs-validation" onSubmit={handleSubmit(onSubmit)}>
-                                                        <Form.Row className="align-items-center">
+                                                        <Row className="align-items-center">
                                                             {/**
                                                              * Prefix
                                                              */}
                                                             <Col sm>
                                                                 <InputGroup className="mb-2">
-                                                                    <InputGroup.Prepend>
-                                                                        <InputGroup.Text>Prefijo</InputGroup.Text>
-                                                                    </InputGroup.Prepend>
+                                                                    <InputGroup.Text>Prefijo</InputGroup.Text>
                                                                     <Form.Control
-                                                                        name="prefix"
                                                                         placeholder={dbServer?.prefix ? dbServer.prefix : "Por Defecto: e!"}
-                                                                        ref={register({
+                                                                        {...register("prefix", {
                                                                             maxLength: {
                                                                                 value: 5,
                                                                                 message: "No más de 5 carácteres"
@@ -287,13 +297,10 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                              */}
                                                             <Col sm>
                                                                 <InputGroup className="mb-2">
-                                                                    <InputGroup.Prepend>
-                                                                        <InputGroup.Text>Idioma</InputGroup.Text>
-                                                                    </InputGroup.Prepend>
+                                                                    <InputGroup.Text>Idioma</InputGroup.Text>
                                                                     <Form.Control
-                                                                        name="language.server"
+                                                                        {...register("language.server")}
                                                                         as="select"
-                                                                        ref={register}
                                                                         defaultValue={dbServer?.language?.server ? dbServer.language.server : "es-MX"}
                                                                     >
                                                                         <option key="Lg2">es-MX</option>
@@ -330,7 +337,7 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                     Guardar
                                                                 </Button>
                                                             </Col>
-                                                        </Form.Row>
+                                                        </Row>
                                                     </Form>
                                                 </Col>
                                             </Row>
@@ -344,20 +351,17 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                 </Col>
                                                 <Col sm={12}>
                                                     <Form className="g-3 needs-validation" onSubmit={handleSubmit(onSubmit)} name="economyForm">
-                                                        <Form.Row className="align-items-center">
+                                                        <Row className="align-items-center">
                                                             {/**
                                                              * Currency
                                                              */}
                                                             <Col sm={12} className="pt-4">
                                                                 <Form.Text className="text-muted">Coloca sólo emojis normales</Form.Text>
                                                                 <InputGroup className="mb-2">
-                                                                    <InputGroup.Prepend>
-                                                                        <InputGroup.Text>Moneda</InputGroup.Text>
-                                                                    </InputGroup.Prepend>
+                                                                    <InputGroup.Text>Moneda</InputGroup.Text>
                                                                     <Form.Control
-                                                                        name="moneda.name"
+                                                                        {...register("moneda.name")}
                                                                         placeholder={dbServer?.moneda?.name ? dbServer.moneda.name : "Por Defecto: 🔶"}
-                                                                        ref={register}
                                                                     />
                                                                     {dbServer?.moneda?.name != null ? (
                                                                         <Button
@@ -385,13 +389,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                         <Form.Label>Pago Mínimo</Form.Label>
                                                                         <InputGroup className="mb-2">
                                                                             <Form.Control
-                                                                                name="pago.mensajes.min"
+                                                                                {...register("pago.mensajes.min", { valueAsNumber: true, min: 1 })}
                                                                                 placeholder={
                                                                                     dbServer?.pago?.mensajes?.min
                                                                                         ? ConverString(dbServer.pago.mensajes.min)
                                                                                         : "No Configurado"
                                                                                 }
-                                                                                ref={register({ valueAsNumber: true, min: 1 })}
                                                                             />
                                                                             {dbServer?.pago?.mensajes?.min != null ? (
                                                                                 <Button
@@ -408,13 +411,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                         <Form.Label>Pago Máximo</Form.Label>
                                                                         <InputGroup className="mb-2">
                                                                             <Form.Control
-                                                                                name="pago.mensajes.max"
+                                                                                {...register("pago.mensajes.max", { valueAsNumber: true, min: 2 })}
                                                                                 placeholder={
                                                                                     dbServer?.pago?.mensajes?.max
                                                                                         ? ConverString(dbServer.pago.mensajes.max)
                                                                                         : "No Configurado"
                                                                                 }
-                                                                                ref={register({ valueAsNumber: true, min: 2 })}
                                                                             />
                                                                             {dbServer?.pago?.mensajes?.max != null ? (
                                                                                 <Button
@@ -434,13 +436,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                         <Form.Label>Cooldown</Form.Label>
                                                                         <InputGroup className="mb-2">
                                                                             <Form.Control
-                                                                                name="cooldown.mensajes"
+                                                                                {...register("cooldown.mensajes")}
                                                                                 placeholder={
                                                                                     dbServer?.cooldown?.mensajes
                                                                                         ? ConverTime(dbServer.cooldown.mensajes)
                                                                                         : "Por Defecto: 1m"
                                                                                 }
-                                                                                ref={register}
                                                                             />
                                                                             {dbServer?.cooldown?.mensajes != null ? (
                                                                                 <Button
@@ -532,13 +533,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                                 <Form.Label>Pago Mínimo</Form.Label>
                                                                                 <InputGroup className="mb-2">
                                                                                     <Form.Control
-                                                                                        name="pago.crime.min"
+                                                                                        {...register("pago.crime.min", { valueAsNumber: true, min: 1 })}
                                                                                         placeholder={
                                                                                             dbServer?.pago?.crime?.min
                                                                                                 ? ConverString(dbServer.pago.crime.min)
                                                                                                 : "No Configurado"
                                                                                         }
-                                                                                        ref={register({ valueAsNumber: true, min: 1 })}
                                                                                     />
                                                                                     {dbServer?.pago?.crime?.min != null ? (
                                                                                         <Button
@@ -555,13 +555,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                                 <Form.Label>Pago Máximo</Form.Label>
                                                                                 <InputGroup className="mb-2">
                                                                                     <Form.Control
-                                                                                        name="pago.crime.max"
+                                                                                        {...register("pago.crime.max", { valueAsNumber: true, min: 2 })}
                                                                                         placeholder={
                                                                                             dbServer?.pago?.crime?.max
                                                                                                 ? ConverString(dbServer.pago.crime.max)
                                                                                                 : "No Configurado"
                                                                                         }
-                                                                                        ref={register({ valueAsNumber: true, min: 2 })}
                                                                                     />
                                                                                     {dbServer?.pago?.crime?.max != null ? (
                                                                                         <Button
@@ -581,13 +580,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                                 <Form.Label>Multa Mínima</Form.Label>
                                                                                 <InputGroup className="mb-2">
                                                                                     <Form.Control
-                                                                                        name="multa.crime.min"
+                                                                                        {...register("multa.crime.min", { valueAsNumber: true, min: 1 })}
                                                                                         placeholder={
                                                                                             dbServer?.multa?.crime?.min
                                                                                                 ? ConverString(dbServer.multa.crime.min)
                                                                                                 : "No Configurado"
                                                                                         }
-                                                                                        ref={register({ valueAsNumber: true, min: 1 })}
                                                                                     />
                                                                                     {dbServer?.multa?.crime?.min != null ? (
                                                                                         <Button
@@ -611,13 +609,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                                 <Form.Label>Multa Máxima</Form.Label>
                                                                                 <InputGroup className="mb-2">
                                                                                     <Form.Control
-                                                                                        name="multa.crime.max"
+                                                                                        {...register("multa.crime.max", { valueAsNumber: true, min: 2 })}
                                                                                         placeholder={
                                                                                             dbServer?.multa?.crime?.max
                                                                                                 ? ConverString(dbServer.multa.crime.max)
                                                                                                 : "No Configurado"
                                                                                         }
-                                                                                        ref={register({ valueAsNumber: true, min: 2 })}
                                                                                     />
                                                                                     {dbServer?.multa?.crime?.max != null ? (
                                                                                         <Button
@@ -637,13 +634,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                                 <Form.Label>Cooldown</Form.Label>
                                                                                 <InputGroup className="mb-2">
                                                                                     <Form.Control
-                                                                                        name="cooldown.crime"
+                                                                                        {...register("cooldown.crime")}
                                                                                         placeholder={
                                                                                             dbServer?.cooldown?.crime
                                                                                                 ? ConverTime(dbServer.cooldown.crime)
                                                                                                 : "No Configurado"
                                                                                         }
-                                                                                        ref={register}
                                                                                     />
                                                                                     {dbServer?.cooldown?.crime != null ? (
                                                                                         <Button
@@ -675,11 +671,10 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                         <Form.Label>Pago</Form.Label>
                                                                         <InputGroup className="mb-2">
                                                                             <Form.Control
-                                                                                name="pago.daily"
+                                                                                {...register("pago.daily", { valueAsNumber: true, min: 1 })}
                                                                                 placeholder={
                                                                                     dbServer?.pago?.daily ? ConverString(dbServer.pago.daily) : "No Configurado"
                                                                                 }
-                                                                                ref={register({ valueAsNumber: true, min: 1 })}
                                                                             />
                                                                             {dbServer?.pago?.daily != null ? (
                                                                                 <Button
@@ -699,13 +694,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                         <Form.Label>Cooldown</Form.Label>
                                                                         <InputGroup className="mb-2">
                                                                             <Form.Control
-                                                                                name="cooldown.daily"
+                                                                                {...register("cooldown.daily")}
                                                                                 placeholder={
                                                                                     dbServer?.cooldown?.daily
                                                                                         ? ConverTime(dbServer.cooldown.daily)
                                                                                         : "No Configurado"
                                                                                 }
-                                                                                ref={register}
                                                                             />
                                                                             {dbServer?.cooldown?.daily != null ? (
                                                                                 <Button
@@ -737,13 +731,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                                 <Form.Label>Pago Mínimo</Form.Label>
                                                                                 <InputGroup className="mb-2">
                                                                                     <Form.Control
-                                                                                        name="pago.dice.min"
+                                                                                        {...register("pago.dice.min", { valueAsNumber: true, min: 1 })}
                                                                                         placeholder={
                                                                                             dbServer?.pago?.dice?.min
                                                                                                 ? ConverString(dbServer.pago.dice.min)
                                                                                                 : "No Configurado"
                                                                                         }
-                                                                                        ref={register({ valueAsNumber: true, min: 1 })}
                                                                                     />
                                                                                     {dbServer?.pago?.dice?.min != null ? (
                                                                                         <Button
@@ -760,13 +753,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                                 <Form.Label>Pago Máximo</Form.Label>
                                                                                 <InputGroup className="mb-2">
                                                                                     <Form.Control
-                                                                                        name="pago.dice.max"
+                                                                                        {...register("pago.dice.max", { valueAsNumber: true, min: 2 })}
                                                                                         placeholder={
                                                                                             dbServer?.pago?.dice?.max
                                                                                                 ? ConverString(dbServer.pago.dice.max)
                                                                                                 : "No Configurado"
                                                                                         }
-                                                                                        ref={register({ valueAsNumber: true, min: 2 })}
                                                                                     />
                                                                                     {dbServer?.pago?.dice?.max != null ? (
                                                                                         <Button
@@ -786,13 +778,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                                 <Form.Label>Multa Mínima</Form.Label>
                                                                                 <InputGroup className="mb-2">
                                                                                     <Form.Control
-                                                                                        name="multa.dice.min"
+                                                                                        {...register("multa.dice.min", { valueAsNumber: true, min: 1 })}
                                                                                         placeholder={
                                                                                             dbServer?.multa?.dice?.min
                                                                                                 ? ConverString(dbServer.multa.dice.min)
                                                                                                 : "No Configurado"
                                                                                         }
-                                                                                        ref={register({ valueAsNumber: true, min: 1 })}
                                                                                     />
                                                                                     {dbServer?.multa?.dice?.min != null ? (
                                                                                         <Button
@@ -816,13 +807,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                                 <Form.Label>Multa Máxima</Form.Label>
                                                                                 <InputGroup className="mb-2">
                                                                                     <Form.Control
-                                                                                        name="multa.dice.max"
+                                                                                        {...register("multa.dice.max", { valueAsNumber: true, min: 2 })}
                                                                                         placeholder={
                                                                                             dbServer?.multa?.dice?.max
                                                                                                 ? ConverString(dbServer.multa.dice.max)
                                                                                                 : "No Configurado"
                                                                                         }
-                                                                                        ref={register({ valueAsNumber: true, min: 2 })}
                                                                                     />
                                                                                     {dbServer?.multa?.dice?.max != null ? (
                                                                                         <Button
@@ -843,13 +833,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                                 <Form.Label>Cooldown</Form.Label>
                                                                                 <InputGroup className="mb-2">
                                                                                     <Form.Control
-                                                                                        name="cooldown.dice"
+                                                                                        {...register("cooldown.dice")}
                                                                                         placeholder={
                                                                                             dbServer?.cooldown?.dice
                                                                                                 ? ConverTime(dbServer.cooldown.dice)
                                                                                                 : "No Configurado"
                                                                                         }
-                                                                                        ref={register}
                                                                                     />
                                                                                     {dbServer?.cooldown?.dice != null ? (
                                                                                         <Button
@@ -881,13 +870,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                         <Form.Label>Pago Mínimo</Form.Label>
                                                                         <InputGroup className="mb-2">
                                                                             <Form.Control
-                                                                                name="pago.flipcoin.min"
+                                                                                {...register("pago.flipcoin.min", { valueAsNumber: true, min: 1 })}
                                                                                 placeholder={
                                                                                     dbServer?.pago?.flipcoin?.min
                                                                                         ? ConverString(dbServer.pago.flipcoin.min)
                                                                                         : "No Configurado"
                                                                                 }
-                                                                                ref={register({ valueAsNumber: true, min: 1 })}
                                                                             />
                                                                             {dbServer?.pago?.flipcoin?.min != null ? (
                                                                                 <Button
@@ -904,13 +892,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                         <Form.Label>Pago Máximo</Form.Label>
                                                                         <InputGroup className="mb-2">
                                                                             <Form.Control
-                                                                                name="pago.flipcoin.max"
+                                                                                {...register("pago.flipcoin.max", { valueAsNumber: true, min: 2 })}
                                                                                 placeholder={
                                                                                     dbServer?.pago?.flipcoin?.max
                                                                                         ? ConverString(dbServer.pago.flipcoin.max)
                                                                                         : "No Configurado"
                                                                                 }
-                                                                                ref={register({ valueAsNumber: true, min: 2 })}
                                                                             />
                                                                             {dbServer?.pago?.flipcoin?.max != null ? (
                                                                                 <Button
@@ -930,13 +917,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                         <Form.Label>Multa Mínima</Form.Label>
                                                                         <InputGroup className="mb-2">
                                                                             <Form.Control
-                                                                                name="multa.flipcoin.min"
+                                                                                {...register("multa.flipcoin.min", { valueAsNumber: true, min: 1 })}
                                                                                 placeholder={
                                                                                     dbServer?.multa?.flipcoin?.min
                                                                                         ? ConverString(dbServer.multa.flipcoin.min)
                                                                                         : "No Configurado"
                                                                                 }
-                                                                                ref={register({ valueAsNumber: true, min: 1 })}
                                                                             />
                                                                             {dbServer?.multa?.flipcoin?.min != null ? (
                                                                                 <Button
@@ -953,13 +939,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                         <Form.Label>Multa Máxima</Form.Label>
                                                                         <InputGroup className="mb-2">
                                                                             <Form.Control
-                                                                                name="multa.flipcoin.max"
+                                                                                {...register("multa.flipcoin.max", { valueAsNumber: true, min: 2 })}
                                                                                 placeholder={
                                                                                     dbServer?.multa?.flipcoin?.max
                                                                                         ? ConverString(dbServer.multa.flipcoin.max)
                                                                                         : "No Configurado"
                                                                                 }
-                                                                                ref={register({ valueAsNumber: true, min: 2 })}
                                                                             />
                                                                             {dbServer?.multa?.flipcoin?.max != null ? (
                                                                                 <Button
@@ -979,13 +964,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                         <Form.Label>Cooldown</Form.Label>
                                                                         <InputGroup className="mb-2">
                                                                             <Form.Control
-                                                                                name="cooldown.flipcoin"
+                                                                                {...register("cooldown.flipcoin")}
                                                                                 placeholder={
                                                                                     dbServer?.cooldown?.flipcoin
                                                                                         ? ConverTime(dbServer.cooldown.flipcoin)
                                                                                         : "No Configurado"
                                                                                 }
-                                                                                ref={register}
                                                                             />
                                                                             {dbServer?.cooldown?.flipcoin != null ? (
                                                                                 <Button
@@ -1013,9 +997,8 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                         <InputGroup className="mb-2">
                                                                             <Form.Control
                                                                                 disabled
-                                                                                name="pago.loot.min"
+                                                                                {...register("pago.loot.min")}
                                                                                 placeholder={"No Configurado"}
-                                                                                ref={register}
                                                                             />
                                                                         </InputGroup>
                                                                     </Col>
@@ -1024,9 +1007,8 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                         <InputGroup className="mb-2">
                                                                             <Form.Control
                                                                                 disabled
-                                                                                name="pago.loot.max"
+                                                                                {...register("pago.loot.max")}
                                                                                 placeholder={"No Configurado"}
-                                                                                ref={register}
                                                                             />
                                                                         </InputGroup>
                                                                     </Col>
@@ -1038,13 +1020,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                         <InputGroup className="mb-2">
                                                                             <Form.Control
                                                                                 disabled
-                                                                                name="cooldown.slotmachine"
+                                                                                {...register("cooldown.slotmachine")}
                                                                                 placeholder={
                                                                                     dbServer?.cooldown?.slotmachine
                                                                                         ? ConverTime(dbServer.cooldown.slotmachine)
                                                                                         : "No Configurado"
                                                                                 }
-                                                                                ref={register}
                                                                             />
                                                                             {dbServer?.cooldown?.slotmachine != null ? (
                                                                                 <Button
@@ -1074,13 +1055,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                         <Form.Label>Multa Mínima</Form.Label>
                                                                         <InputGroup className="mb-2">
                                                                             <Form.Control
-                                                                                name="multa.rob.min"
+                                                                                {...register("multa.rob.min", { valueAsNumber: true, min: 1 })}
                                                                                 placeholder={
                                                                                     dbServer?.multa?.rob?.min
                                                                                         ? ConverString(dbServer.multa.rob.min)
                                                                                         : "No Configurado"
                                                                                 }
-                                                                                ref={register({ valueAsNumber: true, min: 1 })}
                                                                             />
                                                                             {dbServer?.multa?.rob?.min != null ? (
                                                                                 <Button
@@ -1097,13 +1077,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                         <Form.Label>Multa Máxima</Form.Label>
                                                                         <InputGroup className="mb-2">
                                                                             <Form.Control
-                                                                                name="multa.rob.max"
+                                                                                {...register("multa.rob.max", { valueAsNumber: true, min: 2 })}
                                                                                 placeholder={
                                                                                     dbServer?.multa?.rob?.max
                                                                                         ? ConverString(dbServer.multa.rob.max)
                                                                                         : "No Configurado"
                                                                                 }
-                                                                                ref={register({ valueAsNumber: true, min: 2 })}
                                                                             />
                                                                             {dbServer?.multa?.rob?.max != null ? (
                                                                                 <Button
@@ -1123,13 +1102,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                         <Form.Label>Cooldown</Form.Label>
                                                                         <InputGroup className="mb-2">
                                                                             <Form.Control
-                                                                                name="cooldown.rob"
+                                                                                {...register("cooldown.rob")}
                                                                                 placeholder={
                                                                                     dbServer?.cooldown?.rob
                                                                                         ? ConverTime(dbServer.cooldown.rob)
                                                                                         : "No Configurado"
                                                                                 }
-                                                                                ref={register}
                                                                             />
                                                                             {dbServer?.cooldown?.rob != null ? (
                                                                                 <Button
@@ -1157,9 +1135,8 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                         <InputGroup className="mb-2">
                                                                             <Form.Control
                                                                                 disabled
-                                                                                name="pago.roulette.min"
+                                                                                {...register("pago.roulette.min")}
                                                                                 placeholder={"No Configurado"}
-                                                                                ref={register}
                                                                             />
                                                                         </InputGroup>
                                                                     </Col>
@@ -1168,9 +1145,8 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                         <InputGroup className="mb-2">
                                                                             <Form.Control
                                                                                 disabled
-                                                                                name="pago.roulette.max"
+                                                                                {...register("pago.roulette.max")}
                                                                                 placeholder={"No Configurado"}
-                                                                                ref={register}
                                                                             />
                                                                         </InputGroup>
                                                                     </Col>
@@ -1182,13 +1158,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                         <InputGroup className="mb-2">
                                                                             <Form.Control
                                                                                 disabled
-                                                                                name="cooldown.roulette"
+                                                                                {...register("cooldown.roulette")}
                                                                                 placeholder={
                                                                                     dbServer?.cooldown?.roulette
                                                                                         ? ConverTime(dbServer.cooldown.roulette)
                                                                                         : "No Configurado"
                                                                                 }
-                                                                                ref={register}
                                                                             />
                                                                             {dbServer?.cooldown?.roulette != null ? (
                                                                                 <Button
@@ -1220,13 +1195,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                                 <Form.Label>Pago Mínimo</Form.Label>
                                                                                 <InputGroup className="mb-2">
                                                                                     <Form.Control
-                                                                                        name="pago.slotmachine.min"
+                                                                                        {...register("pago.slotmachine.min", { valueAsNumber: true, min: 1 })}
                                                                                         placeholder={
                                                                                             dbServer?.pago?.slotmachine?.min
                                                                                                 ? ConverString(dbServer.pago.slotmachine.min)
                                                                                                 : "No Configurado"
                                                                                         }
-                                                                                        ref={register({ valueAsNumber: true, min: 1 })}
                                                                                     />
                                                                                     {dbServer?.pago?.slotmachine?.min != null ? (
                                                                                         <Button
@@ -1243,13 +1217,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                                 <Form.Label>Pago Máximo</Form.Label>
                                                                                 <InputGroup className="mb-2">
                                                                                     <Form.Control
-                                                                                        name="pago.slotmachine.max"
+                                                                                        {...register("pago.slotmachine.max", { valueAsNumber: true, min: 2 })}
                                                                                         placeholder={
                                                                                             dbServer?.pago?.slotmachine?.max
                                                                                                 ? ConverString(dbServer.pago.slotmachine.max)
                                                                                                 : "No Configurado"
                                                                                         }
-                                                                                        ref={register({ valueAsNumber: true, min: 2 })}
                                                                                     />
                                                                                     {dbServer?.pago?.slotmachine?.max != null ? (
                                                                                         <Button
@@ -1269,13 +1242,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                                 <Form.Label>Multa Mínima</Form.Label>
                                                                                 <InputGroup className="mb-2">
                                                                                     <Form.Control
-                                                                                        name="multa.slotmachine.min"
+                                                                                        {...register("multa.slotmachine.min", { valueAsNumber: true, min: 1 })}
                                                                                         placeholder={
                                                                                             dbServer?.multa?.slotmachine?.min
                                                                                                 ? ConverString(dbServer.multa.slotmachine.min)
                                                                                                 : "No Configurado"
                                                                                         }
-                                                                                        ref={register({ valueAsNumber: true, min: 1 })}
                                                                                     />
                                                                                     {dbServer?.multa?.slotmachine?.min != null ? (
                                                                                         <Button
@@ -1296,13 +1268,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                                 <Form.Label>Multa Máxima</Form.Label>
                                                                                 <InputGroup className="mb-2">
                                                                                     <Form.Control
-                                                                                        name="multa.slotmachine.max"
+                                                                                        {...register("multa.slotmachine.max", { valueAsNumber: true, min: 2 })}
                                                                                         placeholder={
                                                                                             dbServer?.multa?.slotmachine?.max
                                                                                                 ? ConverString(dbServer.multa.slotmachine.max)
                                                                                                 : "No Configurado"
                                                                                         }
-                                                                                        ref={register({ valueAsNumber: true, min: 2 })}
                                                                                     />
                                                                                     {dbServer?.multa?.slotmachine?.max != null ? (
                                                                                         <Button
@@ -1322,13 +1293,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                                 <Form.Label>Cooldown</Form.Label>
                                                                                 <InputGroup className="mb-2">
                                                                                     <Form.Control
-                                                                                        name="cooldown.slotmachine"
+                                                                                        {...register("cooldown.slotmachine")}
                                                                                         placeholder={
                                                                                             dbServer?.cooldown?.slotmachine
                                                                                                 ? ConverTime(dbServer.cooldown.slotmachine)
                                                                                                 : "No Configurado"
                                                                                         }
-                                                                                        ref={register}
                                                                                     />
                                                                                     {dbServer?.cooldown?.slotmachine != null ? (
                                                                                         <Button
@@ -1362,13 +1332,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                                 <Form.Label>Pago Mínimo</Form.Label>
                                                                                 <InputGroup className="mb-2">
                                                                                     <Form.Control
-                                                                                        name="pago.trade.min"
+                                                                                        {...register("pago.trade.min", { valueAsNumber: true, min: 1 })}
                                                                                         placeholder={
                                                                                             dbServer?.pago?.trade?.min
                                                                                                 ? ConverString(dbServer.pago.trade.min)
                                                                                                 : "No Configurado"
                                                                                         }
-                                                                                        ref={register({ valueAsNumber: true, min: 1 })}
                                                                                     />
                                                                                     {dbServer?.pago?.trade?.min != null ? (
                                                                                         <Button
@@ -1385,13 +1354,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                                 <Form.Label>Pago Máximo</Form.Label>
                                                                                 <InputGroup className="mb-2">
                                                                                     <Form.Control
-                                                                                        name="pago.trade.max"
+                                                                                        {...register("pago.trade.max", { valueAsNumber: true, min: 2 })}
                                                                                         placeholder={
                                                                                             dbServer?.pago?.trade?.max
                                                                                                 ? ConverString(dbServer.pago.trade.max)
                                                                                                 : "No Configurado"
                                                                                         }
-                                                                                        ref={register({ valueAsNumber: true, min: 2 })}
                                                                                     />
                                                                                     {dbServer?.pago?.trade?.max != null ? (
                                                                                         <Button
@@ -1411,13 +1379,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                                 <Form.Label>Multa Mínima</Form.Label>
                                                                                 <InputGroup className="mb-2">
                                                                                     <Form.Control
-                                                                                        name="multa.trade.min"
+                                                                                        {...register("multa.trade.min", { valueAsNumber: true, min: 1 })}
                                                                                         placeholder={
                                                                                             dbServer?.multa?.trade?.min
                                                                                                 ? ConverString(dbServer.multa.trade.min)
                                                                                                 : "No Configurado"
                                                                                         }
-                                                                                        ref={register({ valueAsNumber: true, min: 1 })}
                                                                                     />
                                                                                     {dbServer?.multa?.trade?.min != null ? (
                                                                                         <Button
@@ -1438,13 +1405,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                                 <Form.Label>Multa Máxima</Form.Label>
                                                                                 <InputGroup className="mb-2">
                                                                                     <Form.Control
-                                                                                        name="multa.trade.max"
+                                                                                        {...register("multa.trade.max", { valueAsNumber: true, min: 2 })}
                                                                                         placeholder={
                                                                                             dbServer?.multa?.trade?.max
                                                                                                 ? ConverString(dbServer.multa.trade.max)
                                                                                                 : "No Configurado"
                                                                                         }
-                                                                                        ref={register({ valueAsNumber: true, min: 2 })}
                                                                                     />
                                                                                     {dbServer?.multa?.trade?.max != null ? (
                                                                                         <Button
@@ -1464,13 +1430,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                                 <Form.Label>Cooldown</Form.Label>
                                                                                 <InputGroup className="mb-2">
                                                                                     <Form.Control
-                                                                                        name="cooldown.trade"
+                                                                                        {...register("cooldown.trade")}
                                                                                         placeholder={
                                                                                             dbServer?.cooldown?.trade
                                                                                                 ? ConverTime(dbServer.cooldown.trade)
                                                                                                 : "No Configurado"
                                                                                         }
-                                                                                        ref={register}
                                                                                     />
                                                                                     {dbServer?.cooldown?.trade != null ? (
                                                                                         <Button
@@ -1502,13 +1467,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                         <Form.Label>Pago Mínimo</Form.Label>
                                                                         <InputGroup className="mb-2">
                                                                             <Form.Control
-                                                                                name="pago.work.min"
+                                                                                {...register("pago.work.min", { valueAsNumber: true, min: 1 })}
                                                                                 placeholder={
                                                                                     dbServer?.pago?.work?.min
                                                                                         ? ConverString(dbServer.pago.work.min)
                                                                                         : "No Configurado"
                                                                                 }
-                                                                                ref={register({ valueAsNumber: true, min: 1 })}
                                                                             />
                                                                             {dbServer?.pago?.work?.min != null ? (
                                                                                 <Button
@@ -1525,13 +1489,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                         <Form.Label>Pago Máximo</Form.Label>
                                                                         <InputGroup className="mb-2">
                                                                             <Form.Control
-                                                                                name="pago.work.max"
+                                                                                {...register("pago.work.max", { valueAsNumber: true, min: 2 })}
                                                                                 placeholder={
                                                                                     dbServer?.pago?.work?.max
                                                                                         ? ConverString(dbServer.pago.work.max)
                                                                                         : "No Configurado"
                                                                                 }
-                                                                                ref={register({ valueAsNumber: true, min: 2 })}
                                                                             />
                                                                             {dbServer?.pago?.work?.max != null ? (
                                                                                 <Button
@@ -1551,13 +1514,12 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                         <Form.Label>Cooldown</Form.Label>
                                                                         <InputGroup className="mb-2">
                                                                             <Form.Control
-                                                                                name="cooldown.work"
+                                                                                {...register("cooldown.work")}
                                                                                 placeholder={
                                                                                     dbServer?.cooldown?.work
                                                                                         ? ConverTime(dbServer.cooldown.work)
                                                                                         : "No Configurado"
                                                                                 }
-                                                                                ref={register}
                                                                             />
                                                                             {dbServer?.cooldown?.work != null ? (
                                                                                 <Button
@@ -1596,7 +1558,7 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                     </Col>
                                                                 </Row>
                                                             </Col>
-                                                        </Form.Row>
+                                                        </Row>
                                                     </Form>
                                                 </Col>
                                             </Row>
@@ -1611,7 +1573,7 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                 <Col sm={12}>
                                                     Sección en construcción
                                                     <Form className="g-3 needs-validation" onSubmit={handleSubmit(onSubmit)}>
-                                                        <Form.Row className="align-items-center">
+                                                        <Row className="align-items-center">
                                                             {/**
                                                              * ClearItems
                                                              */}
@@ -1624,7 +1586,7 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
                                                                     Guardar
                                                                 </Button>
                                                             </Col> */}
-                                                        </Form.Row>
+                                                        </Row>
                                                     </Form>
                                                 </Col>
                                             </Row>

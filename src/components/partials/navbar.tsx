@@ -9,6 +9,7 @@ export function NavBar(props: any) {
     const [updateUserGuilds] = useMutation(UpdateGuildsGQL);
     const [guilds, setGuilds] = useState({ admin: [], adminMutual: [], mutual: [] });
     const [changes, setChanges] = useState(true);
+    let windowReference: Window | null;
 
     async function reloaderGuilds() {
         setGuilds(
@@ -49,9 +50,7 @@ export function NavBar(props: any) {
                 <Navbar.Collapse className="justify-content-end" id="navbarNav">
                     <Nav>
                         {props.loading ? (
-                            <Spinner animation="border" variant="warning" role="status">
-                                <span className="sr-only">Cargando...</span>
-                            </Spinner>
+                            <Spinner animation="border" variant="warning" role="status" />
                         ) : props && props.user ? (
                             <Fragment>
                                 {props.loading ? (
@@ -120,7 +119,37 @@ export function NavBar(props: any) {
                             </Fragment>
                         ) : (
                             <Fragment>
-                                <Nav.Link href={`${process.env.REACT_APP_API_URL}/oauth/login`}>Inciar Sesión</Nav.Link>
+                                <Nav.Link
+                                    onClick={() => {
+                                        if (windowReference == null || windowReference.closed) {
+                                            windowReference = window.open(
+                                                `${process.env.REACT_APP_API_URL}/oauth/login`,
+                                                "",
+                                                "toolbar=0,status=0,width=400,height=800"
+                                            );
+                                        } else {
+                                            windowReference.focus();
+                                        }
+
+                                        let origin: string | null;
+
+                                        if (windowReference)
+                                            setInterval(() => {
+                                                try {
+                                                    origin = windowReference!.location.origin;
+                                                } catch (_) {
+                                                    origin = null;
+                                                }
+
+                                                if (origin && origin === window.location.origin) {
+                                                    windowReference!.close();
+                                                    window.location.reload();
+                                                }
+                                            }, 500);
+                                    }}
+                                >
+                                    Inciar Sesión
+                                </Nav.Link>
                             </Fragment>
                         )}
                     </Nav>

@@ -635,7 +635,7 @@ export function Commands() {
         <Container>
             <Row>
                 <Col md={12}>
-                    <Card style={{ backgroundColor: "#1F2326" }}>
+                    <Card>
                         <Card.Body>
                             <Card.Title as="h3">Prefijo del bot</Card.Title>
                             <Card.Text>
@@ -672,8 +672,8 @@ export function Commands() {
                     </Card>
                 </Col>
                 <Col md={12} className="pt-4">
-                    <Card style={{ backgroundColor: "#1F2326" }}>
-                        <Card.Header className="text-center" as="h4" style={{ backgroundColor: "#34383C" }}>
+                    <Card>
+                        <Card.Header className="text-center" as="h4">
                             Tabla de Comandos
                         </Card.Header>
                         <Card.Body>
@@ -694,66 +694,63 @@ export function Commands() {
                                             {CommandsArray.map((dts) => (
                                                 <Tab.Pane eventKey={dts.id}>
                                                     <Row>
-                                                        <Accordion>
-                                                            {dts.commands.map((command) => (
-                                                                <Col md={12} className="p-1">
-                                                                    <Card style={{ backgroundColor: "#34383C" }}>
-                                                                        <Accordion.Toggle
-                                                                            eventKey={command.name}
-                                                                            as={Card.Header}
-                                                                            style={{ backgroundColor: "#34383C", cursor: "pointer" }}
-                                                                        >
-                                                                            <code className="codeCopy" onClick={copyClipboard}>
+                                                        {dts.commands.map((command) => (
+                                                            <>
+                                                                <Accordion>
+                                                                    <Accordion.Item eventKey={command.name}>
+                                                                        <Accordion.Header>
+                                                                            <code
+                                                                                className="codeCopy"
+                                                                                onClick={copyClipboard}
+                                                                                style={{ margin: "0px 15px 0px 0px" }}
+                                                                            >
                                                                                 {command.name}
-                                                                            </code>{" "}
-                                                                            - {command.descriptionShort}
-                                                                        </Accordion.Toggle>
-                                                                        <Accordion.Collapse eventKey={command.name}>
-                                                                            <Card.Body>
+                                                                            </code>
+                                                                            {command.descriptionShort}
+                                                                        </Accordion.Header>
+                                                                        <Accordion.Body>
+                                                                            <p>
+                                                                                Uso:{" "}
+                                                                                {command.use ? (
+                                                                                    <code className="codeCopy" onClick={copyClipboard}>
+                                                                                        {command.name} {command.use}
+                                                                                    </code>
+                                                                                ) : (
+                                                                                    <span className="text-muted">No requiere parámetros</span>
+                                                                                )}
+                                                                            </p>
+                                                                            <p>{command.description}</p>
+                                                                            {command.variables && command.variables.length > 0 ? <h5>Variables</h5> : null}
+                                                                            {command.variables
+                                                                                ? command.variables.map((vars) => (
+                                                                                      <>
+                                                                                          {vars.require ? (
+                                                                                              <span className="text-muted">Esta variable es obligatoria</span>
+                                                                                          ) : null}
+                                                                                          <p>
+                                                                                              <code>{vars.name}</code> {vars.description}
+                                                                                          </p>
+                                                                                      </>
+                                                                                  ))
+                                                                                : null}
+                                                                            {command.alias ? (
                                                                                 <p>
-                                                                                    Uso:{" "}
-                                                                                    {command.use ? (
-                                                                                        <code className="codeCopy" onClick={copyClipboard}>
-                                                                                            {command.name} {command.use}
-                                                                                        </code>
-                                                                                    ) : (
-                                                                                        <span className="text-muted">No requiere parámetros</span>
-                                                                                    )}
+                                                                                    <h5>Alias</h5>
+                                                                                    {command.alias.map((c) => (
+                                                                                        <>
+                                                                                            <code className="codeCopy" onClick={copyClipboard}>
+                                                                                                {c}
+                                                                                            </code>{" "}
+                                                                                        </>
+                                                                                    ))}
                                                                                 </p>
-                                                                                <p>{command.description}</p>
-                                                                                {command.variables && command.variables.length > 0 ? <h5>Variables</h5> : null}
-                                                                                {command.variables
-                                                                                    ? command.variables.map((vars) => (
-                                                                                          <>
-                                                                                              {vars.require ? (
-                                                                                                  <span className="text-muted">
-                                                                                                      Esta variable es obligatoria
-                                                                                                  </span>
-                                                                                              ) : null}
-                                                                                              <p>
-                                                                                                  <code>{vars.name}</code> {vars.description}
-                                                                                              </p>
-                                                                                          </>
-                                                                                      ))
-                                                                                    : null}
-                                                                                {command.alias ? (
-                                                                                    <p>
-                                                                                        <h5>Alias</h5>
-                                                                                        {command.alias.map((c) => (
-                                                                                            <>
-                                                                                                <code className="codeCopy" onClick={copyClipboard}>
-                                                                                                    {c}
-                                                                                                </code>{" "}
-                                                                                            </>
-                                                                                        ))}
-                                                                                    </p>
-                                                                                ) : null}
-                                                                            </Card.Body>
-                                                                        </Accordion.Collapse>
-                                                                    </Card>
-                                                                </Col>
-                                                            ))}
-                                                        </Accordion>
+                                                                            ) : null}
+                                                                        </Accordion.Body>
+                                                                    </Accordion.Item>
+                                                                </Accordion>
+                                                                <p></p>
+                                                            </>
+                                                        ))}
                                                     </Row>
                                                 </Tab.Pane>
                                             ))}

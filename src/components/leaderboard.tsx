@@ -6,8 +6,7 @@ import { ConverString } from "../libs";
 
 export function LeaderBoard(props: { match: any; user: IUserObjet; history: any }) {
     const id = props.match && props.match.params && props.match.params.id ? props.match.params.id : null;
-    const defaulURl =
-        "https://discord.com/assets/6debd47ed13483642cf09e832ed0bc1b.png";
+    const defaulURl = "https://cdn.discordapp.com/embed/avatars/0.png";
     const [userRank, setUserRank] = useState({
         position: 0,
         dinero: 0,
@@ -123,7 +122,7 @@ export function LeaderBoard(props: { match: any; user: IUserObjet; history: any 
                                         <Row className="align-items-center">
                                             <Col sm={1} className="text-center">
                                                 <h4>
-                                                    <Badge variant="primary" pill>
+                                                    <Badge bg="primary" pill>
                                                         {ConverString(userRank.position)}
                                                     </Badge>
                                                 </h4>
@@ -168,7 +167,7 @@ export function LeaderBoard(props: { match: any; user: IUserObjet; history: any 
                                         <Row className="align-items-center">
                                             <Col sm={1} className="text-center">
                                                 <h4>
-                                                    <Badge variant="primary" pill>
+                                                    <Badge bg="primary" pill>
                                                         {ConverString(++index)}
                                                     </Badge>
                                                 </h4>

@@ -1,5 +1,5 @@
+import { Container, Row, Col, Image } from "react-bootstrap";
 import { Component } from "react";
-import { Container, Row, Col, Button, Image } from "react-bootstrap";
 
 export class About extends Component {
     render() {
@@ -40,10 +40,14 @@ export class About extends Component {
                             Puedes visitar <a href="https://github.com/StarArmyDev">StarArmyDev</a> pronto llegará cosas mas grandes.
                         </p>
                     </Col>
-                    <Col md={12}>
-                        <Button variant="info" href="https://discord.gg/VG6D4ss">
-                            Servidor De Soporte
-                        </Button>
+                    <Col>
+                        <img
+                            alt=""
+                            onClick={() => {
+                                window.open("https://discord.gg/VG6D4ss", "", "toolbar=yes");
+                            }}
+                            src="https://discordapp.com/api/guilds/491819854307917826/embed.png?style=banner3"
+                        />
                     </Col>
                 </Row>
             </Container>
