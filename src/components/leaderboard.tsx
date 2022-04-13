@@ -1,11 +1,12 @@
-import { Fragment, useState } from "react";
+import { Fragment, useState, FC } from "react";
 import { Spinner, Container, ListGroup, Col, Row, Badge, Button, Card } from "react-bootstrap";
 import { GuildGQL, ProfileGQL, useQuery } from "../graphql";
+import { useParams } from "react-router-dom";
 import { IUserObjet } from "../interfaces";
 import { ConverString } from "../libs";
 
-export function LeaderBoard(props: { match: any; user: IUserObjet; history: any }) {
-    const id = props.match && props.match.params && props.match.params.id ? props.match.params.id : null;
+export const LeaderBoard: FC<{ user: IUserObjet }> = (props) => {
+    const { id } = useParams();
     const defaulURl = "https://cdn.discordapp.com/embed/avatars/0.png";
     const [userRank, setUserRank] = useState({
         position: 0,
@@ -47,7 +48,8 @@ export function LeaderBoard(props: { match: any; user: IUserObjet; history: any 
                         <Button
                             onClick={(e) => {
                                 e.preventDefault();
-                                props.history.goBack();
+                                // Regresar a la página anterior
+                                window.history.back();
                             }}
                         >
                             <i className="material-icons align-middle">reply</i>Volver
@@ -205,4 +207,4 @@ export function LeaderBoard(props: { match: any; user: IUserObjet; history: any 
             </Container>
         );
     }
-}
+};

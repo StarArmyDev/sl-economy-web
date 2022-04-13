@@ -1,11 +1,10 @@
 import { Component } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
-import { RouteChildrenProps } from "react-router-dom";
 
-export class Error404 extends Component<RouteChildrenProps> {
+export class Error404 extends Component {
     return = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
-        this.props.history.goBack();
+        window.history.back();
     };
 
     render() {

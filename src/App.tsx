@@ -1,8 +1,8 @@
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { Fragment, useEffect, useState } from "react";
-import { Container, Spinner } from "react-bootstrap";
-import { NavBar, Footer, About, Commands, Dashboard, Error403, Error404, Invite, LeaderBoard, Logout, Main, Profile, Support } from "./components";
+import { Layout, About, Commands, Dashboard, Error403, Error404, Invite, LeaderBoard, Logout, Main, Profile, Support } from "./components";
 import { getGuildsUser, getUserDetails, useLocalStorage } from "./libs";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Container, Spinner } from "react-bootstrap";
+import { useEffect, useState } from "react";
 
 //=========[ Main App
 const App = () => {
@@ -35,34 +35,33 @@ const App = () => {
         init();
     });
 
-    return (
-        <Router>
-            <NavBar user={user} loading={load} reloaderGuilds={reloaderGuilds} />
-            <div className="container-fluid p-4">
-                <Switch>
-                    <Route exact path="/" component={Main} />
-                    <Route exact path="/about" component={About} />
-                    <Route exact path="/invite" component={Invite} />
-                    <Route exact path="/commands" component={Commands} />
-                    <Route exact path="/error403" component={Error403} />
-                    <Route exact path="/support" component={Support} />
+    return !load ? (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<Layout user={user} load={load} reloaderGuilds={reloaderGuilds} />}>
+                    <Route index element={<Main />} />
+                    <Route path="about" element={<About />} />
+                    <Route path="invite" element={<Invite />} />
+                    <Route path="commands" element={<Commands />} />
+                    <Route path="error403" element={<Error403 />} />
+                    <Route path="support" element={<Support />} />
                     {!load ? (
-                        <Fragment>
-                            <Route exact path="/profile" render={(props) => <Profile {...props} user={user} />} />
-                            <Route exact path="/dashboard/:id" render={(props) => <Dashboard {...props} user={user} />} />
-                            <Route exact path="/leaderboard/:id" render={(props) => <LeaderBoard {...props} user={user} />} />
-                            <Route exact path="/error404" component={Error404} />
-                        </Fragment>
+                        <>
+                            <Route path="profile" element={<Profile user={user} />} />
+                            <Route path="dashboard/:id" element={<Dashboard user={user} />} />
+                            <Route path="leaderboard/:id" element={<LeaderBoard user={user} />} />
+                            <Route path="error404" element={<Error404 />} />
+                        </>
                     ) : (
-                        <Container className="text-center">
-                            <Route exact path="/logout" component={Logout} />
-                            <Route exact render={() => <Spinner animation="border" variant="warning" role="status" />} />
-                        </Container>
+                        <Route path="logout" element={<Logout />} />
                     )}
-                </Switch>
-            </div>
-            <Footer />
-        </Router>
+                </Route>
+            </Routes>
+        </BrowserRouter>
+    ) : (
+        <Container className="container-fluid text-center align-middle">
+            <Spinner animation="border" variant="warning" role="status" />
+        </Container>
     );
 };
 

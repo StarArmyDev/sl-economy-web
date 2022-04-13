@@ -1,6 +1,8 @@
 export * from "./partials/navbar";
 export * from "./partials/footer";
 
+export * from "./layout";
+
 export * from "./about";
 export * from "./commands";
 export * from "./dashboard";

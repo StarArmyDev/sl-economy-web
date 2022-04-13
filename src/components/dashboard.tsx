@@ -1,6 +1,6 @@
 import { Container, Spinner, Alert, Col, Row, Tab, Nav, Button, Card, Form, InputGroup, Modal } from "react-bootstrap";
-import React, { useEffect, useState } from "react";
-import { Redirect } from "react-router-dom";
+import React, { useEffect, useState, FC } from "react";
+import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import ms from "ms";
 import { ChannelsGuildGQL, ServerGQL, UpdateServerGQL, useMutation, useQuery } from "../graphql";
@@ -21,9 +21,12 @@ interface IAlert {
     prefix: string;
 }; */
 
-export function Dashboard(props: { match: any; user: IUserObjet }) {
-    if (!window.localStorage.getItem("user")) return <Redirect to="/error403" />;
-    const id = props.match && props.match.params && props.match.params.id ? props.match.params.id : null;
+export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
+    if (!window.localStorage.getItem("user")) {
+        window.history.replaceState(null, "error403", "/error403");
+        return <></>;
+    }
+    const { id } = useParams();
     const user: IUserObjet = JSON.parse(window.localStorage.getItem("user")!);
     const [loading, setLoading] = useState(true);
     const [guild, setGuild] = useState(null as any);
@@ -1646,4 +1649,4 @@ export function Dashboard(props: { match: any; user: IUserObjet }) {
             </Container>
         );
     }
-}
+};

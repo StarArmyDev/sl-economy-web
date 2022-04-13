@@ -1,9 +1,12 @@
 import { Row, Container, Button, Col, ListGroup, Accordion, Spinner, Card } from "react-bootstrap";
 import { ProfilesUserGQL, useQuery } from "../graphql";
+// import { useParams } from "react-router-dom";
 import { IUserObjet } from "../interfaces";
 import { ConverString } from "../libs";
+import { FC } from "react";
 
-export function Profile(props: { match: any; user: IUserObjet }) {
+export const Profile: FC<{ user: IUserObjet }> = (props) => {
+    // const { id } = useParams();
     if (!props.user) {
         window.location.replace(`${process.env.REACT_APP_API_URL}/oauth/login`);
         return <></>;
@@ -136,4 +139,4 @@ export function Profile(props: { match: any; user: IUserObjet }) {
             </Container>
         );
     }
-}
+};

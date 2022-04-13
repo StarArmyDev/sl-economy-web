@@ -1,7 +1,7 @@
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import "bootswatch/dist/darkly/bootstrap.min.css";
 import reportWebVitals from "./reportWebVitals";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import React from "react";
 import "./css/index.css";
 import App from "./App";
@@ -12,13 +12,16 @@ const client = new ApolloClient({
     cache: new InMemoryCache()
 });
 
-ReactDOM.render(
+const container = document.getElementById("app");
+
+const root = createRoot(container!);
+
+root.render(
     <React.StrictMode>
         <ApolloProvider client={client}>
             <App />
         </ApolloProvider>
-    </React.StrictMode>,
-    document.getElementById("root")
+    </React.StrictMode>
 );
 
 reportWebVitals();

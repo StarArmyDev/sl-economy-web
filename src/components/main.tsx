@@ -1,11 +1,14 @@
 import { Row, Container, Col } from "react-bootstrap";
-import { Redirect, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import splash from "../img/splash.png";
 
 export function Main() {
     const search = useLocation().search;
     const guild_id = new URLSearchParams(search).get("guild_id");
-    if (guild_id) return <Redirect to={`/dashboard/${guild_id}`} />;
+    if (guild_id) {
+        window.history.replaceState(null, "dashboard", `/dashboard/${guild_id}`);
+        return <></>;
+    }
 
     return (
         <Container>
