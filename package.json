@@ -3,8 +3,8 @@
     "version": "1.0.2",
     "private": true,
     "engines": {
-        "node": ">=16.x",
-        "npm": ">=8.x"
+        "node": "16.14.x",
+        "npm": "8.x"
     },
     "scripts": {
         "start:dev": "react-scripts start",
