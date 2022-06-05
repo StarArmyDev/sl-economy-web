@@ -40,7 +40,7 @@ export class About extends Component {
                             Puedes visitar <a href="https://github.com/StarArmyDev">StarArmyDev</a> pronto llegará cosas mas grandes.
                         </p>
                     </Col>
-                    <Col>
+                    <Col md={12}>
                         <img
                             alt=""
                             onClick={() => {
@@ -48,6 +48,11 @@ export class About extends Component {
                             }}
                             src="https://discordapp.com/api/guilds/491819854307917826/embed.png?style=banner3"
                         />
+                    </Col>
+                    <Col md={12}>
+                        <br />
+                        <br />
+                        <p>De México 🇲🇽 para el mundo ❤️</p>
                     </Col>
                 </Row>
             </Container>

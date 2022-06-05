@@ -14,3 +14,7 @@ export * from "./logout";
 export * from "./main";
 export * from "./profile";
 export * from "./support";
+
+export * from "./privacy";
+export * from "./terms";
+export * from "./developer";

@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[![Banner](https://starlight-economy.live/static/media/splash.2a3d221e.png)](https://starlight-economy.live/static/media/splash.2a3d221e.png)
+[![Banner](https://sl-economy.ga/static/media/splash.2a3d221e0d41fbbd2802.png)](https://sl-economy.ga/static/media/splash.2a3d221e0d41fbbd2802.png)
 
 [![time tracker](https://wakatime.com/badge/github/StarArmyDev/starlight-react.svg)](https://wakatime.com/badge/github/StarArmyDev/starlight-react)
 

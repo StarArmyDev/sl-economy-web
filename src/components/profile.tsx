@@ -76,7 +76,7 @@ export const Profile: FC<{ user: IUserObjet }> = (props) => {
                                 </ListGroup.Item>
                             ) : null}
                             {serversComun.map((servidor) => (
-                                <Accordion>
+                                <Accordion key={`S_${servidor._id}`}>
                                     <Accordion.Item eventKey={`S_${servidor._id}`}>
                                         <Accordion.Header>
                                             <Row className="align-items-center">

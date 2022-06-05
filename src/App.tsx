@@ -1,4 +1,20 @@
-import { Layout, About, Commands, Dashboard, Error403, Error404, Invite, LeaderBoard, Logout, Main, Profile, Support } from "./components";
+import {
+    Layout,
+    About,
+    Commands,
+    Dashboard,
+    Error403,
+    Error404,
+    Invite,
+    LeaderBoard,
+    Logout,
+    Main,
+    Profile,
+    Support,
+    Privacy,
+    Terms,
+    Developer
+} from "./components";
 import { getGuildsUser, getUserDetails, useLocalStorage } from "./libs";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Container, Spinner } from "react-bootstrap";
@@ -55,6 +71,9 @@ const App = () => {
                     ) : (
                         <Route path="logout" element={<Logout />} />
                     )}
+                    <Route path="privacy" element={<Privacy />} />
+                    <Route path="terms" element={<Terms />} />
+                    <Route path="developer" element={<Developer />} />
                 </Route>
             </Routes>
         </BrowserRouter>

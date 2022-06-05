@@ -17,19 +17,23 @@ export class Footer extends Component {
                             </p>
                             <p className="p-1">Todos los derechos reservados</p>
                         </Col>
-                        {/* <Col sm={5}>
+                        <Col sm={5}>
                             <Row>
-                                <Link to="/" className="nav-link p-1">
-                                    Términos de Uso
+                                <h3>Más</h3>
+                                <Link to="/terms" className="nav-link p-1">
+                                    Términos y condiciones
                                 </Link>
-                                <Link to="/" className="nav-link p-1">
-                                    Privacidad
-                                </Link>
-                                <Link to="/" className="nav-link p-1">
-                                    Política de cookies
+                                <Link to="/privacy" className="nav-link p-1">
+                                    Política de Privacidad
                                 </Link>
                             </Row>
-                        </Col> */}
+                        </Col>
+                        <Col sm={12} className="pt-5 pb-4">
+                            Sitio web y bot de Discord desarrollado y mantenido por{" "}
+                            <Link to="/developer" rel="noreferrer" style={{ textDecoration: "none" }}>
+                                DavichoStar
+                            </Link>
+                        </Col>
                     </Row>
                 </Container>
             </footer>
