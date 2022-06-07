@@ -3,7 +3,7 @@ import { Spinner, Container, ListGroup, Col, Row, Badge, Button, Card } from "re
 import { GuildGQL, ProfileGQL, useQuery } from "../graphql";
 import { useParams } from "react-router-dom";
 import { IUserObjet } from "../interfaces";
-import { ConverString } from "../libs";
+import { ConvertString } from "../libs";
 
 export const LeaderBoard: FC<{ user: IUserObjet }> = (props) => {
     const { id } = useParams();
@@ -125,7 +125,7 @@ export const LeaderBoard: FC<{ user: IUserObjet }> = (props) => {
                                             <Col sm={1} className="text-center">
                                                 <h4>
                                                     <Badge bg="primary" pill>
-                                                        {ConverString(userRank.position)}
+                                                        {ConvertString(userRank.position)}
                                                     </Badge>
                                                 </h4>
                                             </Col>
@@ -143,8 +143,8 @@ export const LeaderBoard: FC<{ user: IUserObjet }> = (props) => {
                                             </Col>
                                             <Col sm={4} className="text-center">
                                                 <Row>
-                                                    <Col xs>Dinero: {ConverString(userRank.dinero)}</Col>
-                                                    <Col xs>Banco: {ConverString(userRank.banco)}</Col>
+                                                    <Col xs>Dinero: {ConvertString(userRank.dinero)}</Col>
+                                                    <Col xs>Banco: {ConvertString(userRank.banco)}</Col>
                                                 </Row>
                                             </Col>
                                         </Row>
@@ -170,7 +170,7 @@ export const LeaderBoard: FC<{ user: IUserObjet }> = (props) => {
                                             <Col sm={1} className="text-center">
                                                 <h4>
                                                     <Badge bg="primary" pill>
-                                                        {ConverString(++index)}
+                                                        {ConvertString(++index)}
                                                     </Badge>
                                                 </h4>
                                             </Col>
@@ -192,8 +192,8 @@ export const LeaderBoard: FC<{ user: IUserObjet }> = (props) => {
                                             </Col>
                                             <Col sm={4} className="text-center">
                                                 <Row>
-                                                    <Col xs>Dinero: {ConverString(dato.dinero)}</Col>
-                                                    <Col xs>Banco: {ConverString(dato.banco)}</Col>
+                                                    <Col xs>Dinero: {ConvertString(dato.dinero)}</Col>
+                                                    <Col xs>Banco: {ConvertString(dato.banco)}</Col>
                                                 </Row>
                                             </Col>
                                         </Row>

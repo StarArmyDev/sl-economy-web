@@ -13,40 +13,40 @@ export interface Command {
 
 export type CommandOptionData = SubGroupData | NonOptionsData | ChannelOptionData | ChoicesData | AutocompleteOption | NumericOptionData | SubCommandData;
 
-export interface CommandOptionsData {
+export interface BaseCommandOptionsData {
     name: string;
     description: string;
-    require?: boolean;
+    required?: boolean;
     autocomplete?: boolean;
 }
 
-export interface NonOptionsData extends CommandOptionsData {
+export interface NonOptionsData extends BaseCommandOptionsData {
     type: NonChoiceResolvableType;
 }
 
-export interface SubCommandData extends CommandOptionsData {
+export interface SubCommandData extends BaseCommandOptionsData {
     type: OptionType.Subcommand;
     options?: (ChoicesData | NonOptionsData | ChannelOptionData | AutocompleteOption | NumericOptionData)[];
 }
 
-export interface SubGroupData extends CommandOptionsData {
+export interface SubGroupData extends BaseCommandOptionsData {
     type: OptionType.SubcommandGroup;
     options?: SubCommandData[];
 }
 
-export interface ChoicesData extends CommandOptionsData {
+export interface ChoicesData extends BaseCommandOptionsData {
     type: ChoiceResolvableType;
     choices?: OptionChoiceData[];
     autocomplete?: false;
 }
 
-export interface ChannelOptionData extends CommandOptionsData {
+export interface ChannelOptionData extends BaseCommandOptionsData {
     type: ChannelResolvableType;
     channelTypes?: ChannelType[];
     channel_types?: ChannelType[];
 }
 
-export interface AutocompleteOption extends Omit<CommandOptionsData, "autocomplete"> {
+export interface AutocompleteOption extends Omit<BaseCommandOptionsData, "autocomplete"> {
     type: OptionType.String | OptionType.Number | OptionType.Integer;
     autocomplete: true;
 }

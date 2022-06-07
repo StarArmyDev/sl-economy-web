@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import ms from "ms";
 import { ChannelsGuildGQL, ServerGQL, UpdateServerGQL, useMutation, useQuery } from "../graphql";
 import { ISistemas, IUserObjet } from "../interfaces";
-import { ConverString, ConverTime } from "../libs";
+import { ConvertString, ConvertorTime } from "../libs";
 import { BOT_MANAGER } from "../Constants";
 
 interface IAlert {
@@ -395,7 +395,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                 {...register("pago.mensajes.min", { valueAsNumber: true, min: 1 })}
                                                                                 placeholder={
                                                                                     dbServer?.pago?.mensajes?.min
-                                                                                        ? ConverString(dbServer.pago.mensajes.min)
+                                                                                        ? ConvertString(dbServer.pago.mensajes.min)
                                                                                         : "No Configurado"
                                                                                 }
                                                                             />
@@ -417,7 +417,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                 {...register("pago.mensajes.max", { valueAsNumber: true, min: 2 })}
                                                                                 placeholder={
                                                                                     dbServer?.pago?.mensajes?.max
-                                                                                        ? ConverString(dbServer.pago.mensajes.max)
+                                                                                        ? ConvertString(dbServer.pago.mensajes.max)
                                                                                         : "No Configurado"
                                                                                 }
                                                                             />
@@ -442,7 +442,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                 {...register("cooldown.mensajes")}
                                                                                 placeholder={
                                                                                     dbServer?.cooldown?.mensajes
-                                                                                        ? ConverTime(dbServer.cooldown.mensajes)
+                                                                                        ? ConvertorTime(dbServer.cooldown.mensajes)
                                                                                         : "Por Defecto: 1m"
                                                                                 }
                                                                             />
@@ -539,7 +539,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                         {...register("pago.crime.min", { valueAsNumber: true, min: 1 })}
                                                                                         placeholder={
                                                                                             dbServer?.pago?.crime?.min
-                                                                                                ? ConverString(dbServer.pago.crime.min)
+                                                                                                ? ConvertString(dbServer.pago.crime.min)
                                                                                                 : "No Configurado"
                                                                                         }
                                                                                     />
@@ -561,7 +561,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                         {...register("pago.crime.max", { valueAsNumber: true, min: 2 })}
                                                                                         placeholder={
                                                                                             dbServer?.pago?.crime?.max
-                                                                                                ? ConverString(dbServer.pago.crime.max)
+                                                                                                ? ConvertString(dbServer.pago.crime.max)
                                                                                                 : "No Configurado"
                                                                                         }
                                                                                     />
@@ -586,7 +586,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                         {...register("multa.crime.min", { valueAsNumber: true, min: 1 })}
                                                                                         placeholder={
                                                                                             dbServer?.multa?.crime?.min
-                                                                                                ? ConverString(dbServer.multa.crime.min)
+                                                                                                ? ConvertString(dbServer.multa.crime.min)
                                                                                                 : "No Configurado"
                                                                                         }
                                                                                     />
@@ -615,7 +615,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                         {...register("multa.crime.max", { valueAsNumber: true, min: 2 })}
                                                                                         placeholder={
                                                                                             dbServer?.multa?.crime?.max
-                                                                                                ? ConverString(dbServer.multa.crime.max)
+                                                                                                ? ConvertString(dbServer.multa.crime.max)
                                                                                                 : "No Configurado"
                                                                                         }
                                                                                     />
@@ -640,7 +640,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                         {...register("cooldown.crime")}
                                                                                         placeholder={
                                                                                             dbServer?.cooldown?.crime
-                                                                                                ? ConverTime(dbServer.cooldown.crime)
+                                                                                                ? ConvertorTime(dbServer.cooldown.crime)
                                                                                                 : "No Configurado"
                                                                                         }
                                                                                     />
@@ -676,7 +676,9 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                             <Form.Control
                                                                                 {...register("pago.daily", { valueAsNumber: true, min: 1 })}
                                                                                 placeholder={
-                                                                                    dbServer?.pago?.daily ? ConverString(dbServer.pago.daily) : "No Configurado"
+                                                                                    dbServer?.pago?.daily
+                                                                                        ? ConvertString(dbServer.pago.daily)
+                                                                                        : "No Configurado"
                                                                                 }
                                                                             />
                                                                             {dbServer?.pago?.daily != null ? (
@@ -700,7 +702,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                 {...register("cooldown.daily")}
                                                                                 placeholder={
                                                                                     dbServer?.cooldown?.daily
-                                                                                        ? ConverTime(dbServer.cooldown.daily)
+                                                                                        ? ConvertorTime(dbServer.cooldown.daily)
                                                                                         : "No Configurado"
                                                                                 }
                                                                             />
@@ -737,7 +739,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                         {...register("pago.dice.min", { valueAsNumber: true, min: 1 })}
                                                                                         placeholder={
                                                                                             dbServer?.pago?.dice?.min
-                                                                                                ? ConverString(dbServer.pago.dice.min)
+                                                                                                ? ConvertString(dbServer.pago.dice.min)
                                                                                                 : "No Configurado"
                                                                                         }
                                                                                     />
@@ -759,7 +761,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                         {...register("pago.dice.max", { valueAsNumber: true, min: 2 })}
                                                                                         placeholder={
                                                                                             dbServer?.pago?.dice?.max
-                                                                                                ? ConverString(dbServer.pago.dice.max)
+                                                                                                ? ConvertString(dbServer.pago.dice.max)
                                                                                                 : "No Configurado"
                                                                                         }
                                                                                     />
@@ -784,7 +786,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                         {...register("multa.dice.min", { valueAsNumber: true, min: 1 })}
                                                                                         placeholder={
                                                                                             dbServer?.multa?.dice?.min
-                                                                                                ? ConverString(dbServer.multa.dice.min)
+                                                                                                ? ConvertString(dbServer.multa.dice.min)
                                                                                                 : "No Configurado"
                                                                                         }
                                                                                     />
@@ -813,7 +815,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                         {...register("multa.dice.max", { valueAsNumber: true, min: 2 })}
                                                                                         placeholder={
                                                                                             dbServer?.multa?.dice?.max
-                                                                                                ? ConverString(dbServer.multa.dice.max)
+                                                                                                ? ConvertString(dbServer.multa.dice.max)
                                                                                                 : "No Configurado"
                                                                                         }
                                                                                     />
@@ -839,7 +841,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                         {...register("cooldown.dice")}
                                                                                         placeholder={
                                                                                             dbServer?.cooldown?.dice
-                                                                                                ? ConverTime(dbServer.cooldown.dice)
+                                                                                                ? ConvertorTime(dbServer.cooldown.dice)
                                                                                                 : "No Configurado"
                                                                                         }
                                                                                     />
@@ -876,7 +878,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                 {...register("pago.flipcoin.min", { valueAsNumber: true, min: 1 })}
                                                                                 placeholder={
                                                                                     dbServer?.pago?.flipcoin?.min
-                                                                                        ? ConverString(dbServer.pago.flipcoin.min)
+                                                                                        ? ConvertString(dbServer.pago.flipcoin.min)
                                                                                         : "No Configurado"
                                                                                 }
                                                                             />
@@ -898,7 +900,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                 {...register("pago.flipcoin.max", { valueAsNumber: true, min: 2 })}
                                                                                 placeholder={
                                                                                     dbServer?.pago?.flipcoin?.max
-                                                                                        ? ConverString(dbServer.pago.flipcoin.max)
+                                                                                        ? ConvertString(dbServer.pago.flipcoin.max)
                                                                                         : "No Configurado"
                                                                                 }
                                                                             />
@@ -923,7 +925,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                 {...register("multa.flipcoin.min", { valueAsNumber: true, min: 1 })}
                                                                                 placeholder={
                                                                                     dbServer?.multa?.flipcoin?.min
-                                                                                        ? ConverString(dbServer.multa.flipcoin.min)
+                                                                                        ? ConvertString(dbServer.multa.flipcoin.min)
                                                                                         : "No Configurado"
                                                                                 }
                                                                             />
@@ -945,7 +947,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                 {...register("multa.flipcoin.max", { valueAsNumber: true, min: 2 })}
                                                                                 placeholder={
                                                                                     dbServer?.multa?.flipcoin?.max
-                                                                                        ? ConverString(dbServer.multa.flipcoin.max)
+                                                                                        ? ConvertString(dbServer.multa.flipcoin.max)
                                                                                         : "No Configurado"
                                                                                 }
                                                                             />
@@ -970,7 +972,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                 {...register("cooldown.flipcoin")}
                                                                                 placeholder={
                                                                                     dbServer?.cooldown?.flipcoin
-                                                                                        ? ConverTime(dbServer.cooldown.flipcoin)
+                                                                                        ? ConvertorTime(dbServer.cooldown.flipcoin)
                                                                                         : "No Configurado"
                                                                                 }
                                                                             />
@@ -1026,7 +1028,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                 {...register("cooldown.slotmachine")}
                                                                                 placeholder={
                                                                                     dbServer?.cooldown?.slotmachine
-                                                                                        ? ConverTime(dbServer.cooldown.slotmachine)
+                                                                                        ? ConvertorTime(dbServer.cooldown.slotmachine)
                                                                                         : "No Configurado"
                                                                                 }
                                                                             />
@@ -1061,7 +1063,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                 {...register("multa.rob.min", { valueAsNumber: true, min: 1 })}
                                                                                 placeholder={
                                                                                     dbServer?.multa?.rob?.min
-                                                                                        ? ConverString(dbServer.multa.rob.min)
+                                                                                        ? ConvertString(dbServer.multa.rob.min)
                                                                                         : "No Configurado"
                                                                                 }
                                                                             />
@@ -1083,7 +1085,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                 {...register("multa.rob.max", { valueAsNumber: true, min: 2 })}
                                                                                 placeholder={
                                                                                     dbServer?.multa?.rob?.max
-                                                                                        ? ConverString(dbServer.multa.rob.max)
+                                                                                        ? ConvertString(dbServer.multa.rob.max)
                                                                                         : "No Configurado"
                                                                                 }
                                                                             />
@@ -1108,7 +1110,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                 {...register("cooldown.rob")}
                                                                                 placeholder={
                                                                                     dbServer?.cooldown?.rob
-                                                                                        ? ConverTime(dbServer.cooldown.rob)
+                                                                                        ? ConvertorTime(dbServer.cooldown.rob)
                                                                                         : "No Configurado"
                                                                                 }
                                                                             />
@@ -1164,7 +1166,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                 {...register("cooldown.roulette")}
                                                                                 placeholder={
                                                                                     dbServer?.cooldown?.roulette
-                                                                                        ? ConverTime(dbServer.cooldown.roulette)
+                                                                                        ? ConvertorTime(dbServer.cooldown.roulette)
                                                                                         : "No Configurado"
                                                                                 }
                                                                             />
@@ -1201,7 +1203,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                         {...register("pago.slotmachine.min", { valueAsNumber: true, min: 1 })}
                                                                                         placeholder={
                                                                                             dbServer?.pago?.slotmachine?.min
-                                                                                                ? ConverString(dbServer.pago.slotmachine.min)
+                                                                                                ? ConvertString(dbServer.pago.slotmachine.min)
                                                                                                 : "No Configurado"
                                                                                         }
                                                                                     />
@@ -1223,7 +1225,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                         {...register("pago.slotmachine.max", { valueAsNumber: true, min: 2 })}
                                                                                         placeholder={
                                                                                             dbServer?.pago?.slotmachine?.max
-                                                                                                ? ConverString(dbServer.pago.slotmachine.max)
+                                                                                                ? ConvertString(dbServer.pago.slotmachine.max)
                                                                                                 : "No Configurado"
                                                                                         }
                                                                                     />
@@ -1248,7 +1250,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                         {...register("multa.slotmachine.min", { valueAsNumber: true, min: 1 })}
                                                                                         placeholder={
                                                                                             dbServer?.multa?.slotmachine?.min
-                                                                                                ? ConverString(dbServer.multa.slotmachine.min)
+                                                                                                ? ConvertString(dbServer.multa.slotmachine.min)
                                                                                                 : "No Configurado"
                                                                                         }
                                                                                     />
@@ -1274,7 +1276,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                         {...register("multa.slotmachine.max", { valueAsNumber: true, min: 2 })}
                                                                                         placeholder={
                                                                                             dbServer?.multa?.slotmachine?.max
-                                                                                                ? ConverString(dbServer.multa.slotmachine.max)
+                                                                                                ? ConvertString(dbServer.multa.slotmachine.max)
                                                                                                 : "No Configurado"
                                                                                         }
                                                                                     />
@@ -1299,7 +1301,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                         {...register("cooldown.slotmachine")}
                                                                                         placeholder={
                                                                                             dbServer?.cooldown?.slotmachine
-                                                                                                ? ConverTime(dbServer.cooldown.slotmachine)
+                                                                                                ? ConvertorTime(dbServer.cooldown.slotmachine)
                                                                                                 : "No Configurado"
                                                                                         }
                                                                                     />
@@ -1338,7 +1340,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                         {...register("pago.trade.min", { valueAsNumber: true, min: 1 })}
                                                                                         placeholder={
                                                                                             dbServer?.pago?.trade?.min
-                                                                                                ? ConverString(dbServer.pago.trade.min)
+                                                                                                ? ConvertString(dbServer.pago.trade.min)
                                                                                                 : "No Configurado"
                                                                                         }
                                                                                     />
@@ -1360,7 +1362,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                         {...register("pago.trade.max", { valueAsNumber: true, min: 2 })}
                                                                                         placeholder={
                                                                                             dbServer?.pago?.trade?.max
-                                                                                                ? ConverString(dbServer.pago.trade.max)
+                                                                                                ? ConvertString(dbServer.pago.trade.max)
                                                                                                 : "No Configurado"
                                                                                         }
                                                                                     />
@@ -1385,7 +1387,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                         {...register("multa.trade.min", { valueAsNumber: true, min: 1 })}
                                                                                         placeholder={
                                                                                             dbServer?.multa?.trade?.min
-                                                                                                ? ConverString(dbServer.multa.trade.min)
+                                                                                                ? ConvertString(dbServer.multa.trade.min)
                                                                                                 : "No Configurado"
                                                                                         }
                                                                                     />
@@ -1411,7 +1413,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                         {...register("multa.trade.max", { valueAsNumber: true, min: 2 })}
                                                                                         placeholder={
                                                                                             dbServer?.multa?.trade?.max
-                                                                                                ? ConverString(dbServer.multa.trade.max)
+                                                                                                ? ConvertString(dbServer.multa.trade.max)
                                                                                                 : "No Configurado"
                                                                                         }
                                                                                     />
@@ -1436,7 +1438,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                         {...register("cooldown.trade")}
                                                                                         placeholder={
                                                                                             dbServer?.cooldown?.trade
-                                                                                                ? ConverTime(dbServer.cooldown.trade)
+                                                                                                ? ConvertorTime(dbServer.cooldown.trade)
                                                                                                 : "No Configurado"
                                                                                         }
                                                                                     />
@@ -1473,7 +1475,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                 {...register("pago.work.min", { valueAsNumber: true, min: 1 })}
                                                                                 placeholder={
                                                                                     dbServer?.pago?.work?.min
-                                                                                        ? ConverString(dbServer.pago.work.min)
+                                                                                        ? ConvertString(dbServer.pago.work.min)
                                                                                         : "No Configurado"
                                                                                 }
                                                                             />
@@ -1495,7 +1497,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                 {...register("pago.work.max", { valueAsNumber: true, min: 2 })}
                                                                                 placeholder={
                                                                                     dbServer?.pago?.work?.max
-                                                                                        ? ConverString(dbServer.pago.work.max)
+                                                                                        ? ConvertString(dbServer.pago.work.max)
                                                                                         : "No Configurado"
                                                                                 }
                                                                             />
@@ -1520,7 +1522,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = (props) => {
                                                                                 {...register("cooldown.work")}
                                                                                 placeholder={
                                                                                     dbServer?.cooldown?.work
-                                                                                        ? ConverTime(dbServer.cooldown.work)
+                                                                                        ? ConvertorTime(dbServer.cooldown.work)
                                                                                         : "No Configurado"
                                                                                 }
                                                                             />

@@ -2,7 +2,7 @@ import { Row, Container, Button, Col, ListGroup, Accordion, Spinner, Card } from
 import { ProfilesUserGQL, useQuery } from "../graphql";
 // import { useParams } from "react-router-dom";
 import { IUserObjet } from "../interfaces";
-import { ConverString } from "../libs";
+import { ConvertString } from "../libs";
 import { FC } from "react";
 
 export const Profile: FC<{ user: IUserObjet }> = (props) => {
@@ -111,14 +111,14 @@ export const Profile: FC<{ user: IUserObjet }> = (props) => {
                                                     <Col sm>
                                                         <div className="box-stats z-depth-3">
                                                             <p>⭐ Dinero</p>
-                                                            <span className="text-stats"> {ConverString(servidor.dinero)} </span>
+                                                            <span className="text-stats"> {ConvertString(servidor.dinero)} </span>
                                                         </div>
                                                     </Col>
                                                     {/* Banco */}
                                                     <Col sm>
                                                         <div className="box-stats z-depth-3">
                                                             <p>🏦 Banco</p>
-                                                            <span className="text-stats"> {ConverString(servidor.banco)} </span>
+                                                            <span className="text-stats"> {ConvertString(servidor.banco)} </span>
                                                         </div>
                                                     </Col>
                                                     {/* Top */}

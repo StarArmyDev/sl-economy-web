@@ -5,7 +5,6 @@ export const ServerGQL = gql`
         getServer(id: $id) {
             _id
             colorname
-            prefix
             language {
                 server
                 channels {
