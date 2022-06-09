@@ -8,6 +8,7 @@
             "ESNext"
         ],
         "rootDir": "./src",
+        "baseUrl": "./src",
         "strict": true,
         "moduleResolution": "node",
         "forceConsistentCasingInFileNames": true,
@@ -19,13 +20,20 @@
         "noFallthroughCasesInSwitch": true,
         "isolatedModules": true,
         "noEmit": true,
-        "jsx": "react-jsx"
+        "jsx": "react-jsx",
+        "removeComments": true,
+        "sourceMap": true,
+        "declaration": true,
+        "declarationMap": true,
+        "experimentalDecorators": true,
+        "paths": {
+            "src/*": [
+                "./src/*"
+            ],
+        }
     },
     "exclude": [
         "node_modules",
         "**/*.spec.ts"
-    ],
-    "include": [
-        "src"
     ]
 }
