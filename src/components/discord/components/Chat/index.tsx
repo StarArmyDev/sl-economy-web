@@ -66,12 +66,17 @@ export const Chat = ({
 };
 
 export * from "./AttachButton";
+export * from "./ButtonComponent";
 export * from "./EmojiPickerButton";
+export * from "./HandleMemberClick";
 export * from "./HeaderActionBar";
 export * from "./HeaderSearchBar";
 export * from "./MemberMessage";
+export * from "./MessageEmbed";
 export * from "./MessagesWrapper";
 export * from "./NewMessageButtons";
 export * from "./NewMessageForm";
 export * from "./NewMessageWrapper";
+export * from "./ReplyMessage";
+export * from "./SelectMenu";
 export * from "./WelcomeChannelMessage";

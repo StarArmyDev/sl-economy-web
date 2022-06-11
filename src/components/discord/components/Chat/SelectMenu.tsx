@@ -5,8 +5,7 @@ import Select from "react-select";
 const StyledSelectMenu = styled.div`
     .container {
         margin-top: 8px;
-        width: 100%;
-        display: -webkit-box;
+        width: 120%;
         display: flex;
         -webkit-box-align: center;
         align-items: center;
@@ -14,7 +13,7 @@ const StyledSelectMenu = styled.div`
     }
 
     .select {
-        width: 100%;
+        width: 180%;
         max-width: 400px;
     }
 

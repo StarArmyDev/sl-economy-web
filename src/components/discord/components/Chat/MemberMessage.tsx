@@ -1,6 +1,7 @@
+import { handleMemberClick, ReplyMessage } from ".";
 import { constants, colors } from "../../utils";
+import { Reply, User } from "../../interface";
 import styled from "styled-components";
-import { User } from "../../interface";
 import React from "react";
 
 const StyledMemberMessageGroup = styled.div`
@@ -18,19 +19,9 @@ const StyledMemberMessageGroup = styled.div`
     }
 `;
 
-export const MemberMessageGroup = ({
-    member,
-    time,
-    onMemberClick,
-    children
-}: {
-    member: User;
-    time: Date;
-    onMemberClick: Function;
-    children: JSX.Element[];
-}) => (
+export const MemberMessageGroup = ({ member, time, children }: { member: User; time: Date; children: JSX.Element[] }) => (
     <StyledMemberMessageGroup>
-        {React.Children.map(children, (child, index) => React.cloneElement(child, { member, time, isHeading: index === 0, onMemberClick }))}
+        {React.Children.map(children, (child, index) => React.cloneElement(child, { member, time, isHeading: index === 0, handleMemberClick }))}
         <div className="divider" />
     </StyledMemberMessageGroup>
 );
@@ -95,35 +86,38 @@ const StyledMessage = styled.div`
 
 export const MemberMessage = ({
     user,
+    reply,
     time,
     children,
-    isHeading,
-    onMemberClick
+    isHeading
 }: {
     user: User;
     time: Date;
     children: JSX.Element | string;
+    reply?: Reply;
     isHeading?: boolean;
-    onMemberClick: Function;
 }) => {
     const rol = user.roles ? user.roles[0] : undefined;
 
     return (
         <StyledMessage usernameColor={rol?.color}>
-            {isHeading && (
-                <div className="header">
-                    <div className="avatar-wrapper" onClick={(e) => onMemberClick(e, user)}>
-                        <div className="avatar" style={{ backgroundImage: `url(${user.avatarUrl || constants.defaultAvatar})` }} />
+            <>
+                {reply && <ReplyMessage reply={reply} />}
+                {isHeading && (
+                    <div className="header">
+                        <div className="avatar-wrapper" onClick={(e) => handleMemberClick(e, user)}>
+                            <div className="avatar" style={{ backgroundImage: `url(${user.avatarUrl || constants.defaultAvatar})` }} />
+                        </div>
+                        <div className="data">
+                            <span className="username" onClick={(e) => handleMemberClick(e, user)}>
+                                {user.username}
+                            </span>
+                            <span className="time">{time.toLocaleDateString()}</span>
+                        </div>
                     </div>
-                    <div className="data">
-                        <span className="username" onClick={(e) => onMemberClick(e, user)}>
-                            {user.username}
-                        </span>
-                        <span className="time">{time.toLocaleDateString()}</span>
-                    </div>
-                </div>
-            )}
-            <div className="content">{children}</div>
+                )}
+                <div className="content">{children}</div>
+            </>
         </StyledMessage>
     );
 };

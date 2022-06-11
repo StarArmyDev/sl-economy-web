@@ -5,6 +5,7 @@ export interface Message {
     components?: Component[];
     time: Date;
     user: User;
+    reply?: Reply;
 }
 
 export interface User {
@@ -51,6 +52,11 @@ export interface Field {
     inline?: boolean;
 }
 
+export interface Reply {
+    content: string;
+    user: User;
+}
+
 export type Component = SelectMenuComponent | ButtonComponent;
 
 export interface SelectMenuComponent {
@@ -71,8 +77,16 @@ export interface ButtonComponent {
     type: "Button";
     customId?: string;
     label: string;
-    style?: "PRIMARY" | "SECONDARY" | "SUCCESS" | "DANGER" | "LINK";
+    style: ButtonStyle;
     url?: string;
     emoji?: string;
     disabled?: boolean;
+}
+
+export enum ButtonStyle {
+    "Primary" = 1,
+    "Secondary" = 2,
+    "Success" = 3,
+    "Danger" = 4,
+    "Link" = 5
 }

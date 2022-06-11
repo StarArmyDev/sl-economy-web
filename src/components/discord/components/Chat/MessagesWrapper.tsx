@@ -1,30 +1,37 @@
-import { WelcomeChannelMessage, ScrollableArea, MemberCardPopup, MemberMessage, MemberMessageGroup } from "../";
+import { WelcomeChannelMessage, ScrollableArea, MemberMessage, MemberMessageGroup, ButtonCmp, SelectMenu, MessagesEmbed } from "../";
 import { User, Message, Component } from "../../interface";
 import { useLayoutEffect, useRef } from "react";
-import { MessagesEmbed } from "./MessageEmbed";
 import { Col, Row } from "react-bootstrap";
-import { SelectMenu } from "./SelectMenu";
 import styled from "styled-components";
 import { parseMarkdown } from "libs";
 
 const StyledMessagesWrapper = styled.div`
-    flex: 1 1 auto;
-    position: relative;
+    .containerDiscord {
+        flex-direction: column;
+    }
+
+    .children {
+        margin: 4px 8px 4px 0;
+        flex-wrap: wrap;
+        display: flex;
+    }
 `;
 
-const createMessageGroup = (groupId: string, member: User, time: Date, onMemberClick: Function, messages: JSX.Element[]) => (
-    <MemberMessageGroup key={groupId} member={member} time={time} onMemberClick={onMemberClick}>
+const createMessageGroup = (groupId: string, member: User, time: Date, messages: JSX.Element[]) => (
+    <MemberMessageGroup key={groupId} member={member} time={time}>
         {messages}
     </MemberMessageGroup>
 );
 const createComponents = (components: Component[]) => {
-    const componentsElements: JSX.Element[] = [];
+    const rowOneComponents: JSX.Element[] = [];
+    const rowTwoComponents: JSX.Element[] = [];
 
     for (const component of components) {
-        if (component.type === "SelectMenu") componentsElements.push(<SelectMenu data={component} />);
+        if (component.type === "SelectMenu") rowOneComponents.push(<SelectMenu data={component} />);
+        if (component.type === "Button") rowTwoComponents.push(<ButtonCmp data={component} />);
     }
 
-    return componentsElements;
+    return { rowOneComponents, rowTwoComponents };
 };
 
 export const MessagesWrapper = ({ channelName, messages, isWelcomeMessage }: { channelName: string; messages: Message[]; isWelcomeMessage?: boolean }) => {
@@ -33,17 +40,6 @@ export const MessagesWrapper = ({ channelName, messages, isWelcomeMessage }: { c
     useLayoutEffect(() => {
         (bottomElement.current as any).scrollIntoView({ behavior: "instant" });
     });
-
-    const handleMemberClick = (element: any, member: User) => {
-        const { target } = element;
-        const targetRect = target.getBoundingClientRect();
-
-        MemberCardPopup.show({
-            direction: "left",
-            position: { x: targetRect.left + targetRect.width + 10, y: targetRect.top },
-            member
-        });
-    };
 
     let lastUserId = "";
     const groupsComponents: JSX.Element[] = [];
@@ -56,14 +52,19 @@ export const MessagesWrapper = ({ channelName, messages, isWelcomeMessage }: { c
         const member = guildMembers.find((m) => m.id === userId);
 
         const currentGroupId = headingGroupMessage!.user.id || "";
-        groupsComponents.push(createMessageGroup(currentGroupId, member!, headingGroupMessage!.time, handleMemberClick, messagesComponents));
+        groupsComponents.push(createMessageGroup(currentGroupId, member!, headingGroupMessage!.time, messagesComponents));
         messagesComponents = [];
     };
 
     messages.forEach((message, index) => {
-        const comonentsElements: JSX.Element[] = [];
+        const rowOneComponents: JSX.Element[] = [];
+        const rowTwoComponents: JSX.Element[] = [];
 
-        if (message.components) comonentsElements.push(...createComponents(message.components));
+        if (message.components) {
+            const createCom = createComponents(message.components);
+            rowOneComponents.push(...createCom.rowOneComponents);
+            rowTwoComponents.push(...createCom.rowTwoComponents);
+        }
         if (message.user.id !== lastUserId && messagesComponents.length > 0) {
             closeMessageGroupAndClearMessages();
         }
@@ -72,7 +73,7 @@ export const MessagesWrapper = ({ channelName, messages, isWelcomeMessage }: { c
             headingGroupMessage = message;
         }
         messagesComponents.push(
-            <MemberMessage user={message.user} time={message.time} key={message.id} onMemberClick={handleMemberClick}>
+            <MemberMessage reply={message.reply} user={message.user} time={message.time} key={message.id}>
                 <Col>
                     <Row sm={12} className="ps-3">
                         {parseMarkdown(message.content || "")}
@@ -82,7 +83,10 @@ export const MessagesWrapper = ({ channelName, messages, isWelcomeMessage }: { c
                             <MessagesEmbed embeds={message.embeds} />
                         </Row>
                     )}
-                    {message.components && comonentsElements}
+                    <div className="containerDiscord">
+                        <div className="children">{rowOneComponents}</div>
+                        <div className="children">{rowTwoComponents}</div>
+                    </div>
                 </Col>
             </MemberMessage>
         );
