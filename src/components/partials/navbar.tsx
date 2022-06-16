@@ -1,4 +1,4 @@
-import { Navbar, Container, Nav, NavDropdown, Col, Row, Spinner } from "react-bootstrap";
+import { Navbar, Container, Nav, NavDropdown, Col, Row, Spinner, Image } from "react-bootstrap";
 import { UpdateGuildsGQL, useMutation, useQuery, UserGuildsGQL } from "../../graphql";
 import { CLIENT_ID } from "../../Constants";
 import { Fragment, useState } from "react";
@@ -36,7 +36,7 @@ export function NavBar(props: any) {
         <Navbar expand="lg" bg="dark" variant="dark">
             <Container>
                 <Navbar.Brand className="text-center" href="/">
-                    <img className="rounded" src={iconImg} alt="StarLight Economy Logo" style={{ width: "50%" }} />
+                    <Image className="rounded" src={iconImg} alt="StarLight Economy Logo" width="50%" />
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="navbarSupportedContent" />
                 <Navbar.Collapse id="navbarNav">

@@ -75,7 +75,7 @@ export const MessagesWrapper = ({ channelName, messages, isWelcomeMessage }: { c
         messagesComponents.push(
             <MemberMessage reply={message.reply} user={message.user} time={message.time} key={message.id}>
                 <Col>
-                    <Row sm={12} className="ps-3">
+                    <Row sm={12} className="ps-3 pt-2">
                         {parseMarkdown(message.content || "")}
                     </Row>
                     {message.embeds && (

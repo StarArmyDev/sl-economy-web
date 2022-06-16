@@ -1,8 +1,10 @@
 import { ButtonStyle, Chat, MemberCardPopup } from "./discord";
-import { Row, Container, Col } from "react-bootstrap";
+import { Row, Container, Col, Image } from "react-bootstrap";
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import splash from "../img/splash.png";
+import commandWork from "../img/command_work.png";
+import commandShop from "../img/command_shop.png";
 
 function useWindowSize(targetRef: React.RefObject<HTMLHeadingElement>) {
     const [size, setSize] = useState([0, 0]);
@@ -45,10 +47,15 @@ export function Main() {
                             </a>
                         </Col>
                     </Col>
+                    {/* Comando Help */}
                     <Col sm={12} className="py-3">
-                        <Row className="pt-4">
+                        <Row className="pt-4 align-items-center">
                             <Col sm={6}>
                                 <h4>Un bot de economía de la familia StarLight</h4>
+                                <p>
+                                    Listo para ayudarte a construir una economía completa de manera fácil y totalmente en español, desde el bot hasta su soporte
+                                    para todos los hispanohablantes.
+                                </p>
                             </Col>
                             <Col sm={4}>
                                 <MemberCardPopup
@@ -155,6 +162,40 @@ export function Main() {
                                         ]}
                                     />
                                 </div>
+                            </Col>
+                        </Row>
+                    </Col>
+                    {/* Comando Work */}
+                    <Col sm={12} className="pt-4">
+                        <Row className="align-items-center">
+                            <Col sm={7}>
+                                <h4>¿Cómo funciona?</h4>
+                                <p>
+                                    Con StarLight puedes crear una economía ficticia y propia para tu comunidad, usando comando como work, daily, trade, rob y
+                                    entre otros, pueden ganar y perder dinero. Todos estos comandos y más cosas se puede personalizar desde su ganancia, su taza
+                                    de éxito, la cantidad de dinero a perder y el tiempo de enfriamiento para volver a usar el comando.
+                                </p>
+                            </Col>
+                            <Col sm={5}>
+                                <Image src={commandWork} width="100%" height="100%" />
+                            </Col>
+                        </Row>
+                    </Col>
+                    {/* Tienda */}
+                    <Col sm={12} className="pt-4">
+                        <Row className="align-items-center">
+                            <Col sm={7}>
+                                <h4>Gasta el dinero</h4>
+                                <p>
+                                    Está bien el ganar dinero, acumularlo y estar en el Top uno pero... ¿Qué puedo hacer con él? Bueno, par eso los
+                                    administradores pueden crea una tienda y agregar artículos a lo que su imaginación dicte, con una gran posibilidad de usos
+                                    ya que tiene parámetros personalizables como el dar un rol, un nuevo canal de texto o voz o incluso otro item ¿Por qué no?.
+                                    También puedes limitar el uso o compra de estos artículos como el requerir un rol, otro artículo, que esté en la tienda por
+                                    tiempo limitado o una cantidad limitada, ideal para eventos temáticos.
+                                </p>
+                            </Col>
+                            <Col sm={5}>
+                                <Image src={commandShop} width="100%" height="100%" />
                             </Col>
                         </Row>
                     </Col>
