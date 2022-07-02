@@ -34,10 +34,10 @@ export const Profile: FC<{ user: IUserObjet }> = (props) => {
                             <Row className="align-items-center">
                                 <Col sm className="text-center" style={{ margin: "20px 0px 20px 0px" }}>
                                     <img
-                                        alt=""
+                                        alt="avatar"
                                         onError={(e: any) => {
                                             e.target.onerror = null;
-                                            e.target.src = defaulURl;
+                                            e.target.src = "https://cdn.discordapp.com/embed/avatars/3.png";
                                         }}
                                         className="img-fluid rounded"
                                         style={{ width: "25%" }}

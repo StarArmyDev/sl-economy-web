@@ -110,7 +110,12 @@ export function NavBar(props: any) {
                                             className="rounded"
                                             style={{ borderRadius: 1, margin: "0px 10px 0px 10px" }}
                                             src={`https://cdn.discordapp.com/avatars/${props.user._id}/${props.user.avatar}.png?size=32`}
-                                            alt="Profile_Icon"
+                                            alt="avatar"
+                                            onError={(e: any) => {
+                                                e.target.onerror = null;
+                                                e.target.src = "https://cdn.discordapp.com/embed/avatars/3.png";
+                                                e.target.style.width = "32px";
+                                            }}
                                         />
                                     ) : null}
                                     {props.user.username}

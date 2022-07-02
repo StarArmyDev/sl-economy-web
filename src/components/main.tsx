@@ -1,9 +1,11 @@
 import { ButtonStyle, Chat, MemberCardPopup } from "./discord";
-import { Row, Container, Col, Image } from "react-bootstrap";
+import { Row, Container, Col, Image, Card } from "react-bootstrap";
 import { useEffect, useRef, useState } from "react";
 import commandWork from "../img/command_work.png";
 import commandShop from "../img/command_shop.png";
-import { useLocation } from "react-router-dom";
+import commandLoot from "../img/command_loot.png";
+import commandTop from "../img/command_top.png";
+import { Link, useLocation } from "react-router-dom";
 import splash from "../img/splash.png";
 
 function useWindowSize(targetRef: React.RefObject<HTMLHeadingElement>) {
@@ -168,6 +170,9 @@ export function Main() {
                     {/* Comando Work */}
                     <Col sm={12} className="pt-4">
                         <Row className="align-items-center">
+                            <Col sm={5}>
+                                <Image src={commandWork} width="100%" height="100%" />
+                            </Col>
                             <Col sm={7}>
                                 <h4>¿Cómo funciona?</h4>
                                 <p>
@@ -175,9 +180,6 @@ export function Main() {
                                     entre otros, pueden ganar y perder dinero. Todos estos comandos y más cosas se puede personalizar desde su ganancia, su taza
                                     de éxito, la cantidad de dinero a perder y el tiempo de enfriamiento para volver a usar el comando.
                                 </p>
-                            </Col>
-                            <Col sm={5}>
-                                <Image src={commandWork} width="100%" height="100%" />
                             </Col>
                         </Row>
                     </Col>
@@ -196,6 +198,106 @@ export function Main() {
                             </Col>
                             <Col sm={5}>
                                 <Image src={commandShop} width="100%" height="100%" />
+                            </Col>
+                        </Row>
+                    </Col>
+                    {/* Loot */}
+                    <Col sm={12} className="pt-4">
+                        <Row className="align-items-center">
+                            <Col sm={5}>
+                                <Image src={commandLoot} width="100%" height="100%" />
+                            </Col>
+                            <Col sm={7}>
+                                <h4>Items Looteables</h4>
+                                <p>
+                                    Al crear algunos items denominados "basura" creas items que pueden ser obtenidos aleatoriamente con el comando Loot. Estos
+                                    pueden ser vendidos por el usuario o usados, dependerá de ti.
+                                </p>
+                            </Col>
+                        </Row>
+                    </Col>
+                    {/* Top */}
+                    <Col sm={12} className="pt-4">
+                        <Row className="align-items-center">
+                            <Col sm={7}>
+                                <h4>Rankings</h4>
+                                <p>
+                                    Tanto con el comando Top como en esta página, puedes ver el ranking de los usuarios con el dinero que ganan, estando en el
+                                    podio los que mayor dinero tienen entre sus bolsillos y en su banco. ¡No dejes que te quiten tu puesto!
+                                </p>
+                            </Col>
+                            <Col sm={5}>
+                                <Image src={commandTop} width="100%" height="100%" />
+                            </Col>
+                        </Row>
+                    </Col>
+                    {/* Más */}
+                    <Col sm={12} className="pt-5">
+                        <h4>Y mucho más</h4>
+                        <Row className="align-items-center">
+                            <Col sm>
+                                <Card>
+                                    <Card.Header>
+                                        <Card.Title>
+                                            <h5>100% En Español</h5>
+                                        </Card.Title>
+                                    </Card.Header>
+                                    <Card.Body>
+                                        <Card.Text>
+                                            No te ha pasado que usar una aplicación de origen extranjero y no viene en español o viene pero te tomas con algunos
+                                            textos en inglés a pesar de estar "en español"? No te preocupes, StarLight está pensada por y para hispanohablantes.
+                                            <br />
+                                            <br />
+                                            <br />
+                                            Es más probable que, configurando el bot en inglés, te encuentres con fracmentos de texto en español. (Se voltearon
+                                            los papeles EU).
+                                        </Card.Text>
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                            <Col sm>
+                                <Card>
+                                    <Card.Header>
+                                        <Card.Title>
+                                            <h5>Comunidad</h5>
+                                        </Card.Title>
+                                    </Card.Header>
+                                    <Card.Body>
+                                        <Card.Text>
+                                            En nuestro servidor puedes interactuar directamente con el creador, dar comentarios para mejorar, un soporte
+                                            directo, novedades sobre el futuro, sorteos, dinámicas y mucho más!
+                                            <br />
+                                            También puedes encontrar y crear contenido para apoyar al bot, como videos, guías, arte y demás. Sólo asegurate de
+                                            seguir los términos y condiciones que los encuentras mas abajo.
+                                            <br />
+                                            <br />
+                                            <Link to="/about">Averiguar más</Link>
+                                        </Card.Text>
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                            <Col sm>
+                                <Card>
+                                    <Card.Header>
+                                        <Card.Title>
+                                            <h5>Enfoque</h5>
+                                        </Card.Title>
+                                    </Card.Header>
+                                    <Card.Body>
+                                        <Card.Text>
+                                            Puede que comparado con otros bots de la competencia, parezca algo escaso de funciones. Pero es principalmente
+                                            porque el enfoque del bot es pura y exclusivamente la economía, si necesitas comando de moderación, de utilidad,
+                                            bienvenidas y despedias, puedes usar a{" "}
+                                            <a href="https://top.gg/bot/517786947171909643" target="__blank">
+                                                StarLight
+                                            </a>{" "}
+                                            normal con esas y más funciones.
+                                            <br />
+                                            Pero no te preocupes, se tiene pensado agregar más funciones en el futuro, como juegos o más comandos para obtener,
+                                            gastar y administrar tu dinero.
+                                        </Card.Text>
+                                    </Card.Body>
+                                </Card>
                             </Col>
                         </Row>
                     </Col>
