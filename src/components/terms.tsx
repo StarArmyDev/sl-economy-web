@@ -5,7 +5,7 @@ export function Terms() {
     const ButtonMailto = ({ mailto, label }: { mailto: string; label: string }) => {
         return (
             <Link
-                to="#"
+                to=""
                 onClick={(e) => {
                     window.location.href = mailto;
                     e.preventDefault();

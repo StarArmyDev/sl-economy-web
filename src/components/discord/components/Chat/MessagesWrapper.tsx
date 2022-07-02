@@ -37,9 +37,9 @@ const createComponents = (components: Component[]) => {
 export const MessagesWrapper = ({ channelName, messages, isWelcomeMessage }: { channelName: string; messages: Message[]; isWelcomeMessage?: boolean }) => {
     const bottomElement = useRef(null);
 
-    useLayoutEffect(() => {
-        (bottomElement.current as any).scrollIntoView({ behavior: "instant" });
-    });
+    /* useLayoutEffect(() => {
+        (bottomElement.current as any).scrollIntoView({ behavior: "instant" }); // Hace que el scroll se mueva
+    }); */
 
     let lastUserId = "";
     const groupsComponents: JSX.Element[] = [];

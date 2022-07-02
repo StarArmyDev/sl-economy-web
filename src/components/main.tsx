@@ -1,10 +1,10 @@
 import { ButtonStyle, Chat, MemberCardPopup } from "./discord";
 import { Row, Container, Col, Image } from "react-bootstrap";
 import { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
-import splash from "../img/splash.png";
 import commandWork from "../img/command_work.png";
 import commandShop from "../img/command_shop.png";
+import { useLocation } from "react-router-dom";
+import splash from "../img/splash.png";
 
 function useWindowSize(targetRef: React.RefObject<HTMLHeadingElement>) {
     const [size, setSize] = useState([0, 0]);
