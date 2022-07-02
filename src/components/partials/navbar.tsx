@@ -44,7 +44,7 @@ export function NavBar(props: any) {
                         <Nav.Link href="/invite">Invitar</Nav.Link>
                         <Nav.Link href="/commands">Comandos</Nav.Link>
                         <Nav.Link href="/about">Acerca De</Nav.Link>
-                        <Nav.Link href="https://stats.uptimerobot.com/yX0r2hN910">Status</Nav.Link>
+                        <Nav.Link href="/status">Status</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
                 <Navbar.Collapse className="justify-content-end" id="navbarNav">

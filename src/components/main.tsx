@@ -1,12 +1,21 @@
-import { ButtonStyle, Chat, MemberCardPopup } from "./discord";
 import { Row, Container, Col, Image, Card } from "react-bootstrap";
+import { ButtonStyle, Chat, MemberCardPopup } from "./discord";
+import { Link, useLocation } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import commandWork from "../img/command_work.png";
 import commandShop from "../img/command_shop.png";
 import commandLoot from "../img/command_loot.png";
 import commandTop from "../img/command_top.png";
-import { Link, useLocation } from "react-router-dom";
 import splash from "../img/splash.png";
+import { getMonitors } from "libs";
+
+const status: { [k: number]: { text: string; color: string } } = {
+    0: { text: "Monitor Pausado", color: "gray" },
+    1: { text: "No Comprobado Todavía", color: "warning" },
+    2: { text: "En Linea", color: "success" },
+    8: { text: "Desconocido", color: "black" },
+    9: { text: "Desactivado", color: "danger" }
+};
 
 function useWindowSize(targetRef: React.RefObject<HTMLHeadingElement>) {
     const [size, setSize] = useState([0, 0]);
@@ -25,7 +34,17 @@ function useWindowSize(targetRef: React.RefObject<HTMLHeadingElement>) {
 
 export function Main() {
     const targetRef = useRef<HTMLHeadingElement>(null);
+    const [monitor, setMonitor] = useState(null);
     const [width] = useWindowSize(targetRef);
+
+    useEffect(() => {
+        if (!monitor)
+            getMonitors()
+                .then((monitors) => {
+                    setMonitor((monitors.data.monitors as any[]).find((m) => m.id === 789361399));
+                })
+                .catch((err) => null);
+    });
 
     const search = useLocation().search;
     const guild_id = new URLSearchParams(search).get("guild_id");
@@ -43,11 +62,21 @@ export function Main() {
                     </Col>
                     <Col sm={12} className="py-3">
                         <h1 className="text-center">Bienvenido</h1>
-                        <Col sm={1} md={2}>
-                            <a href="https://top.gg/bot/696723299459268728" target="_blank" rel="noopener noreferrer">
-                                <img src="https://top.gg/api/widget/status/696723299459268728.svg?noavatar=true" alt="StarLight" />
-                            </a>
-                        </Col>
+                        <Row className="pt-4 align-items-center">
+                            {/* Estado */}
+                            {monitor && (
+                                <Col sm={2}>
+                                    <Card>Estado</Card>
+                                    <Card bg={status[(monitor as any)?.status].color}>{status[(monitor as any)?.status].text}</Card>
+                                </Col>
+                            )}
+                            {/* TopGG */}
+                            <Col sm className="text-end">
+                                <a href="https://top.gg/bot/696723299459268728">
+                                    <img src="https://top.gg/api/widget/servers/696723299459268728.svg" alt="StarLight" />
+                                </a>
+                            </Col>
+                        </Row>
                     </Col>
                     {/* Comando Help */}
                     <Col sm={12} className="py-3">

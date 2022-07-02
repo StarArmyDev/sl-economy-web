@@ -13,7 +13,8 @@ import {
     Support,
     Privacy,
     Terms,
-    Developer
+    Developer,
+    Status
 } from "./components";
 import { getGuildsUser, getUserDetails, useLocalStorage } from "./libs";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -60,6 +61,7 @@ const App = () => {
                     <Route path="invite" element={<Invite />} />
                     <Route path="commands" element={<Commands />} />
                     <Route path="error403" element={<Error403 />} />
+                    <Route path="status" element={<Status />} />
                     <Route path="support" element={<Support />} />
                     {!load ? (
                         <>
