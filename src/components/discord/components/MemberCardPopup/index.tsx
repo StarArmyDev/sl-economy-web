@@ -1,7 +1,7 @@
 import { MemberCardPopupWrapper } from ".";
 import { User } from "../../interface";
 import styled from "styled-components";
-import React from "react";
+import { Component } from "react";
 
 const StyledMemberCardPopup = styled.div`
     position: absolute;
@@ -9,7 +9,7 @@ const StyledMemberCardPopup = styled.div`
     left: 0;
 `;
 
-export class MemberCardPopup extends React.Component {
+export class MemberCardPopup extends Component {
     state = { isPopupVisible: false } as { isPopupVisible: boolean; direction: string; position: { x: number; y: number }; member: User };
 
     static instance: { showPopup: (arg0: { direction: string; position: { x: number; y: number }; member: User }) => void };

@@ -1,8 +1,8 @@
 import { Navbar, Container, Nav, NavDropdown, Col, Row, Spinner, Image } from "react-bootstrap";
 import { UpdateGuildsGQL, useMutation, useQuery, UserGuildsGQL } from "../../graphql";
-import { CLIENT_ID } from "../../Constants";
-import { Fragment, useState } from "react";
-import iconImg from "../../img/icon.png";
+import { CLIENT_ID } from "Constants";
+import iconImg from "img/icon.png";
+import { useState } from "react";
 
 export function NavBar(props: any) {
     const { loading, data, error, refetch } = useQuery(UserGuildsGQL, { variables: { id: props.user ? props.user._id! : "0" } });
@@ -52,7 +52,7 @@ export function NavBar(props: any) {
                         {props.loading ? (
                             <Spinner animation="border" variant="warning" role="status" />
                         ) : props && props.user ? (
-                            <Fragment>
+                            <>
                                 {props.loading ? (
                                     <Container className="justify-content-center">
                                         <Spinner animation="border" variant="warning" />{" "}
@@ -64,14 +64,16 @@ export function NavBar(props: any) {
                                                 <span className="sr-only">Cargando...</span>
                                             </Spinner>
                                         ) : (
-                                            <Fragment>
+                                            <div style={{ minWidth: 225 }}>
                                                 {guilds.adminMutual.map((servidor: any) => (
                                                     <NavDropdown.Item key={`NI${servidor.id}`} href={`/dashboard/${servidor.id}`}>
                                                         <Row>
-                                                            <Col lg="1" className="material-icons">
+                                                            <Col lg="1" className="material-icons pe-3">
                                                                 settings
                                                             </Col>
-                                                            <Col lg="10">{servidor.name}</Col>
+                                                            <Col lg="10" className="text-wrap">
+                                                                {servidor.name}
+                                                            </Col>
                                                         </Row>
                                                     </NavDropdown.Item>
                                                 ))}
@@ -84,10 +86,12 @@ export function NavBar(props: any) {
                                                         }&redirect_uri=${process.env.REACT_APP_REDIRECT_URL?.replace(/\//gi, "%2F").replace(/:/gi, "%3A")}`}
                                                     >
                                                         <Row>
-                                                            <Col lg="1" className="material-icons">
+                                                            <Col lg="1" className="material-icons pe-3">
                                                                 add
                                                             </Col>
-                                                            <Col lg="10">{servidor.name}</Col>
+                                                            <Col lg="10" className="text-wrap">
+                                                                {servidor.name}
+                                                            </Col>
                                                         </Row>
                                                     </NavDropdown.Item>
                                                 ))}
@@ -100,7 +104,7 @@ export function NavBar(props: any) {
                                                         <Col lg="10">Refrescar</Col>
                                                     </Row>
                                                 </NavDropdown.Item>
-                                            </Fragment>
+                                            </div>
                                         )}
                                     </NavDropdown>
                                 ) : null}
@@ -121,9 +125,9 @@ export function NavBar(props: any) {
                                     {props.user.username}
                                 </Nav.Link>
                                 <Nav.Link href="/logout">Cerrar Sesión</Nav.Link>
-                            </Fragment>
+                            </>
                         ) : (
-                            <Fragment>
+                            <>
                                 <Nav.Link
                                     onClick={() => {
                                         if (windowReference == null || windowReference.closed) {
@@ -155,7 +159,7 @@ export function NavBar(props: any) {
                                 >
                                     Inciar Sesión
                                 </Nav.Link>
-                            </Fragment>
+                            </>
                         )}
                     </Nav>
                 </Navbar.Collapse>

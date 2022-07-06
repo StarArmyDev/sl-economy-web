@@ -2,11 +2,11 @@ import { Row, Container, Col, Image, Card } from "react-bootstrap";
 import { ButtonStyle, Chat, MemberCardPopup } from "./discord";
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import commandWork from "../img/command_work.png";
-import commandShop from "../img/command_shop.png";
-import commandLoot from "../img/command_loot.png";
-import commandTop from "../img/command_top.png";
-import splash from "../img/splash.png";
+import commandWork from "img/command_work.png";
+import commandShop from "img/command_shop.png";
+import commandLoot from "img/command_loot.png";
+import commandTop from "img/command_top.png";
+import splash from "img/splash.png";
 import { getMonitors } from "libs";
 
 const status: { [k: number]: { text: string; color: string } } = {

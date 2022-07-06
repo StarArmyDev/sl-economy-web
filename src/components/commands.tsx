@@ -1,9 +1,9 @@
+import { Category, OptionType, SubCommandData, SubGroupData, NumericOptionData, CommandOptionData, ChoicesData } from "types/Command";
 import { Accordion, Card, Col, Container, Nav, Row, Tab } from "react-bootstrap";
-import { Category, OptionType, SubCommandData, SubGroupData, NumericOptionData, CommandOptionData, ChoicesData } from "../types/Command";
+import { ConvertString, FirstCapitalLetter } from "libs";
 import Snackbar from "@mui/material/Snackbar";
 import { Alert } from "./partials";
 import { useState } from "react";
-import { ConvertString, FirstCapitalLetter } from "../libs";
 
 export function Commands() {
     const CommandsArray: Category[] = [

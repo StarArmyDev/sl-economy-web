@@ -1,7 +1,7 @@
 import { Container, Row, Col, Card } from "react-bootstrap";
+import { CircularProgress } from "@mui/material";
 import { useState, useEffect } from "react";
 import { getMonitors } from "libs";
-import { CircularProgress } from "@mui/material";
 
 const status: { [k: number]: { text: string; color: string } } = {
     0: { text: "Monitor Pausado", color: "gray" },

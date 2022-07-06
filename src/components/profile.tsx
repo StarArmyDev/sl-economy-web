@@ -1,8 +1,8 @@
 import { Row, Container, Button, Col, ListGroup, Accordion, Spinner, Card } from "react-bootstrap";
 import { ProfilesUserGQL, useQuery } from "../graphql";
 // import { useParams } from "react-router-dom";
-import { IUserObjet } from "../interfaces";
-import { ConvertString } from "../libs";
+import { IUserObjet } from "interfaces";
+import { ConvertString } from "libs";
 import { FC } from "react";
 
 export const Profile: FC<{ user: IUserObjet }> = (props) => {

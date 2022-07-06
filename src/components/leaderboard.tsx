@@ -1,9 +1,9 @@
-import { Fragment, useState, FC } from "react";
 import { Spinner, Container, ListGroup, Col, Row, Badge, Button, Card } from "react-bootstrap";
 import { GuildGQL, ProfileGQL, useQuery } from "../graphql";
+import { Fragment, useState, FC } from "react";
 import { useParams } from "react-router-dom";
-import { IUserObjet } from "../interfaces";
-import { ConvertString } from "../libs";
+import { IUserObjet } from "interfaces";
+import { ConvertString } from "libs";
 
 export const LeaderBoard: FC<{ user: IUserObjet }> = (props) => {
     const { id } = useParams();
@@ -46,7 +46,7 @@ export const LeaderBoard: FC<{ user: IUserObjet }> = (props) => {
                     </Col>
                     <Col md={12} className="pt-4">
                         <Button
-                            onClick={(e) => {
+                            onClick={(e: any) => {
                                 e.preventDefault();
                                 // Regresar a la página anterior
                                 window.history.back();

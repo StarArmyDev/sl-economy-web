@@ -1,12 +1,12 @@
 import { Container, Spinner, Alert, Col, Row, Tab, Nav, Button, Card, Form, InputGroup, Modal } from "react-bootstrap";
+import { ChannelsGuildGQL, ServerGQL, UpdateServerGQL, useMutation, useQuery } from "../graphql";
 import React, { useEffect, useState, FC } from "react";
+import { ConvertString, ConvertorTime } from "libs";
+import { ISistemas, IUserObjet } from "interfaces";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { BOT_MANAGER } from "Constants";
 import ms from "ms";
-import { ChannelsGuildGQL, ServerGQL, UpdateServerGQL, useMutation, useQuery } from "../graphql";
-import { ISistemas, IUserObjet } from "../interfaces";
-import { ConvertString, ConvertorTime } from "../libs";
-import { BOT_MANAGER } from "../Constants";
 
 interface IAlert {
     show: boolean;

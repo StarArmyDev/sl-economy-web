@@ -1,6 +1,6 @@
 import styled from "styled-components";
+import { Component } from "react";
 import { Tooltip } from ".";
-import React from "react";
 
 const StyledTooltipsContainer = styled.div`
     position: absolute;
@@ -28,7 +28,7 @@ const StyledTooltipWrapper = styled.div`
     }
 `;
 
-export class TooltipsContainer extends React.Component {
+export class TooltipsContainer extends Component {
     state = { isVisible: false } as { isVisible: boolean; content: string; direction: string; position: { x: number; y: number } };
 
     static instance: { showTooltip: (arg0: { content: string; direction: string; position: { x: number; y: number } }) => any; hideTooltip: () => any };
