@@ -1,28 +1,34 @@
 import { Navbar, Container, Nav, NavDropdown, Col, Row, Spinner, Image } from "react-bootstrap";
 import { UpdateGuildsGQL, useMutation, useQuery, UserGuildsGQL } from "../../graphql";
+import { IUserObjet } from "interfaces";
 import { CLIENT_ID } from "Constants";
 import iconImg from "img/icon.png";
 import { useState } from "react";
 
-export function NavBar(props: any) {
-    const { loading, data, error, refetch } = useQuery(UserGuildsGQL, { variables: { id: props.user ? props.user._id! : "0" } });
+export function NavBar({ user }: { user: IUserObjet | null }) {
+    const { loading, data, error, refetch } = useQuery(UserGuildsGQL, { variables: { id: user?._id || "0" } });
     const [updateUserGuilds] = useMutation(UpdateGuildsGQL);
     const [guilds, setGuilds] = useState({ admin: [], adminMutual: [], mutual: [] });
     const [changes, setChanges] = useState(true);
+    const [load, setLoading] = useState(false);
     let windowReference: Window | null;
 
     async function reloaderGuilds() {
-        setGuilds(
-            (
-                await updateUserGuilds({
-                    variables: {
-                        id: props.user ? props.user._id! : "0"
-                    }
-                })
-            ).data.updateGuilds
-        );
-        await refetch();
-        setChanges(true);
+        if (!load) {
+            setLoading(true);
+            setGuilds(
+                (
+                    await updateUserGuilds({
+                        variables: {
+                            id: user?._id || "0"
+                        }
+                    })
+                ).data.updateGuilds
+            );
+            await refetch();
+            setChanges(true);
+            setLoading(false);
+        }
     }
 
     function loader(datos: any) {
@@ -40,7 +46,7 @@ export function NavBar(props: any) {
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="navbarSupportedContent" />
                 <Navbar.Collapse id="navbarNav">
-                    <Nav>
+                    <Nav fill>
                         <Nav.Link href="/invite">Invitar</Nav.Link>
                         <Nav.Link href="/commands">Comandos</Nav.Link>
                         <Nav.Link href="/about">Acerca De</Nav.Link>
@@ -48,72 +54,66 @@ export function NavBar(props: any) {
                     </Nav>
                 </Navbar.Collapse>
                 <Navbar.Collapse className="justify-content-end" id="navbarNav">
-                    <Nav>
-                        {props.loading ? (
-                            <Spinner animation="border" variant="warning" role="status" />
-                        ) : props && props.user ? (
+                    <Nav fill>
+                        {user ? (
                             <>
-                                {props.loading ? (
-                                    <Container className="justify-content-center">
-                                        <Spinner animation="border" variant="warning" />{" "}
-                                    </Container>
-                                ) : props && props.user && props.user.guilds && props.user.guilds.length > 0 ? (
+                                {loading || load ? (
+                                    <div className="pe-4 pt-2">
+                                        <Spinner animation="border" variant="warning" role="status" />
+                                    </div>
+                                ) : guilds.adminMutual.length > 0 || guilds.admin.length > 0 ? (
                                     <NavDropdown title="Dashboard" id="dropdown-guilds">
-                                        {loading ? (
-                                            <Spinner animation="border" variant="warning" role="status">
-                                                <span className="sr-only">Cargando...</span>
-                                            </Spinner>
-                                        ) : (
-                                            <div style={{ minWidth: 225 }}>
-                                                {guilds.adminMutual.map((servidor: any) => (
-                                                    <NavDropdown.Item key={`NI${servidor.id}`} href={`/dashboard/${servidor.id}`}>
-                                                        <Row>
-                                                            <Col lg="1" className="material-icons pe-3">
-                                                                settings
-                                                            </Col>
-                                                            <Col lg="10" className="text-wrap">
-                                                                {servidor.name}
-                                                            </Col>
-                                                        </Row>
-                                                    </NavDropdown.Item>
-                                                ))}
-                                                {guilds.admin.length > 0 ? <NavDropdown.Divider /> : null}
-                                                {guilds.admin.map((servidor: any) => (
-                                                    <NavDropdown.Item
-                                                        key={`NI${servidor.id}`}
-                                                        href={`https://discord.com/oauth2/authorize?client_id=${CLIENT_ID}&permissions=268437520&scope=bot&response_type=code&guild_id=${
-                                                            servidor.id
-                                                        }&redirect_uri=${process.env.REACT_APP_REDIRECT_URL?.replace(/\//gi, "%2F").replace(/:/gi, "%3A")}`}
-                                                    >
-                                                        <Row>
-                                                            <Col lg="1" className="material-icons pe-3">
-                                                                add
-                                                            </Col>
-                                                            <Col lg="10" className="text-wrap">
-                                                                {servidor.name}
-                                                            </Col>
-                                                        </Row>
-                                                    </NavDropdown.Item>
-                                                ))}
-                                                <NavDropdown.Divider />
-                                                <NavDropdown.Item key="reloader" onClick={reloaderGuilds}>
+                                        <div style={{ minWidth: 240 }}>
+                                            {guilds.adminMutual.map((servidor: any) => (
+                                                <NavDropdown.Item key={`NI${servidor.id}`} href={`/dashboard/${servidor.id}`}>
                                                     <Row>
-                                                        <Col lg="1" className="material-icons">
-                                                            refresh
+                                                        <Col xs="1" className="material-icons pe-3">
+                                                            settings
                                                         </Col>
-                                                        <Col lg="10">Refrescar</Col>
+                                                        <Col xs="10" className="text-wrap">
+                                                            {servidor.name}
+                                                        </Col>
                                                     </Row>
                                                 </NavDropdown.Item>
-                                            </div>
-                                        )}
+                                            ))}
+                                            {guilds.admin.length > 0 ? <NavDropdown.Divider /> : null}
+                                            {guilds.admin.map((servidor: any) => (
+                                                <NavDropdown.Item
+                                                    key={`NI${servidor.id}`}
+                                                    href={`https://discord.com/oauth2/authorize?client_id=${CLIENT_ID}&permissions=268437520&scope=bot&response_type=code&guild_id=${
+                                                        servidor.id
+                                                    }&redirect_uri=${process.env.REACT_APP_REDIRECT_URL?.replace(/\//gi, "%2F").replace(/:/gi, "%3A")}`}
+                                                >
+                                                    <Row>
+                                                        <Col xs="1" className="material-icons pe-3">
+                                                            add
+                                                        </Col>
+                                                        <Col xs="10" className="text-wrap">
+                                                            {servidor.name}
+                                                        </Col>
+                                                    </Row>
+                                                </NavDropdown.Item>
+                                            ))}
+                                            <NavDropdown.Divider />
+                                            <NavDropdown.Item key="reloader" onClick={reloaderGuilds}>
+                                                <Row>
+                                                    <Col xs="1" className="material-icons pe-3">
+                                                        refresh
+                                                    </Col>
+                                                    <Col xs="10" className="text-wrap">
+                                                        Refrescar
+                                                    </Col>
+                                                </Row>
+                                            </NavDropdown.Item>
+                                        </div>
                                     </NavDropdown>
                                 ) : null}
                                 <Nav.Link href="/profile">
-                                    {props && props.user ? (
+                                    {user ? (
                                         <img
                                             className="rounded"
                                             style={{ borderRadius: 1, margin: "0px 10px 0px 10px" }}
-                                            src={`https://cdn.discordapp.com/avatars/${props.user._id}/${props.user.avatar}.png?size=32`}
+                                            src={`https://cdn.discordapp.com/avatars/${user._id}/${user.avatar}.png?size=32`}
                                             alt="avatar"
                                             onError={(e: any) => {
                                                 e.target.onerror = null;
@@ -122,7 +122,7 @@ export function NavBar(props: any) {
                                             }}
                                         />
                                     ) : null}
-                                    {props.user.username}
+                                    {user.username}
                                 </Nav.Link>
                                 <Nav.Link href="/logout">Cerrar Sesión</Nav.Link>
                             </>

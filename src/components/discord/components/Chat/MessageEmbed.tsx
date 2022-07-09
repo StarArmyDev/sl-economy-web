@@ -195,8 +195,12 @@ const StyledMessagesEmbed = styled.div`
 
 const createMessageEmbed = (embed: Embed) => (
     <>
-        <Container className="embed embedFull embedWrapper container" style={{ borderColor: embed.color }}>
-            <Container className="grid">
+        <Container
+            className="embed embedFull embedWrapper container"
+            style={{ borderColor: embed.color }}
+            key={embed.title?.substring(0, 5) || embed.author?.name?.substring(0, 5)}
+        >
+            <Container className="grid" key={embed.title?.substring(0, 5) || embed.author?.name?.substring(0, 5)}>
                 <Col className="embedAuthor embedMargin">
                     {embed.author?.iconUrl && <img className="embedAuthorIcon" src={embed.author.iconUrl} alt={embed.author?.name} />}
                     {embed.author?.name && <span className="embedAuthorName">{embed.author.name}</span>}
@@ -214,7 +218,7 @@ const createMessageEmbed = (embed: Embed) => (
                 <Row className="embedFields embedMargin">
                     {embed.fields?.map((field, index) => (
                         <Col
-                            key={index}
+                            key={`f_${index}`}
                             className="embedField"
                             style={
                                 field.inline

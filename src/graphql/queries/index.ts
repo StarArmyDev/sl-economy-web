@@ -4,7 +4,7 @@ export const ServerGQL = gql`
     query Server($id: String!) {
         getServer(id: $id) {
             _id
-            colorname
+            colorMain
             language {
                 server
                 channels {
@@ -12,8 +12,30 @@ export const ServerGQL = gql`
                     lang
                 }
             }
-            pago {
-                mensajes {
+            currency {
+                name
+                id
+            }
+            buy {
+                category
+            }
+            images {
+                records
+                flipcoin {
+                    face
+                    stamp
+                }
+                dice {
+                    _1
+                    _2
+                    _3
+                    _4
+                    _5
+                    _6
+                }
+            }
+            payment {
+                messages {
                     min
                     max
                 }
@@ -43,23 +65,18 @@ export const ServerGQL = gql`
                     max
                 }
             }
-            multa {
+            fineAmount {
                 rob {
                     min
                     max
                     fail
                 }
-                tarde {
+                trade {
                     min
                     max
                     fail
                 }
                 crime {
-                    min
-                    max
-                    fail
-                }
-                trade {
                     min
                     max
                     fail
@@ -88,18 +105,14 @@ export const ServerGQL = gql`
                 dice
                 flipcoin
                 loot
-                mensajes
+                messages
                 rob
                 roulette
                 slotmachine
                 trade
                 work
             }
-            moneda {
-                name
-                id
-            }
-            chatExcluido
+            excludedChannels
         }
     }
 `;
@@ -110,10 +123,13 @@ export const ProfileGQL = gql`
             _id
             dinero
             banco
+            locked
             user {
                 _id
-                username
                 avatar
+                username
+                discriminator
+                flags
             }
         }
     }
@@ -125,6 +141,9 @@ export const ProfilesUserGQL = gql`
             _id
             dinero
             banco
+            avatar
+            username
+            discriminator
         }
     }
 `;

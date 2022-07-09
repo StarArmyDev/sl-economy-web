@@ -27,8 +27,8 @@ const createComponents = (components: Component[]) => {
     const rowTwoComponents: JSX.Element[] = [];
 
     for (const component of components) {
-        if (component.type === "SelectMenu") rowOneComponents.push(<SelectMenu data={component} />);
-        if (component.type === "Button") rowTwoComponents.push(<ButtonCmp data={component} />);
+        if (component.type === "SelectMenu") rowOneComponents.push(<SelectMenu data={component} key={component.placeholder} />);
+        if (component.type === "Button") rowTwoComponents.push(<ButtonCmp data={component} key={component.label} />);
     }
 
     return { rowOneComponents, rowTwoComponents };

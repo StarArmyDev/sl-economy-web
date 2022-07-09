@@ -1,86 +1,57 @@
-import {
-    Layout,
-    About,
-    Commands,
-    Dashboard,
-    Error403,
-    Error404,
-    Invite,
-    LeaderBoard,
-    Logout,
-    Main,
-    Profile,
-    Support,
-    Privacy,
-    Terms,
-    Developer,
-    Status
-} from "./components";
-import { getGuildsUser, getUserDetails, useLocalStorage } from "./libs";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Container, Spinner } from "react-bootstrap";
 import { useEffect, useState } from "react";
+import * as Components from "components";
+import { IUserObjet } from "interfaces";
+import { getUserDetails } from "libs";
 
 //=========[ Main App
 const App = () => {
-    const [load, setLoading] = useState(true);
-    const [user, setUser, removeLoading] = useLocalStorage("user", null);
+    const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState(null as IUserObjet | null);
 
     async function init() {
-        if (!user) {
-            await getUserDetails()
-                .then(({ data }) => setUser(data))
-                .catch(() => null);
-            setLoading(false);
-        } else setLoading(false);
-    }
-
-    async function reloaderGuilds() {
-        return await getGuildsUser()
+        await getUserDetails()
             .then(({ data }) => {
-                removeLoading("user");
-                setUser({ ...data, timestamp: user.timestamp, guildsTimestamp: Date.now() });
+                if (!data.error && loading) setUser(data);
+                setLoading(false);
             })
-            .catch(() => null);
+            .catch(() => setLoading(false));
     }
 
     useEffect(() => {
-        if (user && user.timestamp && user.timestamp + 36e5 <= Date.now()) removeLoading("user");
-
-        if (user?.guildsTimestamp && user.guildsTimestamp + 6e5 <= Date.now()) reloaderGuilds();
-
         init();
     });
 
-    return !load ? (
+    return !loading ? (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Layout user={user} load={load} reloaderGuilds={reloaderGuilds} />}>
-                    <Route index element={<Main />} />
-                    <Route path="about" element={<About />} />
-                    <Route path="invite" element={<Invite />} />
-                    <Route path="commands" element={<Commands />} />
-                    <Route path="error403" element={<Error403 />} />
-                    <Route path="status" element={<Status />} />
-                    <Route path="support" element={<Support />} />
-                    {!load ? (
+                <Route path="/" element={<Components.Layout user={user} />}>
+                    <Route index element={<Components.Main />} />
+                    <Route path="about" element={<Components.About />} />
+                    <Route path="invite" element={<Components.Invite />} />
+                    <Route path="commands" element={<Components.Commands />} />
+                    <Route path="status" element={<Components.Status />} />
+                    <Route path="support" element={<Components.Support />} />
+                    <Route path="privacy" element={<Components.Privacy />} />
+                    <Route path="terms" element={<Components.Terms />} />
+                    <Route path="developer" element={<Components.Developer />} />
+                    <Route path="error403" element={<Components.Error403 />} />
+                    <Route path="error404" element={<Components.Error404 />} />
+                    <Route path="*" element={<Components.Error404 />} />
+                    {user && (
                         <>
-                            <Route path="profile" element={<Profile user={user} />} />
-                            <Route path="dashboard/:id" element={<Dashboard user={user} />} />
-                            <Route path="leaderboard/:id" element={<LeaderBoard user={user} />} />
-                            <Route path="error404" element={<Error404 />} />
+                            <Route path="profile" element={<Components.Profile user={user} />} />
+                            <Route path="dashboard/:id" element={<Components.Dashboard user={user} />} />
+                            <Route path="leaderboard/:id" element={<Components.LeaderBoard user={user} />} />
+                            <Route path="logout" element={<Components.Logout />} />
                         </>
-                    ) : (
-                        <Route path="logout" element={<Logout />} />
                     )}
-                    <Route path="privacy" element={<Privacy />} />
-                    <Route path="terms" element={<Terms />} />
-                    <Route path="developer" element={<Developer />} />
                 </Route>
             </Routes>
         </BrowserRouter>
     ) : (
-        <Container className="container-fluid text-center align-middle">
+        <Container className="container-fluid text-center align-middle align-items-center my-5">
             <Spinner animation="border" variant="warning" role="status" />
         </Container>
     );

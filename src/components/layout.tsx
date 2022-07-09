@@ -1,10 +1,11 @@
 import { Outlet } from "react-router-dom";
+import { IUserObjet } from "interfaces";
 import { NavBar, Footer } from ".";
 
-export const Layout = ({ user, load, reloaderGuilds }: { user: any; load: boolean; reloaderGuilds: () => Promise<void | null> }) => {
+export const Layout = ({ user }: { user: IUserObjet | null }) => {
     return (
         <>
-            <NavBar user={user} loading={load} reloaderGuilds={reloaderGuilds} />
+            <NavBar user={user} />
             <div className="container-fluid p-4">
                 <Outlet />
             </div>
