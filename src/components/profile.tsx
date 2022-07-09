@@ -5,9 +5,9 @@ import { IUserObjet } from "interfaces";
 import { ConvertString } from "libs";
 import { FC } from "react";
 
-export const Profile: FC<{ user: IUserObjet }> = (props) => {
+export const Profile: FC<{ user: IUserObjet }> = ({ user }) => {
     // const { id } = useParams();
-    if (!props.user) {
+    if (!user) {
         window.location.replace(`${process.env.REACT_APP_API_URL}/oauth/login`);
         return <></>;
     }
@@ -15,7 +15,7 @@ export const Profile: FC<{ user: IUserObjet }> = (props) => {
     let serversComun: { _id: string; dinero: number; banco: number }[] = [];
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const { loading, data } = useQuery(ProfilesUserGQL, { variables: { id: props.user._id } });
+    const { loading, data } = useQuery(ProfilesUserGQL, { variables: { id: user._id } });
 
     if (loading) {
         return (
@@ -41,14 +41,14 @@ export const Profile: FC<{ user: IUserObjet }> = (props) => {
                                         }}
                                         className="img-fluid rounded"
                                         style={{ width: "25%" }}
-                                        src={`https://cdn.discordapp.com/avatars/${props.user._id}/${props.user.avatar}.png?size=256`}
+                                        src={`https://cdn.discordapp.com/avatars/${user._id}/${user.avatar}.png?size=256`}
                                     />
                                 </Col>
                                 <Col sm className="text-center">
                                     <span className="h3" style={{ color: "aliceblue" }}>
-                                        {props.user.username}{" "}
+                                        {user.username}{" "}
                                         <span className="h6" style={{ color: "rgb(21, 219, 226)" }}>
-                                            #{props.user.discriminator}
+                                            #{user.discriminator}
                                         </span>
                                     </span>
                                 </Col>
@@ -89,17 +89,17 @@ export const Profile: FC<{ user: IUserObjet }> = (props) => {
                                                         }}
                                                         style={{ borderRadius: "900px", width: "50%", margin: "0px 10px 0px 10px" }}
                                                         src={
-                                                            props.user.guilds.findIndex((g) => g.id === servidor._id.split("-")[0]) > -1
+                                                            user.guilds.findIndex((g) => g.id === servidor._id.split("-")[0]) > -1
                                                                 ? `https://cdn.discordapp.com/icons/${servidor._id.split("-")[0]}/${
-                                                                      props.user.guilds.find((g) => g.id === servidor._id.split("-")[0])!.icon
+                                                                      user.guilds.find((g) => g.id === servidor._id.split("-")[0])!.icon
                                                                   }.png?size=512`
                                                                 : defaulURl
                                                         }
                                                     />
                                                 </Col>
                                                 <Col sm className="align-text-bottom text-center text-sm-start" style={{ margin: "20px 0px 20px 0px" }}>
-                                                    {props.user.guilds.findIndex((g) => g.id === servidor._id.split("-")[0]) > -1
-                                                        ? props.user.guilds.find((g) => g.id === servidor._id.split("-")[0])!.name
+                                                    {user.guilds.findIndex((g) => g.id === servidor._id.split("-")[0]) > -1
+                                                        ? user.guilds.find((g) => g.id === servidor._id.split("-")[0])!.name
                                                         : `Servidor Desconocido (ID: ${servidor._id.split("-")[0]})`}
                                                 </Col>
                                             </Row>

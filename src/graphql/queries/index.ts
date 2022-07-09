@@ -141,9 +141,12 @@ export const ProfilesUserGQL = gql`
             _id
             dinero
             banco
-            avatar
-            username
-            discriminator
+            locked
+            user {
+                avatar
+                username
+                discriminator
+            }
         }
     }
 `;
