@@ -1,9 +1,9 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Container, Spinner } from "react-bootstrap";
 import { useEffect, useState } from "react";
-import * as Components from "components";
 import { IUserObjet } from "interfaces";
 import { getUserDetails } from "libs";
+import * as Screens from "screens";
 
 //=========[ Main App
 const App = () => {
@@ -26,25 +26,25 @@ const App = () => {
     return !loading ? (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Components.Layout user={user} />}>
-                    <Route index element={<Components.Main />} />
-                    <Route path="about" element={<Components.About />} />
-                    <Route path="invite" element={<Components.Invite />} />
-                    <Route path="commands" element={<Components.Commands />} />
-                    <Route path="status" element={<Components.Status />} />
-                    <Route path="support" element={<Components.Support />} />
-                    <Route path="privacy" element={<Components.Privacy />} />
-                    <Route path="terms" element={<Components.Terms />} />
-                    <Route path="developer" element={<Components.Developer />} />
-                    <Route path="error403" element={<Components.Error403 />} />
-                    <Route path="error404" element={<Components.Error404 />} />
-                    <Route path="*" element={<Components.Error404 />} />
+                <Route path="/" element={<Screens.Layout user={user} />}>
+                    <Route index element={<Screens.Main />} />
+                    <Route path="about" element={<Screens.About />} />
+                    <Route path="invite" element={<Screens.Invite />} />
+                    <Route path="commands" element={<Screens.Commands />} />
+                    <Route path="status" element={<Screens.Status />} />
+                    <Route path="support" element={<Screens.Support />} />
+                    <Route path="privacy" element={<Screens.Privacy />} />
+                    <Route path="terms" element={<Screens.Terms />} />
+                    <Route path="developer" element={<Screens.Developer />} />
+                    <Route path="error403" element={<Screens.Error403 />} />
+                    <Route path="error404" element={<Screens.Error404 />} />
+                    <Route path="*" element={<Screens.Error404 />} />
                     {user && (
                         <>
-                            <Route path="profile" element={<Components.Profile user={user} />} />
-                            <Route path="dashboard/:id" element={<Components.Dashboard user={user} />} />
-                            <Route path="leaderboard/:id" element={<Components.LeaderBoard user={user} />} />
-                            <Route path="logout" element={<Components.Logout />} />
+                            <Route path="profile" element={<Screens.Profile user={user} />} />
+                            <Route path="dashboard/:id" element={<Screens.Dashboard user={user} />} />
+                            <Route path="leaderboard/:id" element={<Screens.LeaderBoard user={user} />} />
+                            <Route path="logout" element={<Screens.Logout />} />
                         </>
                     )}
                 </Route>
