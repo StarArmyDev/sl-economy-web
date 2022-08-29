@@ -1,5 +1,5 @@
+import { ButtonStyle, Chat, MemberCardPopup } from "components/discord";
 import { Row, Container, Col, Image, Card } from "react-bootstrap";
-import { ButtonStyle, Chat, MemberCardPopup } from "./discord";
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import commandWork from "img/command_work.png";

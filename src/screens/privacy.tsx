@@ -1,7 +1,7 @@
 import { Container, Row, Col } from "react-bootstrap";
 import Snackbar from "@mui/material/Snackbar";
 import { Link } from "react-router-dom";
-import { Alert } from "./partials";
+import { Alert } from "components";
 import { useState } from "react";
 
 export function Privacy() {

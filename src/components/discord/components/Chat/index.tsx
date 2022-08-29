@@ -1,4 +1,4 @@
-import { MessagesWrapper, HeaderActionBar, NewMessageWrapper, ContentHeader, ChannelName } from "../";
+import { MessagesWrapper, HeaderActionBar, NewMessageWrapper, ContentHeader, ChannelName } from "..";
 import { Message } from "../../interface";
 import styled from "styled-components";
 import { colors } from "../../utils";
