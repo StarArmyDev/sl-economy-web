@@ -1,65 +1,57 @@
-import { Layout, About, Commands, Dashboard, Error403, Error404, Invite, LeaderBoard, Logout, Main, Profile, Support } from "./components";
-import { getGuildsUser, getUserDetails, useLocalStorage } from "./libs";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Container, Spinner } from "react-bootstrap";
 import { useEffect, useState } from "react";
+import { IUserObjet } from "interfaces";
+import { getUserDetails } from "libs";
+import * as Screens from "screens";
 
 //=========[ Main App
 const App = () => {
-    const [load, setLoading] = useState(true);
-    const [user, setUser, removeLoading] = useLocalStorage("user", null);
+    const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState(null as IUserObjet | null);
 
     async function init() {
-        if (!user) {
-            await getUserDetails()
-                .then(({ data }) => setUser(data))
-                .catch(() => null);
-            setLoading(false);
-        } else setLoading(false);
-    }
-
-    async function reloaderGuilds() {
-        return await getGuildsUser()
+        await getUserDetails()
             .then(({ data }) => {
-                removeLoading("user");
-                setUser({ ...data, timestamp: user.timestamp, guildsTimestamp: Date.now() });
+                if (!data.error && loading) setUser(data);
+                setLoading(false);
             })
-            .catch(() => null);
+            .catch(() => setLoading(false));
     }
 
     useEffect(() => {
-        if (user && user.timestamp && user.timestamp + 36e5 <= Date.now()) removeLoading("user");
-
-        if (user?.guildsTimestamp && user.guildsTimestamp + 6e5 <= Date.now()) reloaderGuilds();
-
         init();
     });
 
-    return !load ? (
+    return !loading ? (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Layout user={user} load={load} reloaderGuilds={reloaderGuilds} />}>
-                    <Route index element={<Main />} />
-                    <Route path="about" element={<About />} />
-                    <Route path="invite" element={<Invite />} />
-                    <Route path="commands" element={<Commands />} />
-                    <Route path="error403" element={<Error403 />} />
-                    <Route path="support" element={<Support />} />
-                    {!load ? (
+                <Route path="/" element={<Screens.Layout user={user} />}>
+                    <Route index element={<Screens.Main />} />
+                    <Route path="about" element={<Screens.About />} />
+                    <Route path="invite" element={<Screens.Invite />} />
+                    <Route path="commands" element={<Screens.Commands />} />
+                    <Route path="status" element={<Screens.Status />} />
+                    <Route path="support" element={<Screens.Support />} />
+                    <Route path="privacy" element={<Screens.Privacy />} />
+                    <Route path="terms" element={<Screens.Terms />} />
+                    <Route path="developer" element={<Screens.Developer />} />
+                    <Route path="error403" element={<Screens.Error403 />} />
+                    <Route path="error404" element={<Screens.Error404 />} />
+                    <Route path="*" element={<Screens.Error404 />} />
+                    {user && (
                         <>
-                            <Route path="profile" element={<Profile user={user} />} />
-                            <Route path="dashboard/:id" element={<Dashboard user={user} />} />
-                            <Route path="leaderboard/:id" element={<LeaderBoard user={user} />} />
-                            <Route path="error404" element={<Error404 />} />
+                            <Route path="profile" element={<Screens.Profile user={user} />} />
+                            <Route path="dashboard/:id" element={<Screens.Dashboard user={user} />} />
+                            <Route path="leaderboard/:id" element={<Screens.LeaderBoard user={user} />} />
+                            <Route path="logout" element={<Screens.Logout />} />
                         </>
-                    ) : (
-                        <Route path="logout" element={<Logout />} />
                     )}
                 </Route>
             </Routes>
         </BrowserRouter>
     ) : (
-        <Container className="container-fluid text-center align-middle">
+        <Container className="container-fluid text-center align-middle align-items-center my-5">
             <Spinner animation="border" variant="warning" role="status" />
         </Container>
     );

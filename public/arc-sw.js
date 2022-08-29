@@ -1,4 +1,6 @@
 /* eslint-disable */
+// file deepcode ignore PureMethodReturnValueIgnored:
+
 !(function (e) {
     var t = {};
     function n(r) {

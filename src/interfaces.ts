@@ -9,19 +9,18 @@ export interface IGuildObjet {
 
 export interface IUserObjet {
     _id: string;
-    username: string;
     avatar: string;
+    username: string;
     discriminator: string;
     flags: number;
     guilds: IGuildObjet[];
-    locale: string;
+    /* locale: string;
     mfa_enabled: boolean;
     public_flags: number;
-    timestamp: number;
+    timestamp: number; */
 }
 
 export interface IPerfil {
-    _id: string;
     /**
      * Dinero en el bolsillo del usuario.
      */
@@ -31,13 +30,21 @@ export interface IPerfil {
      */
     banco: number;
     /**
+     * Suma del dinero en el bolsillo y en el banco.
+     */
+    total: number;
+    /**
      * Si el usuario está bloqueado.
      */
-    bloqueado: boolean;
+    locked: boolean;
     /**
      * Inventario de items del usaurio.
      */
     inventario: {
+        /**
+         * Si el usuario está bloqueado.
+         */
+        locked: boolean;
         /**
          * Array de items.
          */
@@ -46,15 +53,16 @@ export interface IPerfil {
 }
 
 export interface ISistemas {
+    _id?: string;
     /**
      * Color principal personalizado de embeds en el servidor.
      */
-    colorname?: string;
+    colorMain?: string;
     images?: {
-        fichas?: string[];
+        records?: string[];
         flipcoin?: {
-            cara: string;
-            sello: string;
+            face: string;
+            stamp: string;
         };
         dice?: {
             _1: string;
@@ -66,10 +74,11 @@ export interface ISistemas {
         };
     };
     buy?: {
-        categoria?: string;
+        category?: string;
     };
     /**
      * Prefijo personalizado del bot en el servidor.
+     * @deprecated Ya no se usa prefijo personalizado.
      */
     prefix?: string;
     /**
@@ -95,40 +104,23 @@ export interface ISistemas {
         }[];
     };
     /**
-     * Lista de comandos que no se podrán usar si el usuario está en ella.
+     * @deprecated Cambiar por currency.
      */
-    blacklist?: {
-        /**
-         * Nombre del comando o categoría que será el afectado
-         * para no poderse usar.
-         */
-        name: string;
-        /**
-         * Lista de afectados que es el id de un usuario, rol, canal
-         * o la palabra "server" para todos los usuarios.
-         */
-        list: string[];
-    }[];
-    /**
-     * Lista de comandos que ciertos usuarios que estén en la lista se
-     * librarán de la BlackList.
-     */
-    whitelist?: {
-        /**
-         * Nombre del comando o categoría que será el afectado
-         * para poderse usase.
-         */
-        name: string;
-        /**
-         * Lista de afectados que es el id de un usuario, rol o canal.
-         */
-        list: string[];
-    }[];
     moneda?: {
         id?: string;
         name?: string;
     };
+    currency?: {
+        id?: string;
+        name?: string;
+    };
+    /**
+     * @deprecated Cambiar por payment.
+     */
     pago?: {
+        /**
+         * @deprecated Cambiar por payment.messages.
+         */
         mensajes?: {
             min: number;
             max: number;
@@ -159,6 +151,40 @@ export interface ISistemas {
             max: number;
         };
     };
+    payment?: {
+        messages?: {
+            min: number;
+            max: number;
+        };
+        crime?: {
+            min: number;
+            max: number;
+        };
+        daily?: number;
+        dice?: {
+            min: number;
+            max: number;
+        };
+        flipcoin?: {
+            min: number;
+            max: number;
+        };
+        slotmachine?: {
+            min: number;
+            max: number;
+        };
+        trade?: {
+            min: number;
+            max: number;
+        };
+        work?: {
+            min: number;
+            max: number;
+        };
+    };
+    /**
+     * @deprecated Cambiar por fineAmount.
+     */
     multa?: {
         rob?: {
             min: number;
@@ -198,24 +224,136 @@ export interface ISistemas {
             fail: number;
         };
     };
+    fineAmount?: {
+        rob?: {
+            min: number;
+            max: number;
+            fail: number;
+        };
+        crime?: {
+            min: number;
+            max: number;
+            fail: number;
+        };
+        trade?: {
+            min: number;
+            max: number;
+            fail: number;
+        };
+        dice?: {
+            min: number;
+            max: number;
+        };
+        slotmachine?: {
+            min: number;
+            max: number;
+        };
+        flipcoin?: {
+            min: number;
+            max: number;
+        };
+        loot?: {
+            min: number;
+            max: number;
+            fail: number;
+        };
+    };
     cooldown?: {
-        mensajes?: number;
-        daily?: number;
-        rob?: number;
         crime?: number;
-        tarde?: number;
-        work?: number;
-        trade?: number;
+        daily?: number;
         dice?: number;
-        roulette?: number;
-        slotmachine?: number;
         flipcoin?: number;
         loot?: number;
+        /**
+         * @deprecated Cambiar por messages.
+         */
+        mensajes?: number;
+        messages?: number;
+        rob?: number;
+        roulette?: number;
+        slotmachine?: number;
+        trade?: number;
+        work?: number;
     };
+    auditlogs?: {
+        webhook?: {
+            /**
+             * @deprecated Eliminar.
+             */
+            id?: string;
+            /**
+             * @deprecated Eliminar.
+             */
+            token?: string;
+            url: string;
+        };
+        onlyImportant?: boolean;
+    };
+    /**
+     * @deprecated Eliminar.
+     */
+    blacklist?: any;
+    /**
+     * @deprecated Eliminar.
+     */
+    whitelist?: any;
+    /**
+     * @deprecated Cambiar por excludedChannels.
+     */
     chatExcluido?: string[];
+    excludedChannels?: string[];
 }
 
-export type ILanguages = "en-US" | "es-ES" | "es-MX" | "pt-BR";
+export interface ITienda {
+    _id: string;
+    /**
+     * Lista de items del servidor
+     */
+    items: IItem[];
+}
+
+export interface IItem extends Document {
+    _id: string | number;
+    nombre: string;
+    precio: {
+        compra?: number;
+        venta?: number;
+    };
+    descripcion: string;
+    emoji?: string;
+    disponible: boolean;
+    transferible: boolean;
+    basura: boolean;
+    compraunica: boolean;
+    tiempo?: number;
+    stock?: number;
+    requiere?: {
+        rol?: string;
+        item?: {
+            id: string;
+            cantidad: number;
+            eliminar: boolean;
+        };
+        saldo?: number;
+    };
+    obtiene?: {
+        rol?: string;
+        canal?: "text" | "voice";
+        item?: {
+            id: string;
+            cantidad: number;
+        };
+    };
+    eliminar?: {
+        rol?: string;
+        item?: {
+            id: string;
+            cantidad: number;
+        };
+    };
+    mensaje?: string;
+    evento?: string;
+}
 
 export interface IItemInventory {
     /**
@@ -227,3 +365,5 @@ export interface IItemInventory {
      */
     cantidad: number;
 }
+
+export type ILanguages = "en-US" | "es-ES" | "es-MX" | "pt-BR";
