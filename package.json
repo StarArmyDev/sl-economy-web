@@ -1,9 +1,9 @@
 {
     "name": "sl-economy-web",
-    "version": "1.0.2",
+    "version": "2.0.0",
     "private": true,
     "engines": {
-        "node": "16.14.x",
+        "node": "16.x",
         "npm": "8.x"
     },
     "scripts": {
