@@ -324,8 +324,10 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                             </Button>
                                                                         ) : null}
                                                                     </InputGroup>
-                                                                    {errors.language && (
-                                                                        <span className="text-danger text-small d-block mb-2">{errors.language.message}</span>
+                                                                    {errors.language?.message && (
+                                                                        <span className="text-danger text-small d-block mb-2">
+                                                                            {errors.language.message.toString()}
+                                                                        </span>
                                                                     )}
                                                                 </Col>
                                                                 {/**

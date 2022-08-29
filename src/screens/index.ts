@@ -1,5 +1,5 @@
-export * from "./partials/navbar";
-export * from "./partials/footer";
+export * from "components/navbar";
+export * from "components/footer";
 
 export * from "./layout";
 

@@ -1,6 +1,6 @@
 import { ThreadsIcon, NotificationBellIcon, PinIcon, PeopleIcon, InboxIcon, QuestionMarkIcon } from "../../icons";
 import styled from "styled-components";
-import { TooltipWrapper } from "../";
+import { TooltipWrapper } from "..";
 import { HeaderSearchBar } from ".";
 
 const StyledHeaderActionBar = styled.div`

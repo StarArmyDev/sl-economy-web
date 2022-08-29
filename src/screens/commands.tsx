@@ -2,7 +2,7 @@ import { Category, OptionType, SubCommandData, SubGroupData, NumericOptionData, 
 import { Accordion, Card, Col, Container, Nav, Row, Tab } from "react-bootstrap";
 import { ConvertString, FirstCapitalLetter } from "libs";
 import Snackbar from "@mui/material/Snackbar";
-import { Alert } from "./partials";
+import { Alert } from "components";
 import { useState } from "react";
 
 export function Commands() {

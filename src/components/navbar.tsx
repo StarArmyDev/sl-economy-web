@@ -1,5 +1,5 @@
 import { Navbar, Container, Nav, NavDropdown, Col, Row, Spinner, Image } from "react-bootstrap";
-import { UpdateGuildsGQL, useMutation, useQuery, UserGuildsGQL } from "../../graphql";
+import { UpdateGuildsGQL, useMutation, useQuery, UserGuildsGQL } from "../graphql";
 import { IUserObjet } from "interfaces";
 import { CLIENT_ID } from "Constants";
 import iconImg from "img/icon.png";
