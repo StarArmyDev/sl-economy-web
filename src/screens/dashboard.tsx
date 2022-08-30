@@ -211,6 +211,90 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
         setAlert((at) => [...at, { type: "success", show: true, text: `Propiedad eliminada correctamente.` }]);
     };
 
+    const SelectMenu = ({
+        placeholder,
+        options,
+        defaultValue,
+        registerName
+    }: {
+        placeholder: string;
+        options: {
+            value: string;
+            label: string;
+            emoji?: string;
+        }[];
+        defaultValue?: any;
+        registerName?: string;
+    }) => {
+        const ctlRegister = registerName ? register(registerName) : undefined;
+
+        return (
+            <Select
+                ref={ctlRegister?.ref}
+                name={ctlRegister?.name}
+                onBlur={ctlRegister?.onBlur}
+                onChange={(newValue, actionMeta) =>
+                    ctlRegister
+                        ? ctlRegister.onChange({
+                              target: newValue
+                          })
+                        : undefined
+                }
+                className="select"
+                styles={{
+                    menu: (base) => ({
+                        ...base,
+                        backgroundColor: "#2f3136",
+                        textAlign: "left",
+                        color: "#fff"
+                    }),
+                    container: (base) => ({
+                        ...base
+                    }),
+                    control: (base) => ({
+                        ...base,
+                        backgroundColor: "#444444",
+                        color: "#fff",
+                        border: "none"
+                    }),
+                    option: (base, { data, isDisabled, isFocused, isSelected }) => ({
+                        ...base,
+                        borderBottom: "1px dotted pink",
+                        padding: 10,
+                        backgroundColor: isDisabled ? undefined : isSelected ? "#888" : isFocused ? "#edbf10" : undefined,
+                        color: isDisabled ? "#ccc" : isSelected ? undefined : isFocused ? "#000" : undefined,
+                        ":active": {
+                            ...base[":active"],
+                            backgroundColor: !isDisabled ? (isSelected ? "#edbf10" : "#888") : undefined,
+                            color: !isDisabled ? (isSelected ? "#000" : "#fff") : undefined
+                        }
+                    }),
+                    valueContainer: (base) => ({
+                        ...base
+                    }),
+                    singleValue: (base) => ({
+                        ...base,
+                        textAlign: "left",
+                        color: "#fff"
+                    }),
+                    placeholder: (base) => ({
+                        ...base,
+                        color: "#a3a6aa",
+                        textAlign: "left",
+                        whiteSpace: "nowrap",
+                        lineHeight: "18px"
+                    })
+                }}
+                placeholder={placeholder}
+                options={options.map((option) => ({
+                    value: option.value,
+                    label: `${option.emoji || ""} ${option.label}`
+                }))}
+                defaultValue={defaultValue}
+            />
+        );
+    };
+
     const graphql = useQuery(ServerGQL, { variables: { id } });
     const channelsGQL = useQuery(ChannelsGuildGQL, { variables: { id } });
 
@@ -302,6 +386,17 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                  * Idioma
                                                                  */}
                                                                 <Col sm>
+                                                                    {/* <SelectMenu
+                                                                        placeholder="Idioma"
+                                                                        options={[
+                                                                            { label: "Español (México)", value: "es-MX" },
+                                                                            { label: "Español (España)", value: "es-ES" },
+                                                                            { label: "Inglés", value: "en-US" },
+                                                                            { label: "Portugués", value: "pt-BR" }
+                                                                        ]}
+                                                                        defaultValue={dbServer?.language?.server ? dbServer.language.server : "es-MX"}
+                                                                        registerName={"language.server"}
+                                                                    /> */}
                                                                     <InputGroup className="mb-2">
                                                                         <InputGroup.Text>Idioma</InputGroup.Text>
                                                                         <Form.Control
@@ -333,7 +428,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                 {/**
                                                                  * Idioma en Canales
                                                                  */}
-                                                                <Col sm>
+                                                                {/* <Col sm>
                                                                     <Row>
                                                                         <Col sm>
                                                                             <SelectMenu
@@ -356,7 +451,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                             />
                                                                         </Col>
                                                                     </Row>
-                                                                </Col>
+                                                                </Col> */}
                                                                 {/**
                                                                  * BlackList
                                                                  */}
@@ -1693,61 +1788,4 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
             </Styled>
         );
     }
-};
-
-const SelectMenu = ({ placeholder, options }: { placeholder: string; options: any[] }) => {
-    return (
-        <Select
-            className="select"
-            styles={{
-                menu: (base) => ({
-                    ...base,
-                    backgroundColor: "#2f3136",
-                    textAlign: "left",
-                    color: "#fff"
-                }),
-                container: (base) => ({
-                    ...base
-                }),
-                control: (base) => ({
-                    ...base,
-                    backgroundColor: "#444444",
-                    color: "#fff",
-                    border: "none"
-                }),
-                option: (base, { data, isDisabled, isFocused, isSelected }) => ({
-                    ...base,
-                    borderBottom: "1px dotted pink",
-                    padding: 10,
-                    backgroundColor: isDisabled ? undefined : isSelected ? "#888" : isFocused ? "#edbf10" : undefined,
-                    color: isDisabled ? "#ccc" : isSelected ? undefined : isFocused ? "#000" : undefined,
-                    ":active": {
-                        ...base[":active"],
-                        backgroundColor: !isDisabled ? (isSelected ? "#edbf10" : "#888") : undefined,
-                        color: !isDisabled ? (isSelected ? "#000" : "#fff") : undefined
-                    }
-                }),
-                valueContainer: (base) => ({
-                    ...base
-                }),
-                singleValue: (base) => ({
-                    ...base,
-                    textAlign: "left",
-                    color: "#fff"
-                }),
-                placeholder: (base) => ({
-                    ...base,
-                    color: "#a3a6aa",
-                    textAlign: "left",
-                    whiteSpace: "nowrap",
-                    lineHeight: "18px"
-                })
-            }}
-            placeholder={placeholder}
-            options={options.map((option) => ({
-                value: option.value,
-                label: `${option.emoji || ""} ${option.label}`
-            }))}
-        />
-    );
 };
