@@ -1,5 +1,5 @@
 import { Col, Container, Row } from "react-bootstrap";
-import { Embed } from "../../interface";
+import type { Embed } from "../../interface";
 import styled from "styled-components";
 import { parseMarkdown } from "libs";
 

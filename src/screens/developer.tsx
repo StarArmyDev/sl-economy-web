@@ -1,5 +1,6 @@
 import { Container, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import Helmet from "react-helmet";
 
 export function Developer() {
     const ButtonMailto = ({ mailto, label }: { mailto: string; label: string }) => {
@@ -18,6 +19,9 @@ export function Developer() {
 
     return (
         <Container>
+            <Helmet>
+                <title>Acerca del desarrollador</title>
+            </Helmet>
             <Row className="text-center pt-4">
                 <Col md={12}>
                     <h1>

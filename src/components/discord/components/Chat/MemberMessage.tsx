@@ -1,6 +1,6 @@
 import { handleMemberClick, ReplyMessage } from ".";
 import { constants, colors } from "../../utils";
-import { Reply, User } from "../../interface";
+import type { Reply, User } from "../../interface";
 import styled from "styled-components";
 import React from "react";
 
@@ -100,7 +100,7 @@ export const MemberMessage = ({
     const rol = user.roles ? user.roles[0] : undefined;
 
     return (
-        <StyledMessage usernameColor={rol?.color}>
+        <StyledMessage usernameColor={rol?.color || "#fff"}>
             <>
                 {reply && <ReplyMessage reply={reply} />}
                 {isHeading && (

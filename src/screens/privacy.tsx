@@ -2,6 +2,7 @@ import { Container, Row, Col } from "react-bootstrap";
 import Snackbar from "@mui/material/Snackbar";
 import { Link } from "react-router-dom";
 import { Alert } from "components";
+import Helmet from "react-helmet";
 import { useState } from "react";
 
 export function Privacy() {
@@ -14,7 +15,7 @@ export function Privacy() {
             .catch(() => null);
     }
 
-    const handleClose = (e: any, reason?: string) => {
+    const handleClose = (_: any, reason?: string) => {
         if (reason === "clickaway") {
             return;
         }
@@ -38,6 +39,9 @@ export function Privacy() {
 
     return (
         <Container>
+            <Helmet>
+                <title>Política de Privacidad</title>
+            </Helmet>
             <Snackbar autoHideDuration={2000} anchorOrigin={{ vertical: "bottom", horizontal: "center" }} open={open} onClose={handleClose}>
                 <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
                     Copiado al portapapeles

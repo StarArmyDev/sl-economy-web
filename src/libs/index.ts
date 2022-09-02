@@ -1,6 +1,7 @@
 export * from "./Api";
 export * from "./ConvertString";
 export * from "./ConverTime";
+export * from "./EventRegister";
 export * from "./FirstCapitalLetter";
 export * from "./IsValidUrl";
 export * from "./ParserMarkdown";

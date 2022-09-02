@@ -2,6 +2,7 @@ import { Container, Row, Col, Card } from "react-bootstrap";
 import { CircularProgress, Divider } from "@mui/material";
 import { useState, useEffect } from "react";
 import { getMonitors } from "libs";
+import Helmet from "react-helmet";
 
 const status: { [k: number]: { text: string; color: string } } = {
     0: { text: "Monitor Pausado", color: "gray" },
@@ -24,11 +25,14 @@ export const Status = () => {
                     setBackend((monit.data.monitors as IStatus[]).find((m) => [786758750].includes(m.id)));
                     setLoading(false);
                 })
-                .catch((err) => setLoading(false));
+                .catch((_) => setLoading(false));
     });
 
     return (
         <Container>
+            <Helmet>
+                <title>SL-Economy | Estado</title>
+            </Helmet>
             <Row className="text-center pt-4">
                 <h2>
                     <Row className="align-items-center">

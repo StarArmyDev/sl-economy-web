@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Role } from "../../interface";
+import type { Role } from "../../interface";
 
 const StyledRolesList = styled.ul`
     margin: 0;

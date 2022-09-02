@@ -1,4 +1,4 @@
-import { SelectMenuComponent } from "../../interface";
+import type { SelectMenuComponent } from "../../interface";
 import styled from "styled-components";
 import Select from "react-select";
 
@@ -74,7 +74,7 @@ export const SelectMenu = ({ data }: { data: SelectMenuComponent }) => {
                                 backgroundColor: "#777"
                             }
                         }),
-                        indicatorsContainer: (base) => ({}),
+                        indicatorsContainer: () => ({}),
                         valueContainer: (base) => ({
                             ...base
                         }),

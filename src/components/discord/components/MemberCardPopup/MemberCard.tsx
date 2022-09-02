@@ -1,6 +1,6 @@
 import { constants, colors } from "../../utils";
 import { UserAvatar } from "../UserAvatar";
-import { User } from "../../interface";
+import type { User } from "../../interface";
 import styled from "styled-components";
 import { MemberRolesList } from ".";
 

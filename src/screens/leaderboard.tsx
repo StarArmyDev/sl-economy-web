@@ -1,27 +1,77 @@
 import { Spinner, Container, ListGroup, Col, Row, Badge, Button, Card } from "react-bootstrap";
 import { GuildGQL, ProfileGQL, useQuery } from "../graphql";
-import { Fragment, useState, FC } from "react";
+import React, { Fragment, useState, FC } from "react";
+import type { IPerfil, IUserObjet } from "interfaces";
+import { ConvertString, EventRegister } from "libs";
 import { useParams } from "react-router-dom";
-import { IUserObjet } from "interfaces";
-import { ConvertString } from "libs";
+import Helmet from "react-helmet";
 
-export const LeaderBoard: FC<{ user: IUserObjet }> = (props) => {
+export const LeaderBoard: FC<{ user?: IUserObjet }> = (props) => {
     const { id } = useParams();
     const defaulURl = "https://cdn.discordapp.com/embed/avatars/0.png";
     const [userRank, setUserRank] = useState({
-        position: 0,
+        position: -1,
         dinero: 0,
         banco: 0
     });
 
-    const [orden, setOrden] = useState({ dinero: -1, banco: -1 } as { _id?: number; dinero?: number; banco?: number });
+    const [usersList, setUsersList] = useState<IPerfil[]>([]);
+    const [guildDiscord, setGuildDiscord] = useState<any>();
+    const [limit, setLimit] = useState(20);
+    const [orden, setOrden] = useState({ total: -1 } as { _id?: number; dinero?: number; banco?: number; total?: number });
 
-    const { loading, error, data } = useQuery(ProfileGQL, { variables: { id, orden } });
+    const { loading, error, data } = useQuery<{
+        AllProfilesInServer: {
+            userRank: {
+                position: number;
+                profile: IPerfil;
+            };
+            profiles: IPerfil[];
+        };
+    }>(ProfileGQL, { variables: { id, orden, userId: props.user?._id } });
     const GuildData = useQuery(GuildGQL, { variables: { id } });
+
+    EventRegister.on("scroll", (e: any) => {
+        const target = e.target;
+
+        if (target.scrollHeight - target.scrollTop <= target.clientHeight + 100) {
+            setLimit(limit + 20);
+        }
+    });
+
+    React.useEffect(() => {
+        if (data) {
+            const list = data.AllProfilesInServer.profiles;
+            if (props.user && userRank.position !== data!.AllProfilesInServer.userRank.position) {
+                setUserRank({
+                    position: data!.AllProfilesInServer.userRank.position,
+                    dinero: data!.AllProfilesInServer.userRank.profile?.dinero || 0,
+                    banco: data!.AllProfilesInServer.userRank.profile?.banco || 0
+                });
+            }
+
+            setGuildDiscord(GuildData.data.getGuild);
+            setUsersList(list);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data]);
 
     if (loading || GuildData.loading)
         return (
-            <Container className="text-center">
+            <Container
+                style={{
+                    height: "67vh",
+                    width: "100vw",
+                    position: "relative",
+                    zIndex: 9999,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    display: "flex"
+                }}
+            >
+                <Helmet>
+                    <title>SL-Economy | Leaderboard</title>
+                </Helmet>
                 <Spinner animation="border" variant="warning" role="status" />
             </Container>
         );
@@ -59,23 +109,11 @@ export const LeaderBoard: FC<{ user: IUserObjet }> = (props) => {
             </Container>
         );
     } else {
-        const list: any[] = data.AllProfilesInServer;
-        if (props.user && userRank.position === 0) {
-            list.forEach((user, i) => {
-                if ((user._id as string).split("-")[1] === props.user._id) {
-                    setUserRank({
-                        position: i + 1,
-                        dinero: user.dinero,
-                        banco: user.banco
-                    });
-                }
-            });
-        }
-
-        let guildDiscord = GuildData.data.getGuild;
-
         return (
             <Container>
+                <Helmet>
+                    <title>Leaderboard | {guildDiscord?.name || ""}</title>
+                </Helmet>
                 <Row>
                     <Col></Col>
                     <Col lg={8}>
@@ -87,6 +125,7 @@ export const LeaderBoard: FC<{ user: IUserObjet }> = (props) => {
                                             alt="Guild Icon"
                                             onError={(e: any) => {
                                                 e.target.onerror = null;
+                                                e.currentTarget.onerror = null;
                                                 e.target.src = defaulURl;
                                             }}
                                             className="img-fluid rounded"
@@ -101,7 +140,7 @@ export const LeaderBoard: FC<{ user: IUserObjet }> = (props) => {
                             </Card>
                         ) : null}
                         <ListGroup>
-                            {list.length > 2 ? (
+                            {usersList.length > 2 ? (
                                 <Row>
                                     <Col className="text-center">
                                         <Button variant="outline-warning" style={{ margin: "1% 2% 1% 2%" }} onClick={() => setOrden({ dinero: -1 })}>
@@ -112,13 +151,13 @@ export const LeaderBoard: FC<{ user: IUserObjet }> = (props) => {
                                             Banco
                                         </Button>
 
-                                        <Button variant="outline-warning" style={{ margin: "1% 2% 1% 2%" }} onClick={() => setOrden({ dinero: -1, banco: -1 })}>
+                                        <Button variant="outline-warning" style={{ margin: "1% 2% 1% 2%" }} onClick={() => setOrden({ total: -1 })}>
                                             Total
                                         </Button>
                                     </Col>
                                 </Row>
                             ) : null}
-                            {props.user && list.length > 0 ? (
+                            {props.user && usersList.length > 0 ? (
                                 <Fragment>
                                     <ListGroup.Item key="rank">
                                         <Row className="align-items-center">
@@ -152,7 +191,7 @@ export const LeaderBoard: FC<{ user: IUserObjet }> = (props) => {
                                     <hr />
                                 </Fragment>
                             ) : null}
-                            {list.length < 1 ? (
+                            {usersList.length < 1 ? (
                                 <ListGroup.Item key="rank">
                                     <Row className="align-items-center">
                                         <Col sm={1} className="text-center"></Col>
@@ -164,7 +203,7 @@ export const LeaderBoard: FC<{ user: IUserObjet }> = (props) => {
                                     </Row>
                                 </ListGroup.Item>
                             ) : (
-                                list.map((dato: any, index) => (
+                                usersList.slice(0, limit).map((dato: any, index) => (
                                     <ListGroup.Item key={`U${index}`}>
                                         <Row className="align-items-center">
                                             <Col sm={1} className="text-center">

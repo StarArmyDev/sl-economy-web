@@ -1,5 +1,5 @@
 import { WelcomeChannelMessage, ScrollableArea, MemberMessage, MemberMessageGroup, ButtonCmp, SelectMenu, MessagesEmbed } from "..";
-import { User, Message, Component } from "../../interface";
+import type { User, Message, Component } from "../../interface";
 import { Col, Row } from "react-bootstrap";
 import styled from "styled-components";
 import { parseMarkdown } from "libs";

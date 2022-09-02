@@ -1,4 +1,5 @@
 import { Container, Row, Col, Button } from "react-bootstrap";
+import Helmet from "react-helmet";
 
 export const Error404 = () => {
     const prevPage = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -8,6 +9,9 @@ export const Error404 = () => {
 
     return (
         <Container>
+            <Helmet>
+                <title>Página no encontrada</title>
+            </Helmet>
             <Row className="text-center pt-4">
                 <Col md={12}>
                     <h2>

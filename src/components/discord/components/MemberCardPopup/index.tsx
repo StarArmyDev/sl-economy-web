@@ -1,5 +1,5 @@
 import { MemberCardPopupWrapper } from ".";
-import { User } from "../../interface";
+import type { User } from "../../interface";
 import styled from "styled-components";
 import { Component } from "react";
 

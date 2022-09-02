@@ -7,7 +7,7 @@ export const Footer = () => {
             <Container>
                 <Row className="p-2 text-center">
                     <Col sm>
-                        <p className="p-1">
+                        <p className="p-1 pt-4">
                             StarLight un bot proporcionado por{" "}
                             <Link to="/about" rel="noreferrer" style={{ textDecoration: "none" }}>
                                 StarArmy
@@ -18,10 +18,10 @@ export const Footer = () => {
                     <Col sm={5}>
                         <Row>
                             <h3>Más</h3>
-                            <Link to="/terms" className="nav-link p-1">
+                            <Link to="/terms" className="p-1" style={{ textDecoration: "none" }}>
                                 Términos y condiciones
                             </Link>
-                            <Link to="/privacy" className="nav-link p-1">
+                            <Link to="/privacy" className="p-1" style={{ textDecoration: "none" }}>
                                 Política de Privacidad
                             </Link>
                         </Row>

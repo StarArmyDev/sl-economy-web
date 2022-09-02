@@ -8,7 +8,17 @@ export const Logout = () => {
     });
 
     return (
-        <Container className="text-center align-items-center">
+        <Container
+            style={{
+                height: "67vh",
+                width: "100vw",
+                position: "relative",
+                zIndex: 9999,
+                alignItems: "center",
+                justifyContent: "center",
+                display: "flex"
+            }}
+        >
             <Spinner animation="border" variant="warning" role="status" />
         </Container>
     );

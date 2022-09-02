@@ -1,31 +1,54 @@
 {
     "compilerOptions": {
-        "target": "ESNext",
-        "module": "ESNext",
+        //!=====[ Language and Environment
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
         "lib": [
             "dom",
             "dom.iterable",
             "ESNext"
         ],
-        "rootDir": "./src",
-        "baseUrl": "./src",
-        "strict": true,
-        "moduleResolution": "node",
-        "forceConsistentCasingInFileNames": true,
+        "target": "ESNext",
+        "useDefineForClassFields": true,
+        //!=====[ Modules
+        "module": "ESNext",
+        "moduleResolution": "Node",
         "resolveJsonModule": true,
-        "esModuleInterop": true,
         "allowJs": true,
-        "skipLibCheck": true,
-        "allowSyntheticDefaultImports": true,
+        //!=====[ Type Checking
+        "allowUnreachableCode": false,
+        "allowUnusedLabels": false,
+        //"exactOptionalPropertyTypes": true,
         "noFallthroughCasesInSwitch": true,
+        //"noImplicitOverride": true,
+        //"noImplicitReturns": true,
+        //"noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "strict": true,
+        "useUnknownInCatchVariables": true,
+        "noImplicitAny": true,
+        //!=====[ Emit
+        "declaration": true,
+        "importHelpers": true,
+        "importsNotUsedAsValues": "error",
+        "inlineSources": true,
+        "newLine": "lf",
+        "noEmitHelpers": true,
+        "preserveConstEnums": true,
+        "removeComments": true,
+        "sourceMap": true,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        //!=====[ Completeness
+        "skipLibCheck": true,
+        //!=====[ Others
+        "allowSyntheticDefaultImports": true,
         "isolatedModules": true,
         "noEmit": true,
         "jsx": "react-jsx",
-        "removeComments": true,
-        "sourceMap": true,
-        "declaration": true,
         "declarationMap": true,
-        "experimentalDecorators": true,
+        "rootDir": "./src",
+        "baseUrl": "./src",
         "paths": {
             "src/*": [
                 "./src/*"

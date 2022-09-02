@@ -77,11 +77,6 @@ export interface ISistemas {
         category?: string;
     };
     /**
-     * Prefijo personalizado del bot en el servidor.
-     * @deprecated Ya no se usa prefijo personalizado.
-     */
-    prefix?: string;
-    /**
      * Idioma con el que se manejarán los comandos.
      */
     language?: {
@@ -103,53 +98,9 @@ export interface ISistemas {
             lang: ILanguages;
         }[];
     };
-    /**
-     * @deprecated Cambiar por currency.
-     */
-    moneda?: {
-        id?: string;
-        name?: string;
-    };
     currency?: {
         id?: string;
         name?: string;
-    };
-    /**
-     * @deprecated Cambiar por payment.
-     */
-    pago?: {
-        /**
-         * @deprecated Cambiar por payment.messages.
-         */
-        mensajes?: {
-            min: number;
-            max: number;
-        };
-        crime?: {
-            min: number;
-            max: number;
-        };
-        daily?: number;
-        dice?: {
-            min: number;
-            max: number;
-        };
-        flipcoin?: {
-            min: number;
-            max: number;
-        };
-        slotmachine?: {
-            min: number;
-            max: number;
-        };
-        trade?: {
-            min: number;
-            max: number;
-        };
-        work?: {
-            min: number;
-            max: number;
-        };
     };
     payment?: {
         messages?: {
@@ -180,48 +131,6 @@ export interface ISistemas {
         work?: {
             min: number;
             max: number;
-        };
-    };
-    /**
-     * @deprecated Cambiar por fineAmount.
-     */
-    multa?: {
-        rob?: {
-            min: number;
-            max: number;
-            fail: number;
-        };
-        tarde?: {
-            min: number;
-            max: number;
-            fail: number;
-        };
-        crime?: {
-            min: number;
-            max: number;
-            fail: number;
-        };
-        trade?: {
-            min: number;
-            max: number;
-            fail: number;
-        };
-        dice?: {
-            min: number;
-            max: number;
-        };
-        slotmachine?: {
-            min: number;
-            max: number;
-        };
-        flipcoin?: {
-            min: number;
-            max: number;
-        };
-        loot?: {
-            min: number;
-            max: number;
-            fail: number;
         };
     };
     fineAmount?: {
@@ -264,10 +173,6 @@ export interface ISistemas {
         dice?: number;
         flipcoin?: number;
         loot?: number;
-        /**
-         * @deprecated Cambiar por messages.
-         */
-        mensajes?: number;
         messages?: number;
         rob?: number;
         roulette?: number;
@@ -277,30 +182,10 @@ export interface ISistemas {
     };
     auditlogs?: {
         webhook?: {
-            /**
-             * @deprecated Eliminar.
-             */
-            id?: string;
-            /**
-             * @deprecated Eliminar.
-             */
-            token?: string;
             url: string;
         };
         onlyImportant?: boolean;
     };
-    /**
-     * @deprecated Eliminar.
-     */
-    blacklist?: any;
-    /**
-     * @deprecated Eliminar.
-     */
-    whitelist?: any;
-    /**
-     * @deprecated Cambiar por excludedChannels.
-     */
-    chatExcluido?: string[];
     excludedChannels?: string[];
 }
 

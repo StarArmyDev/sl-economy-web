@@ -1,5 +1,5 @@
 import { MessagesWrapper, HeaderActionBar, NewMessageWrapper, ContentHeader, ChannelName } from "..";
-import { Message } from "../../interface";
+import type { Message } from "../../interface";
 import styled from "styled-components";
 import { colors } from "../../utils";
 import { useState } from "react";

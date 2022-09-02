@@ -3,6 +3,7 @@ import { Accordion, Card, Col, Container, Nav, Row, Tab } from "react-bootstrap"
 import { ConvertString, FirstCapitalLetter } from "libs";
 import Snackbar from "@mui/material/Snackbar";
 import { Alert } from "components";
+import Helmet from "react-helmet";
 import { useState } from "react";
 
 export function Commands() {
@@ -709,7 +710,7 @@ export function Commands() {
             .catch(() => null);
     }
 
-    const handleClose = (e: any, reason?: string) => {
+    const handleClose = (_: any, reason?: string) => {
         if (reason === "clickaway") {
             return;
         }
@@ -719,6 +720,9 @@ export function Commands() {
 
     return (
         <Container>
+            <Helmet>
+                <title>SL-Economy | Comandos</title>
+            </Helmet>
             <Snackbar autoHideDuration={1000} anchorOrigin={{ vertical: "bottom", horizontal: "center" }} open={open} onClose={handleClose}>
                 <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
                     Copiado al portapapeles

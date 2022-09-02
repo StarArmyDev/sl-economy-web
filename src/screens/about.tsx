@@ -1,8 +1,12 @@
 import { Container, Row, Col, Image } from "react-bootstrap";
+import Helmet from "react-helmet";
 
 export const About = () => {
     return (
         <Container>
+            <Helmet>
+                <title>SL-Economy | Acerca de</title>
+            </Helmet>
             <Row className="text-center pt-4">
                 <Col sm={12}>
                     <Image src="stararmy.png" rounded style={{ width: "200px" }} />

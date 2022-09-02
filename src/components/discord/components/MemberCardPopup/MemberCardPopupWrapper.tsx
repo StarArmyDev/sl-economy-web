@@ -1,6 +1,6 @@
 import styled, { keyframes } from "styled-components";
 import { useEffect, useRef } from "react";
-import { User } from "../../interface";
+import type { User } from "../../interface";
 import { MemberCard } from ".";
 
 const fadeInAnimation = ({ direction }: { direction?: string }) => keyframes`
@@ -26,7 +26,7 @@ const StyledMemberCardPopupWrapper = styled.div`
     top: ${(props: { position: { x: number; y: number }; direction: string }) => props.position && props.position.y}px;
     left: ${(props) => props.position && props.position.x}px;
 
-    animation: ${(props) => fadeInAnimation} ease-in 0.1s forwards;
+    animation: ${() => fadeInAnimation} ease-in 0.1s forwards;
 `;
 
 export const MemberCardPopupWrapper = ({

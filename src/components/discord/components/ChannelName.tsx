@@ -18,8 +18,18 @@ const StyledChannelName = styled.div`
     }
 `;
 
-export const ChannelName = ({ name, textColor, isHeader, isUser }: { name: string; textColor?: string; isHeader?: boolean; isUser?: boolean }) => (
-    <StyledChannelName isHeader={isHeader} textColor={textColor}>
+export const ChannelName = ({
+    name,
+    textColor,
+    isHeader = false,
+    isUser = false
+}: {
+    name: string;
+    textColor?: string;
+    isHeader?: boolean;
+    isUser?: boolean;
+}) => (
+    <StyledChannelName isHeader={isHeader} textColor={textColor || "#72767d"}>
         {isUser ? <AtIcon /> : <HashtagIcon />}
         <span>{name}</span>
     </StyledChannelName>

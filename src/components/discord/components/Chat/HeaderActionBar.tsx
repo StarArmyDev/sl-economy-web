@@ -36,9 +36,9 @@ const StyledIconButton = styled.span`
 `;
 
 export const HeaderActionBar = ({
-    isMembersListActive,
+    isMembersListActive = false,
     onMembersToggleClick,
-    isReduced
+    isReduced = false
 }: {
     isMembersListActive?: boolean;
     onMembersToggleClick?: React.MouseEventHandler<HTMLSpanElement>;

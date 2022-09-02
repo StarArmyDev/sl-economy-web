@@ -23,6 +23,7 @@ specifiers:
   '@types/node-fetch': 2.6.2
   '@types/react': ^18.0.17
   '@types/react-dom': ^18.0.6
+  '@types/react-helmet': ^6.1.5
   '@types/react-router-dom': ^5.3.3
   '@types/react-test-renderer': ^18.0.0
   '@types/styled-components': ^5.1.26
@@ -38,6 +39,7 @@ specifiers:
   react: ^18.2.0
   react-bootstrap: ^2.5.0
   react-dom: ^18.2.0
+  react-helmet: ^6.1.0
   react-hook-form: ^7.34.2
   react-is: ^18.2.0
   react-router-dom: 6.3.0
@@ -77,6 +79,7 @@ dependencies:
   react: 18.2.0
   react-bootstrap: 2.5.0_zxljzmqdrxwnuenbkrz77w74uy
   react-dom: 18.2.0_react@18.2.0
+  react-helmet: 6.1.0_react@18.2.0
   react-hook-form: 7.34.2_react@18.2.0
   react-is: 18.2.0
   react-router-dom: 6.3.0_biqbaboplfbrettd7655fr4n2y
@@ -93,6 +96,7 @@ devDependencies:
   '@types/jquery': 3.5.14
   '@types/ms': 0.7.31
   '@types/node-fetch': 2.6.2
+  '@types/react-helmet': 6.1.5
   '@types/react-router-dom': 5.3.3
   '@types/react-test-renderer': 18.0.0
   babel-jest: 28.1.0_@babel+core@7.18.13
@@ -2909,6 +2913,12 @@ packages:
     dependencies:
       '@types/react': 18.0.17
     dev: false
+
+  /@types/react-helmet/6.1.5:
+    resolution: {integrity: sha512-/ICuy7OHZxR0YCAZLNg9r7I9aijWUWvxaPR6uTuyxe8tAj5RL4Sw1+R6NhXUtOsarkGYPmaHdBDvuXh2DIN/uA==}
+    dependencies:
+      '@types/react': 18.0.17
+    dev: true
 
   /@types/react-is/17.0.3:
     resolution: {integrity: sha512-aBTIWg1emtu95bLTLx0cpkxwGW3ueZv71nE2YFBpL8k/z5czEW8yYpOo8Dp+UUAFAtKwNaOsh/ioSeQnWlZcfw==}
@@ -9300,6 +9310,22 @@ packages:
     resolution: {integrity: sha512-/6UZ2qgEyH2aqzYZgQPxEnz33NJ2gNsnHA2o5+o4wW9bLM/JYQitNP9xPhsXwC08hMMovfGe/8retsdDsczPRg==}
     dev: false
 
+  /react-fast-compare/3.2.0:
+    resolution: {integrity: sha512-rtGImPZ0YyLrscKI9xTpV8psd6I8VAtjKCzQDlzyDvqJA8XOW78TXYQwNRNd8g8JZnDu8q9Fu/1v4HPAVwVdHA==}
+    dev: false
+
+  /react-helmet/6.1.0_react@18.2.0:
+    resolution: {integrity: sha512-4uMzEY9nlDlgxr61NL3XbKRy1hEkXmKNXhjbAIOVw5vcFrsdYbH2FEwcNyWvWinl103nXgzYNlns9ca+8kFiWw==}
+    peerDependencies:
+      react: '>=16.3.0'
+    dependencies:
+      object-assign: 4.1.1
+      prop-types: 15.8.1
+      react: 18.2.0
+      react-fast-compare: 3.2.0
+      react-side-effect: 2.1.2_react@18.2.0
+    dev: false
+
   /react-hook-form/7.34.2_react@18.2.0:
     resolution: {integrity: sha512-1lYWbEqr0GW7HHUjMScXMidGvV0BE2RJV3ap2BL7G0EJirkqpccTaawbsvBO8GZaB3JjCeFBEbnEWI1P8ZoLRQ==}
     engines: {node: '>=12.22.0'}
@@ -9475,6 +9501,14 @@ packages:
       react: 18.2.0
       react-is: 18.2.0
     dev: true
+
+  /react-side-effect/2.1.2_react@18.2.0:
+    resolution: {integrity: sha512-PVjOcvVOyIILrYoyGEpDN3vmYNLdy1CajSFNt4TDsVQC5KpTijDvWVoR+/7Rz2xT978D8/ZtFceXxzsPwZEDvw==}
+    peerDependencies:
+      react: ^16.3.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 18.2.0
+    dev: false
 
   /react-test-renderer/18.2.0_react@18.2.0:
     resolution: {integrity: sha512-JWD+aQ0lh2gvh4NM3bBM42Kx+XybOxCpgYK7F8ugAlpaTSnWsX+39Z4XkOykGZAHrjwwTZT3x3KxswVWxHPUqA==}

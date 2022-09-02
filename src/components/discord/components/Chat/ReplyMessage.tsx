@@ -1,4 +1,4 @@
-import { Reply } from "../../interface";
+import type { Reply } from "../../interface";
 import styled from "styled-components";
 import { handleMemberClick } from ".";
 
@@ -64,7 +64,7 @@ const StyledReplyMessage = styled.div`
     }
 `;
 
-export const ReplyMessage = ({ reply, isBot }: { reply: Reply; isBot?: boolean }) => (
+export const ReplyMessage = ({ reply }: { reply: Reply; isBot?: boolean }) => (
     <StyledReplyMessage>
         <div className="repliedMessage ps-4" aria-hidden="true">
             <img className="replyAvatar" src={reply.user.avatarUrl} alt="" role="button" onClick={(e) => handleMemberClick(e, reply.user)} />

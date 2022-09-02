@@ -1,13 +1,14 @@
 import { Container, Spinner, Alert, Col, Row, Tab, Nav, Button, Card, Form, InputGroup, Modal } from "react-bootstrap";
 import { ChannelsGuildGQL, ServerGQL, UpdateServerGQL, useMutation, useQuery } from "../graphql";
+import type { ISistemas, IUserObjet } from "interfaces";
 import React, { useEffect, useState, FC } from "react";
 import { ConvertString, ConvertorTime } from "libs";
-import { ISistemas, IUserObjet } from "interfaces";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { BOT_MANAGER } from "Constants";
 import styled from "styled-components";
-import Select from "react-select";
+//import Select from "react-select";
+import Helmet from "react-helmet";
 import ms from "ms";
 
 const Styled = styled.div`
@@ -71,7 +72,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
     const [dbServer, setDbServer] = useState(null as ISistemas | null);
 
     const load = async () => {
-        if (!guild) {
+        if (!guild || guild.id !== id) {
             var Servidor = user.guilds.find((g) => g.id === id);
             setGuild(Servidor);
         }
@@ -79,7 +80,6 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
     };
 
     const loadDB = async (db: ISistemas | null, channels: { name: string; id: string }[]) => {
-        console.log(db);
         if (db?.excludedChannels)
             db.excludedChannels.map((ch) =>
                 setChatExclude((ec) => [
@@ -90,11 +90,13 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
     };
 
     useEffect(() => {
+        setLoading(true);
         var guild = user.guilds.find((g) => g.id === id);
         if (!guild || (!((guild.permissions & 2146958591) === 2146958591) && !BOT_MANAGER.includes(user._id))) return window.location.replace("/error403");
 
         load();
-    });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [id]);
 
     const removeAlert = (alert: IAlert) => setAlert((alerts) => alerts.filter((x) => x !== alert));
 
@@ -211,7 +213,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
         setAlert((at) => [...at, { type: "success", show: true, text: `Propiedad eliminada correctamente.` }]);
     };
 
-    const SelectMenu = ({
+    /* const SelectMenu = ({
         placeholder,
         options,
         defaultValue,
@@ -231,9 +233,9 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
         return (
             <Select
                 ref={ctlRegister?.ref}
-                name={ctlRegister?.name}
-                onBlur={ctlRegister?.onBlur}
-                onChange={(newValue, actionMeta) =>
+                name={ctlRegister?.name || ""}
+                onBlur={(event) => (ctlRegister ? ctlRegister.onBlur({ target: event }) : undefined)}
+                onChange={(newValue) =>
                     ctlRegister
                         ? ctlRegister.onChange({
                               target: newValue
@@ -257,7 +259,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                         color: "#fff",
                         border: "none"
                     }),
-                    option: (base, { data, isDisabled, isFocused, isSelected }) => ({
+                    option: (base, { isDisabled, isFocused, isSelected }) => ({
                         ...base,
                         borderBottom: "1px dotted pink",
                         padding: 10,
@@ -293,26 +295,62 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                 defaultValue={defaultValue}
             />
         );
-    };
+    }; */
 
     const graphql = useQuery(ServerGQL, { variables: { id } });
     const channelsGQL = useQuery(ChannelsGuildGQL, { variables: { id } });
 
+    useEffect(() => {
+        if (!dbServer && graphql.data?.getServer) {
+            setDbServer(graphql.data.getServer);
+            loadDB(graphql.data.getServer, channelsGQL.data.getChannelsGuild);
+        } else if (guild?.id !== id) {
+            setLoading(true);
+            reset();
+            setDbServer(null);
+            graphql
+                .refetch({ id })
+                .then(({ data }) => {
+                    if (data) {
+                        setDbServer(data.getServer);
+                        channelsGQL.refetch({ id }).then((chData) => {
+                            setChatExclude([]);
+                            if (chData.data) loadDB(data.getServer, chData.data.getChannelsGuild);
+                            setLoading(false);
+                        });
+                    } else setLoading(false);
+                })
+                .catch(() => setLoading(false));
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dbServer, id, guild, graphql.loading]);
+
     if (loading || graphql.loading || channelsGQL.loading)
         return (
-            <Container className="text-center">
+            <Container
+                style={{
+                    height: "67vh",
+                    width: "100vw",
+                    position: "relative",
+                    zIndex: 9999,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    display: "flex"
+                }}
+            >
+                <Helmet>
+                    <title>SL-Economy | Dashboard</title>
+                </Helmet>
                 <Spinner animation="border" variant="warning" role="status" />
             </Container>
         );
     else {
-        if (!dbServer && graphql.data?.getServer) {
-            setDbServer(graphql.data.getServer);
-            loadDB(graphql.data.getServer, channelsGQL.data.getChannelsGuild);
-        }
-
         return (
-            <Styled bgColor={dbServer?.colorMain}>
+            <Styled bgColor={dbServer?.colorMain || "#edbf10"}>
                 <Container>
+                    <Helmet>
+                        <title>Dashboard | {guild?.name || ""}</title>
+                    </Helmet>
                     <Row>
                         <Col sm>
                             <Row className="text-center">
@@ -363,7 +401,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                             style={{ position: "fixed", width: "52%", top: "5%", zIndex: 4 }}
                                                             key={idx}
                                                             show={variant.show}
-                                                            variant={variant.type}
+                                                            variant={variant.type || "success"}
                                                             dismissible
                                                             onClose={() => removeAlert(variant)}
                                                         >
@@ -487,14 +525,14 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                     <InputGroup className="mb-2">
                                                                         <InputGroup.Text>Moneda</InputGroup.Text>
                                                                         <Form.Control
-                                                                            {...register("moneda.name")}
-                                                                            placeholder={dbServer?.moneda?.name ? dbServer.moneda.name : "Por Defecto: 🔶"}
+                                                                            {...register("currency.name")}
+                                                                            placeholder={dbServer?.currency?.name ? dbServer.currency.name : "Por Defecto: 🔶"}
                                                                         />
-                                                                        {dbServer?.moneda?.name != null ? (
+                                                                        {dbServer?.currency?.name != null ? (
                                                                             <Button
                                                                                 variant="outline-danger"
                                                                                 name="deleteCooldownMensajes"
-                                                                                onClick={() => onDelete("moneda.name")}
+                                                                                onClick={() => onDelete("currency.name")}
                                                                             >
                                                                                 Eliminar
                                                                             </Button>
@@ -516,18 +554,18 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                             <Form.Label>Pago Mínimo</Form.Label>
                                                                             <InputGroup className="mb-2">
                                                                                 <Form.Control
-                                                                                    {...register("pago.mensajes.min", { valueAsNumber: true, min: 1 })}
+                                                                                    {...register("payment.messages.min", { valueAsNumber: true, min: 1 })}
                                                                                     placeholder={
-                                                                                        dbServer?.pago?.mensajes?.min
-                                                                                            ? ConvertString(dbServer.pago.mensajes.min)
+                                                                                        dbServer?.payment?.messages?.min
+                                                                                            ? ConvertString(dbServer.payment.messages.min)
                                                                                             : "No Configurado"
                                                                                     }
                                                                                 />
-                                                                                {dbServer?.pago?.mensajes?.min != null ? (
+                                                                                {dbServer?.payment?.messages?.min != null ? (
                                                                                     <Button
                                                                                         variant="outline-danger"
                                                                                         name="deleteCooldownMensajes"
-                                                                                        onClick={() => onDelete("pago.mensajes.min")}
+                                                                                        onClick={() => onDelete("payment.messages.min")}
                                                                                     >
                                                                                         Eliminar
                                                                                     </Button>
@@ -538,18 +576,18 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                             <Form.Label>Pago Máximo</Form.Label>
                                                                             <InputGroup className="mb-2">
                                                                                 <Form.Control
-                                                                                    {...register("pago.mensajes.max", { valueAsNumber: true, min: 2 })}
+                                                                                    {...register("payment.messages.max", { valueAsNumber: true, min: 2 })}
                                                                                     placeholder={
-                                                                                        dbServer?.pago?.mensajes?.max
-                                                                                            ? ConvertString(dbServer.pago.mensajes.max)
+                                                                                        dbServer?.payment?.messages?.max
+                                                                                            ? ConvertString(dbServer.payment.messages.max)
                                                                                             : "No Configurado"
                                                                                     }
                                                                                 />
-                                                                                {dbServer?.pago?.mensajes?.max != null ? (
+                                                                                {dbServer?.payment?.messages?.max != null ? (
                                                                                     <Button
                                                                                         variant="outline-danger"
                                                                                         name="deleteCooldownMensajes"
-                                                                                        onClick={() => onDelete("pago.mensajes.max")}
+                                                                                        onClick={() => onDelete("payment.mensajes.max")}
                                                                                     >
                                                                                         Eliminar
                                                                                     </Button>
@@ -563,14 +601,14 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                             <Form.Label>Cooldown</Form.Label>
                                                                             <InputGroup className="mb-2">
                                                                                 <Form.Control
-                                                                                    {...register("cooldown.mensajes")}
+                                                                                    {...register("cooldown.messages")}
                                                                                     placeholder={
-                                                                                        dbServer?.cooldown?.mensajes
-                                                                                            ? ConvertorTime(dbServer.cooldown.mensajes)
+                                                                                        dbServer?.cooldown?.messages
+                                                                                            ? ConvertorTime(dbServer.cooldown.messages)
                                                                                             : "Por Defecto: 1m"
                                                                                     }
                                                                                 />
-                                                                                {dbServer?.cooldown?.mensajes != null ? (
+                                                                                {dbServer?.cooldown?.messages != null ? (
                                                                                     <Button
                                                                                         variant="outline-danger"
                                                                                         name="deleteCooldownMensajes"
@@ -660,18 +698,18 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                                     <Form.Label>Pago Mínimo</Form.Label>
                                                                                     <InputGroup className="mb-2">
                                                                                         <Form.Control
-                                                                                            {...register("pago.crime.min", { valueAsNumber: true, min: 1 })}
+                                                                                            {...register("payment.crime.min", { valueAsNumber: true, min: 1 })}
                                                                                             placeholder={
-                                                                                                dbServer?.pago?.crime?.min
-                                                                                                    ? ConvertString(dbServer.pago.crime.min)
+                                                                                                dbServer?.payment?.crime?.min
+                                                                                                    ? ConvertString(dbServer.payment.crime.min)
                                                                                                     : "No Configurado"
                                                                                             }
                                                                                         />
-                                                                                        {dbServer?.pago?.crime?.min != null ? (
+                                                                                        {dbServer?.payment?.crime?.min != null ? (
                                                                                             <Button
                                                                                                 variant="outline-danger"
                                                                                                 name="deleteCooldownMensajes"
-                                                                                                onClick={() => onDelete("pago.crime.min")}
+                                                                                                onClick={() => onDelete("payment.crime.min")}
                                                                                             >
                                                                                                 Eliminar
                                                                                             </Button>
@@ -682,18 +720,18 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                                     <Form.Label>Pago Máximo</Form.Label>
                                                                                     <InputGroup className="mb-2">
                                                                                         <Form.Control
-                                                                                            {...register("pago.crime.max", { valueAsNumber: true, min: 2 })}
+                                                                                            {...register("payment.crime.max", { valueAsNumber: true, min: 2 })}
                                                                                             placeholder={
-                                                                                                dbServer?.pago?.crime?.max
-                                                                                                    ? ConvertString(dbServer.pago.crime.max)
+                                                                                                dbServer?.payment?.crime?.max
+                                                                                                    ? ConvertString(dbServer.payment.crime.max)
                                                                                                     : "No Configurado"
                                                                                             }
                                                                                         />
-                                                                                        {dbServer?.pago?.crime?.max != null ? (
+                                                                                        {dbServer?.payment?.crime?.max != null ? (
                                                                                             <Button
                                                                                                 variant="outline-danger"
                                                                                                 name="deleteCooldownMensajes"
-                                                                                                onClick={() => onDelete("pago.crime.max")}
+                                                                                                onClick={() => onDelete("payment.crime.max")}
                                                                                             >
                                                                                                 Eliminar
                                                                                             </Button>
@@ -707,18 +745,21 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                                     <Form.Label>Multa Mínima</Form.Label>
                                                                                     <InputGroup className="mb-2">
                                                                                         <Form.Control
-                                                                                            {...register("multa.crime.min", { valueAsNumber: true, min: 1 })}
+                                                                                            {...register("fineAmount.crime.min", {
+                                                                                                valueAsNumber: true,
+                                                                                                min: 1
+                                                                                            })}
                                                                                             placeholder={
-                                                                                                dbServer?.multa?.crime?.min
-                                                                                                    ? ConvertString(dbServer.multa.crime.min)
+                                                                                                dbServer?.fineAmount?.crime?.min
+                                                                                                    ? ConvertString(dbServer.fineAmount.crime.min)
                                                                                                     : "No Configurado"
                                                                                             }
                                                                                         />
-                                                                                        {dbServer?.multa?.crime?.min != null ? (
+                                                                                        {dbServer?.fineAmount?.crime?.min != null ? (
                                                                                             <Button
                                                                                                 variant="outline-danger"
                                                                                                 name="deleteCooldownMensajes"
-                                                                                                onClick={() => onDelete("multa.crime.min")}
+                                                                                                onClick={() => onDelete("fineAmount.crime.min")}
                                                                                             >
                                                                                                 Eliminar
                                                                                             </Button>
@@ -736,18 +777,21 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                                     <Form.Label>Multa Máxima</Form.Label>
                                                                                     <InputGroup className="mb-2">
                                                                                         <Form.Control
-                                                                                            {...register("multa.crime.max", { valueAsNumber: true, min: 2 })}
+                                                                                            {...register("fineAmount.crime.max", {
+                                                                                                valueAsNumber: true,
+                                                                                                min: 2
+                                                                                            })}
                                                                                             placeholder={
-                                                                                                dbServer?.multa?.crime?.max
-                                                                                                    ? ConvertString(dbServer.multa.crime.max)
+                                                                                                dbServer?.fineAmount?.crime?.max
+                                                                                                    ? ConvertString(dbServer.fineAmount.crime.max)
                                                                                                     : "No Configurado"
                                                                                             }
                                                                                         />
-                                                                                        {dbServer?.multa?.crime?.max != null ? (
+                                                                                        {dbServer?.fineAmount?.crime?.max != null ? (
                                                                                             <Button
                                                                                                 variant="outline-danger"
                                                                                                 name="deleteCooldownMensajes"
-                                                                                                onClick={() => onDelete("multa.crime.max")}
+                                                                                                onClick={() => onDelete("fineAmount.crime.max")}
                                                                                             >
                                                                                                 Eliminar
                                                                                             </Button>
@@ -798,18 +842,18 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                             <Form.Label>Pago</Form.Label>
                                                                             <InputGroup className="mb-2">
                                                                                 <Form.Control
-                                                                                    {...register("pago.daily", { valueAsNumber: true, min: 1 })}
+                                                                                    {...register("payment.daily", { valueAsNumber: true, min: 1 })}
                                                                                     placeholder={
-                                                                                        dbServer?.pago?.daily
-                                                                                            ? ConvertString(dbServer.pago.daily)
+                                                                                        dbServer?.payment?.daily
+                                                                                            ? ConvertString(dbServer.payment.daily)
                                                                                             : "No Configurado"
                                                                                     }
                                                                                 />
-                                                                                {dbServer?.pago?.daily != null ? (
+                                                                                {dbServer?.payment?.daily != null ? (
                                                                                     <Button
                                                                                         variant="outline-danger"
                                                                                         name="deleteCooldownMensajes"
-                                                                                        onClick={() => onDelete("pago.daily")}
+                                                                                        onClick={() => onDelete("payment.daily")}
                                                                                     >
                                                                                         Eliminar
                                                                                     </Button>
@@ -860,18 +904,18 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                                     <Form.Label>Pago Mínimo</Form.Label>
                                                                                     <InputGroup className="mb-2">
                                                                                         <Form.Control
-                                                                                            {...register("pago.dice.min", { valueAsNumber: true, min: 1 })}
+                                                                                            {...register("payment.dice.min", { valueAsNumber: true, min: 1 })}
                                                                                             placeholder={
-                                                                                                dbServer?.pago?.dice?.min
-                                                                                                    ? ConvertString(dbServer.pago.dice.min)
+                                                                                                dbServer?.payment?.dice?.min
+                                                                                                    ? ConvertString(dbServer.payment.dice.min)
                                                                                                     : "No Configurado"
                                                                                             }
                                                                                         />
-                                                                                        {dbServer?.pago?.dice?.min != null ? (
+                                                                                        {dbServer?.payment?.dice?.min != null ? (
                                                                                             <Button
                                                                                                 variant="outline-danger"
                                                                                                 name="deleteCooldownMensajes"
-                                                                                                onClick={() => onDelete("pago.dice.min")}
+                                                                                                onClick={() => onDelete("payment.dice.min")}
                                                                                             >
                                                                                                 Eliminar
                                                                                             </Button>
@@ -882,18 +926,18 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                                     <Form.Label>Pago Máximo</Form.Label>
                                                                                     <InputGroup className="mb-2">
                                                                                         <Form.Control
-                                                                                            {...register("pago.dice.max", { valueAsNumber: true, min: 2 })}
+                                                                                            {...register("payment.dice.max", { valueAsNumber: true, min: 2 })}
                                                                                             placeholder={
-                                                                                                dbServer?.pago?.dice?.max
-                                                                                                    ? ConvertString(dbServer.pago.dice.max)
+                                                                                                dbServer?.payment?.dice?.max
+                                                                                                    ? ConvertString(dbServer.payment.dice.max)
                                                                                                     : "No Configurado"
                                                                                             }
                                                                                         />
-                                                                                        {dbServer?.pago?.dice?.max != null ? (
+                                                                                        {dbServer?.payment?.dice?.max != null ? (
                                                                                             <Button
                                                                                                 variant="outline-danger"
                                                                                                 name="deleteCooldownMensajes"
-                                                                                                onClick={() => onDelete("pago.dice.max")}
+                                                                                                onClick={() => onDelete("payment.dice.max")}
                                                                                             >
                                                                                                 Eliminar
                                                                                             </Button>
@@ -907,18 +951,21 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                                     <Form.Label>Multa Mínima</Form.Label>
                                                                                     <InputGroup className="mb-2">
                                                                                         <Form.Control
-                                                                                            {...register("multa.dice.min", { valueAsNumber: true, min: 1 })}
+                                                                                            {...register("fineAmount.dice.min", {
+                                                                                                valueAsNumber: true,
+                                                                                                min: 1
+                                                                                            })}
                                                                                             placeholder={
-                                                                                                dbServer?.multa?.dice?.min
-                                                                                                    ? ConvertString(dbServer.multa.dice.min)
+                                                                                                dbServer?.fineAmount?.dice?.min
+                                                                                                    ? ConvertString(dbServer.fineAmount.dice.min)
                                                                                                     : "No Configurado"
                                                                                             }
                                                                                         />
-                                                                                        {dbServer?.multa?.dice?.min != null ? (
+                                                                                        {dbServer?.fineAmount?.dice?.min != null ? (
                                                                                             <Button
                                                                                                 variant="outline-danger"
                                                                                                 name="deleteCooldownMensajes"
-                                                                                                onClick={() => onDelete("multa.dice.min")}
+                                                                                                onClick={() => onDelete("fineAmount.dice.min")}
                                                                                             >
                                                                                                 Eliminar
                                                                                             </Button>
@@ -936,18 +983,21 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                                     <Form.Label>Multa Máxima</Form.Label>
                                                                                     <InputGroup className="mb-2">
                                                                                         <Form.Control
-                                                                                            {...register("multa.dice.max", { valueAsNumber: true, min: 2 })}
+                                                                                            {...register("fineAmount.dice.max", {
+                                                                                                valueAsNumber: true,
+                                                                                                min: 2
+                                                                                            })}
                                                                                             placeholder={
-                                                                                                dbServer?.multa?.dice?.max
-                                                                                                    ? ConvertString(dbServer.multa.dice.max)
+                                                                                                dbServer?.fineAmount?.dice?.max
+                                                                                                    ? ConvertString(dbServer.fineAmount.dice.max)
                                                                                                     : "No Configurado"
                                                                                             }
                                                                                         />
-                                                                                        {dbServer?.multa?.dice?.max != null ? (
+                                                                                        {dbServer?.fineAmount?.dice?.max != null ? (
                                                                                             <Button
                                                                                                 variant="outline-danger"
                                                                                                 name="deleteCooldownMensajes"
-                                                                                                onClick={() => onDelete("multa.dice.max")}
+                                                                                                onClick={() => onDelete("fineAmount.dice.max")}
                                                                                             >
                                                                                                 Eliminar
                                                                                             </Button>
@@ -999,18 +1049,18 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                             <Form.Label>Pago Mínimo</Form.Label>
                                                                             <InputGroup className="mb-2">
                                                                                 <Form.Control
-                                                                                    {...register("pago.flipcoin.min", { valueAsNumber: true, min: 1 })}
+                                                                                    {...register("payment.flipcoin.min", { valueAsNumber: true, min: 1 })}
                                                                                     placeholder={
-                                                                                        dbServer?.pago?.flipcoin?.min
-                                                                                            ? ConvertString(dbServer.pago.flipcoin.min)
+                                                                                        dbServer?.payment?.flipcoin?.min
+                                                                                            ? ConvertString(dbServer.payment.flipcoin.min)
                                                                                             : "No Configurado"
                                                                                     }
                                                                                 />
-                                                                                {dbServer?.pago?.flipcoin?.min != null ? (
+                                                                                {dbServer?.payment?.flipcoin?.min != null ? (
                                                                                     <Button
                                                                                         variant="outline-danger"
                                                                                         name="deleteCooldownMensajes"
-                                                                                        onClick={() => onDelete("pago.flipcoin.min")}
+                                                                                        onClick={() => onDelete("payment.flipcoin.min")}
                                                                                     >
                                                                                         Eliminar
                                                                                     </Button>
@@ -1021,18 +1071,18 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                             <Form.Label>Pago Máximo</Form.Label>
                                                                             <InputGroup className="mb-2">
                                                                                 <Form.Control
-                                                                                    {...register("pago.flipcoin.max", { valueAsNumber: true, min: 2 })}
+                                                                                    {...register("payment.flipcoin.max", { valueAsNumber: true, min: 2 })}
                                                                                     placeholder={
-                                                                                        dbServer?.pago?.flipcoin?.max
-                                                                                            ? ConvertString(dbServer.pago.flipcoin.max)
+                                                                                        dbServer?.payment?.flipcoin?.max
+                                                                                            ? ConvertString(dbServer.payment.flipcoin.max)
                                                                                             : "No Configurado"
                                                                                     }
                                                                                 />
-                                                                                {dbServer?.pago?.flipcoin?.max != null ? (
+                                                                                {dbServer?.payment?.flipcoin?.max != null ? (
                                                                                     <Button
                                                                                         variant="outline-danger"
                                                                                         name="deleteCooldownMensajes"
-                                                                                        onClick={() => onDelete("pago.flipcoin.max")}
+                                                                                        onClick={() => onDelete("payment.flipcoin.max")}
                                                                                     >
                                                                                         Eliminar
                                                                                     </Button>
@@ -1046,18 +1096,18 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                             <Form.Label>Multa Mínima</Form.Label>
                                                                             <InputGroup className="mb-2">
                                                                                 <Form.Control
-                                                                                    {...register("multa.flipcoin.min", { valueAsNumber: true, min: 1 })}
+                                                                                    {...register("fineAmount.flipcoin.min", { valueAsNumber: true, min: 1 })}
                                                                                     placeholder={
-                                                                                        dbServer?.multa?.flipcoin?.min
-                                                                                            ? ConvertString(dbServer.multa.flipcoin.min)
+                                                                                        dbServer?.fineAmount?.flipcoin?.min
+                                                                                            ? ConvertString(dbServer.fineAmount.flipcoin.min)
                                                                                             : "No Configurado"
                                                                                     }
                                                                                 />
-                                                                                {dbServer?.multa?.flipcoin?.min != null ? (
+                                                                                {dbServer?.fineAmount?.flipcoin?.min != null ? (
                                                                                     <Button
                                                                                         variant="outline-danger"
                                                                                         name="deleteCooldownMensajes"
-                                                                                        onClick={() => onDelete("multa.flipcoin.min")}
+                                                                                        onClick={() => onDelete("fineAmount.flipcoin.min")}
                                                                                     >
                                                                                         Eliminar
                                                                                     </Button>
@@ -1068,18 +1118,18 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                             <Form.Label>Multa Máxima</Form.Label>
                                                                             <InputGroup className="mb-2">
                                                                                 <Form.Control
-                                                                                    {...register("multa.flipcoin.max", { valueAsNumber: true, min: 2 })}
+                                                                                    {...register("fineAmount.flipcoin.max", { valueAsNumber: true, min: 2 })}
                                                                                     placeholder={
-                                                                                        dbServer?.multa?.flipcoin?.max
-                                                                                            ? ConvertString(dbServer.multa.flipcoin.max)
+                                                                                        dbServer?.fineAmount?.flipcoin?.max
+                                                                                            ? ConvertString(dbServer.fineAmount.flipcoin.max)
                                                                                             : "No Configurado"
                                                                                     }
                                                                                 />
-                                                                                {dbServer?.multa?.flipcoin?.max != null ? (
+                                                                                {dbServer?.fineAmount?.flipcoin?.max != null ? (
                                                                                     <Button
                                                                                         variant="outline-danger"
                                                                                         name="deleteCooldownMensajes"
-                                                                                        onClick={() => onDelete("multa.flipcoin.max")}
+                                                                                        onClick={() => onDelete("fineAmount.flipcoin.max")}
                                                                                     >
                                                                                         Eliminar
                                                                                     </Button>
@@ -1126,7 +1176,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                             <InputGroup className="mb-2">
                                                                                 <Form.Control
                                                                                     disabled
-                                                                                    {...register("pago.loot.min")}
+                                                                                    {...register("payment.loot.min")}
                                                                                     placeholder={"No Configurado"}
                                                                                 />
                                                                             </InputGroup>
@@ -1136,7 +1186,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                             <InputGroup className="mb-2">
                                                                                 <Form.Control
                                                                                     disabled
-                                                                                    {...register("pago.loot.max")}
+                                                                                    {...register("payment.loot.max")}
                                                                                     placeholder={"No Configurado"}
                                                                                 />
                                                                             </InputGroup>
@@ -1184,18 +1234,18 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                             <Form.Label>Multa Mínima</Form.Label>
                                                                             <InputGroup className="mb-2">
                                                                                 <Form.Control
-                                                                                    {...register("multa.rob.min", { valueAsNumber: true, min: 1 })}
+                                                                                    {...register("fineAmount.rob.min", { valueAsNumber: true, min: 1 })}
                                                                                     placeholder={
-                                                                                        dbServer?.multa?.rob?.min
-                                                                                            ? ConvertString(dbServer.multa.rob.min)
+                                                                                        dbServer?.fineAmount?.rob?.min
+                                                                                            ? ConvertString(dbServer.fineAmount.rob.min)
                                                                                             : "No Configurado"
                                                                                     }
                                                                                 />
-                                                                                {dbServer?.multa?.rob?.min != null ? (
+                                                                                {dbServer?.fineAmount?.rob?.min != null ? (
                                                                                     <Button
                                                                                         variant="outline-danger"
                                                                                         name="deleteCooldownMensajes"
-                                                                                        onClick={() => onDelete("multa.rob.min")}
+                                                                                        onClick={() => onDelete("fineAmount.rob.min")}
                                                                                     >
                                                                                         Eliminar
                                                                                     </Button>
@@ -1206,18 +1256,18 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                             <Form.Label>Multa Máxima</Form.Label>
                                                                             <InputGroup className="mb-2">
                                                                                 <Form.Control
-                                                                                    {...register("multa.rob.max", { valueAsNumber: true, min: 2 })}
+                                                                                    {...register("fineAmount.rob.max", { valueAsNumber: true, min: 2 })}
                                                                                     placeholder={
-                                                                                        dbServer?.multa?.rob?.max
-                                                                                            ? ConvertString(dbServer.multa.rob.max)
+                                                                                        dbServer?.fineAmount?.rob?.max
+                                                                                            ? ConvertString(dbServer.fineAmount.rob.max)
                                                                                             : "No Configurado"
                                                                                     }
                                                                                 />
-                                                                                {dbServer?.multa?.rob?.max != null ? (
+                                                                                {dbServer?.fineAmount?.rob?.max != null ? (
                                                                                     <Button
                                                                                         variant="outline-danger"
                                                                                         name="deleteCooldownMensajes"
-                                                                                        onClick={() => onDelete("multa.rob.max")}
+                                                                                        onClick={() => onDelete("fineAmount.rob.max")}
                                                                                     >
                                                                                         Eliminar
                                                                                     </Button>
@@ -1264,7 +1314,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                             <InputGroup className="mb-2">
                                                                                 <Form.Control
                                                                                     disabled
-                                                                                    {...register("pago.roulette.min")}
+                                                                                    {...register("payment.roulette.min")}
                                                                                     placeholder={"No Configurado"}
                                                                                 />
                                                                             </InputGroup>
@@ -1274,7 +1324,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                             <InputGroup className="mb-2">
                                                                                 <Form.Control
                                                                                     disabled
-                                                                                    {...register("pago.roulette.max")}
+                                                                                    {...register("payment.roulette.max")}
                                                                                     placeholder={"No Configurado"}
                                                                                 />
                                                                             </InputGroup>
@@ -1324,21 +1374,21 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                                     <Form.Label>Pago Mínimo</Form.Label>
                                                                                     <InputGroup className="mb-2">
                                                                                         <Form.Control
-                                                                                            {...register("pago.slotmachine.min", {
+                                                                                            {...register("payment.slotmachine.min", {
                                                                                                 valueAsNumber: true,
                                                                                                 min: 1
                                                                                             })}
                                                                                             placeholder={
-                                                                                                dbServer?.pago?.slotmachine?.min
-                                                                                                    ? ConvertString(dbServer.pago.slotmachine.min)
+                                                                                                dbServer?.payment?.slotmachine?.min
+                                                                                                    ? ConvertString(dbServer.payment.slotmachine.min)
                                                                                                     : "No Configurado"
                                                                                             }
                                                                                         />
-                                                                                        {dbServer?.pago?.slotmachine?.min != null ? (
+                                                                                        {dbServer?.payment?.slotmachine?.min != null ? (
                                                                                             <Button
                                                                                                 variant="outline-danger"
                                                                                                 name="deleteCooldownMensajes"
-                                                                                                onClick={() => onDelete("pago.slotmachine.min")}
+                                                                                                onClick={() => onDelete("payment.slotmachine.min")}
                                                                                             >
                                                                                                 Eliminar
                                                                                             </Button>
@@ -1349,21 +1399,21 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                                     <Form.Label>Pago Máximo</Form.Label>
                                                                                     <InputGroup className="mb-2">
                                                                                         <Form.Control
-                                                                                            {...register("pago.slotmachine.max", {
+                                                                                            {...register("payment.slotmachine.max", {
                                                                                                 valueAsNumber: true,
                                                                                                 min: 2
                                                                                             })}
                                                                                             placeholder={
-                                                                                                dbServer?.pago?.slotmachine?.max
-                                                                                                    ? ConvertString(dbServer.pago.slotmachine.max)
+                                                                                                dbServer?.payment?.slotmachine?.max
+                                                                                                    ? ConvertString(dbServer.payment.slotmachine.max)
                                                                                                     : "No Configurado"
                                                                                             }
                                                                                         />
-                                                                                        {dbServer?.pago?.slotmachine?.max != null ? (
+                                                                                        {dbServer?.payment?.slotmachine?.max != null ? (
                                                                                             <Button
                                                                                                 variant="outline-danger"
                                                                                                 name="deleteCooldownMensajes"
-                                                                                                onClick={() => onDelete("pago.slotmachine.max")}
+                                                                                                onClick={() => onDelete("payment.slotmachine.max")}
                                                                                             >
                                                                                                 Eliminar
                                                                                             </Button>
@@ -1377,21 +1427,21 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                                     <Form.Label>Multa Mínima</Form.Label>
                                                                                     <InputGroup className="mb-2">
                                                                                         <Form.Control
-                                                                                            {...register("multa.slotmachine.min", {
+                                                                                            {...register("fineAmount.slotmachine.min", {
                                                                                                 valueAsNumber: true,
                                                                                                 min: 1
                                                                                             })}
                                                                                             placeholder={
-                                                                                                dbServer?.multa?.slotmachine?.min
-                                                                                                    ? ConvertString(dbServer.multa.slotmachine.min)
+                                                                                                dbServer?.fineAmount?.slotmachine?.min
+                                                                                                    ? ConvertString(dbServer.fineAmount.slotmachine.min)
                                                                                                     : "No Configurado"
                                                                                             }
                                                                                         />
-                                                                                        {dbServer?.multa?.slotmachine?.min != null ? (
+                                                                                        {dbServer?.fineAmount?.slotmachine?.min != null ? (
                                                                                             <Button
                                                                                                 variant="outline-danger"
                                                                                                 name="deleteCooldownMensajes"
-                                                                                                onClick={() => onDelete("multa.slotmachine.min")}
+                                                                                                onClick={() => onDelete("fineAmount.slotmachine.min")}
                                                                                             >
                                                                                                 Eliminar
                                                                                             </Button>
@@ -1406,21 +1456,21 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                                     <Form.Label>Multa Máxima</Form.Label>
                                                                                     <InputGroup className="mb-2">
                                                                                         <Form.Control
-                                                                                            {...register("multa.slotmachine.max", {
+                                                                                            {...register("fineAmount.slotmachine.max", {
                                                                                                 valueAsNumber: true,
                                                                                                 min: 2
                                                                                             })}
                                                                                             placeholder={
-                                                                                                dbServer?.multa?.slotmachine?.max
-                                                                                                    ? ConvertString(dbServer.multa.slotmachine.max)
+                                                                                                dbServer?.fineAmount?.slotmachine?.max
+                                                                                                    ? ConvertString(dbServer.fineAmount.slotmachine.max)
                                                                                                     : "No Configurado"
                                                                                             }
                                                                                         />
-                                                                                        {dbServer?.multa?.slotmachine?.max != null ? (
+                                                                                        {dbServer?.fineAmount?.slotmachine?.max != null ? (
                                                                                             <Button
                                                                                                 variant="outline-danger"
                                                                                                 name="deleteCooldownMensajes"
-                                                                                                onClick={() => onDelete("multa.slotmachine.max")}
+                                                                                                onClick={() => onDelete("fineAmount.slotmachine.max")}
                                                                                             >
                                                                                                 Eliminar
                                                                                             </Button>
@@ -1473,18 +1523,18 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                                     <Form.Label>Pago Mínimo</Form.Label>
                                                                                     <InputGroup className="mb-2">
                                                                                         <Form.Control
-                                                                                            {...register("pago.trade.min", { valueAsNumber: true, min: 1 })}
+                                                                                            {...register("payment.trade.min", { valueAsNumber: true, min: 1 })}
                                                                                             placeholder={
-                                                                                                dbServer?.pago?.trade?.min
-                                                                                                    ? ConvertString(dbServer.pago.trade.min)
+                                                                                                dbServer?.payment?.trade?.min
+                                                                                                    ? ConvertString(dbServer.payment.trade.min)
                                                                                                     : "No Configurado"
                                                                                             }
                                                                                         />
-                                                                                        {dbServer?.pago?.trade?.min != null ? (
+                                                                                        {dbServer?.payment?.trade?.min != null ? (
                                                                                             <Button
                                                                                                 variant="outline-danger"
                                                                                                 name="deleteCooldownMensajes"
-                                                                                                onClick={() => onDelete("pago.trade.min")}
+                                                                                                onClick={() => onDelete("payment.trade.min")}
                                                                                             >
                                                                                                 Eliminar
                                                                                             </Button>
@@ -1495,18 +1545,18 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                                     <Form.Label>Pago Máximo</Form.Label>
                                                                                     <InputGroup className="mb-2">
                                                                                         <Form.Control
-                                                                                            {...register("pago.trade.max", { valueAsNumber: true, min: 2 })}
+                                                                                            {...register("payment.trade.max", { valueAsNumber: true, min: 2 })}
                                                                                             placeholder={
-                                                                                                dbServer?.pago?.trade?.max
-                                                                                                    ? ConvertString(dbServer.pago.trade.max)
+                                                                                                dbServer?.payment?.trade?.max
+                                                                                                    ? ConvertString(dbServer.payment.trade.max)
                                                                                                     : "No Configurado"
                                                                                             }
                                                                                         />
-                                                                                        {dbServer?.pago?.trade?.max != null ? (
+                                                                                        {dbServer?.payment?.trade?.max != null ? (
                                                                                             <Button
                                                                                                 variant="outline-danger"
                                                                                                 name="deleteCooldownMensajes"
-                                                                                                onClick={() => onDelete("pago.trade.max")}
+                                                                                                onClick={() => onDelete("payment.trade.max")}
                                                                                             >
                                                                                                 Eliminar
                                                                                             </Button>
@@ -1520,18 +1570,21 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                                     <Form.Label>Multa Mínima</Form.Label>
                                                                                     <InputGroup className="mb-2">
                                                                                         <Form.Control
-                                                                                            {...register("multa.trade.min", { valueAsNumber: true, min: 1 })}
+                                                                                            {...register("fineAmount.trade.min", {
+                                                                                                valueAsNumber: true,
+                                                                                                min: 1
+                                                                                            })}
                                                                                             placeholder={
-                                                                                                dbServer?.multa?.trade?.min
-                                                                                                    ? ConvertString(dbServer.multa.trade.min)
+                                                                                                dbServer?.fineAmount?.trade?.min
+                                                                                                    ? ConvertString(dbServer.fineAmount.trade.min)
                                                                                                     : "No Configurado"
                                                                                             }
                                                                                         />
-                                                                                        {dbServer?.multa?.trade?.min != null ? (
+                                                                                        {dbServer?.fineAmount?.trade?.min != null ? (
                                                                                             <Button
                                                                                                 variant="outline-danger"
                                                                                                 name="deleteCooldownMensajes"
-                                                                                                onClick={() => onDelete("multa.trade.min")}
+                                                                                                onClick={() => onDelete("fineAmount.trade.min")}
                                                                                             >
                                                                                                 Eliminar
                                                                                             </Button>
@@ -1546,18 +1599,21 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                                     <Form.Label>Multa Máxima</Form.Label>
                                                                                     <InputGroup className="mb-2">
                                                                                         <Form.Control
-                                                                                            {...register("multa.trade.max", { valueAsNumber: true, min: 2 })}
+                                                                                            {...register("fineAmount.trade.max", {
+                                                                                                valueAsNumber: true,
+                                                                                                min: 2
+                                                                                            })}
                                                                                             placeholder={
-                                                                                                dbServer?.multa?.trade?.max
-                                                                                                    ? ConvertString(dbServer.multa.trade.max)
+                                                                                                dbServer?.fineAmount?.trade?.max
+                                                                                                    ? ConvertString(dbServer.fineAmount.trade.max)
                                                                                                     : "No Configurado"
                                                                                             }
                                                                                         />
-                                                                                        {dbServer?.multa?.trade?.max != null ? (
+                                                                                        {dbServer?.fineAmount?.trade?.max != null ? (
                                                                                             <Button
                                                                                                 variant="outline-danger"
                                                                                                 name="deleteCooldownMensajes"
-                                                                                                onClick={() => onDelete("multa.trade.max")}
+                                                                                                onClick={() => onDelete("fineAmount.trade.max")}
                                                                                             >
                                                                                                 Eliminar
                                                                                             </Button>
@@ -1608,18 +1664,18 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                             <Form.Label>Pago Mínimo</Form.Label>
                                                                             <InputGroup className="mb-2">
                                                                                 <Form.Control
-                                                                                    {...register("pago.work.min", { valueAsNumber: true, min: 1 })}
+                                                                                    {...register("payment.work.min", { valueAsNumber: true, min: 1 })}
                                                                                     placeholder={
-                                                                                        dbServer?.pago?.work?.min
-                                                                                            ? ConvertString(dbServer.pago.work.min)
+                                                                                        dbServer?.payment?.work?.min
+                                                                                            ? ConvertString(dbServer.payment.work.min)
                                                                                             : "No Configurado"
                                                                                     }
                                                                                 />
-                                                                                {dbServer?.pago?.work?.min != null ? (
+                                                                                {dbServer?.payment?.work?.min != null ? (
                                                                                     <Button
                                                                                         variant="outline-danger"
                                                                                         name="deleteCooldownMensajes"
-                                                                                        onClick={() => onDelete("pago.work.min")}
+                                                                                        onClick={() => onDelete("payment.work.min")}
                                                                                     >
                                                                                         Eliminar
                                                                                     </Button>
@@ -1630,18 +1686,18 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                             <Form.Label>Pago Máximo</Form.Label>
                                                                             <InputGroup className="mb-2">
                                                                                 <Form.Control
-                                                                                    {...register("pago.work.max", { valueAsNumber: true, min: 2 })}
+                                                                                    {...register("payment.work.max", { valueAsNumber: true, min: 2 })}
                                                                                     placeholder={
-                                                                                        dbServer?.pago?.work?.max
-                                                                                            ? ConvertString(dbServer.pago.work.max)
+                                                                                        dbServer?.payment?.work?.max
+                                                                                            ? ConvertString(dbServer.payment.work.max)
                                                                                             : "No Configurado"
                                                                                     }
                                                                                 />
-                                                                                {dbServer?.pago?.work?.max != null ? (
+                                                                                {dbServer?.payment?.work?.max != null ? (
                                                                                     <Button
                                                                                         variant="outline-danger"
                                                                                         name="deleteCooldownMensajes"
-                                                                                        onClick={() => onDelete("pago.work.max")}
+                                                                                        onClick={() => onDelete("payment.work.max")}
                                                                                     >
                                                                                         Eliminar
                                                                                     </Button>
@@ -1752,14 +1808,14 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
                                                     variables: {
                                                         id,
                                                         create: true,
-                                                        name: "pago"
+                                                        name: "payment"
                                                     }
                                                 });
                                                 await updateServerGQL({
                                                     variables: {
                                                         id,
                                                         create: true,
-                                                        name: "multa"
+                                                        name: "fineAmount"
                                                     }
                                                 });
                                                 var newData = (

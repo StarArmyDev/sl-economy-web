@@ -1,33 +1,64 @@
-import { Row, Container, Button, Col, ListGroup, Accordion, Spinner, Card } from "react-bootstrap";
-import { ProfilesUserGQL, useQuery } from "../graphql";
-// import { useParams } from "react-router-dom";
-import { IUserObjet } from "interfaces";
+/* eslint-disable react-hooks/rules-of-hooks */
+import { Row, Container, Button, Col, ListGroup, Accordion, Spinner, Card, Modal, useAccordionButton } from "react-bootstrap";
+import { ProfilesUserGQL, DeleteProfileGQL, useQuery, useMutation } from "../graphql";
+import type { IUserObjet } from "interfaces";
+import { Link } from "react-router-dom";
 import { ConvertString } from "libs";
-import { FC } from "react";
+import React, { FC } from "react";
+import Helmet from "react-helmet";
+
+const AccordionToggle = ({ children, eventKey, callback }: { children: any; eventKey: string; callback?: (key: string) => void }) => {
+    const decoratedOnClick = useAccordionButton(eventKey, () => callback && callback(eventKey));
+
+    return (
+        <Card.Header onClick={decoratedOnClick} style={{ cursor: "pointer" }}>
+            {children}
+        </Card.Header>
+    );
+};
 
 export const Profile: FC<{ user: IUserObjet }> = ({ user }) => {
-    // const { id } = useParams();
     if (!user) {
         window.location.replace(`${process.env.REACT_APP_API_URL}/oauth/login`);
         return <></>;
     }
     const defaulURl = "https://cdn.discordapp.com/embed/avatars/0.png";
-    let serversComun: { _id: string; dinero: number; banco: number }[] = [];
 
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const { loading, data } = useQuery(ProfilesUserGQL, { variables: { id: user._id } });
+    const [deleteProfileGQL] = useMutation(DeleteProfileGQL);
+    const [serversComun, setServersComun] = React.useState<{ _id: string; dinero: number; banco: number }[]>([]);
+    const [showModal, setShowModal] = React.useState(false);
+    const [profileID, setProfileID] = React.useState<string | undefined>();
+
+    React.useEffect(() => {
+        if (serversComun.length === 0 && data?.AllProfilesOfUserOnServers) setServersComun(data.AllProfilesOfUserOnServers);
+    }, [data, loading, serversComun]);
 
     if (loading) {
         return (
-            <Container className="text-center">
+            <Container
+                style={{
+                    height: "67vh",
+                    width: "100vw",
+                    position: "relative",
+                    zIndex: 9999,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    display: "flex"
+                }}
+            >
+                <Helmet>
+                    <title>SL-Economy | Perfil</title>
+                </Helmet>
                 <Spinner animation="border" variant="warning" role="status" />
             </Container>
         );
     } else {
-        if (serversComun.length === 0) serversComun = data.AllProfilesOfUserOnServers;
-
         return (
             <Container className="text-center">
+                <Helmet>
+                    <title>SL-Economy | Perfil</title>
+                </Helmet>
                 <Row className="align-items-center">
                     <Container fluid style={{ margin: "20px 0px 20px 0px" }}>
                         <div className="p-top align-middle">
@@ -75,25 +106,26 @@ export const Profile: FC<{ user: IUserObjet }> = ({ user }) => {
                                     </Row>
                                 </ListGroup.Item>
                             ) : null}
-                            {serversComun.map((servidor) => (
-                                <Accordion key={`S_${servidor._id}`}>
-                                    <Accordion.Item eventKey={`S_${servidor._id}`}>
-                                        <Accordion.Header>
+                            <Accordion flush>
+                                {serversComun.map((servidor) => (
+                                    <Card key={`S_${servidor._id}`}>
+                                        <AccordionToggle eventKey={`S_${servidor._id}`}>
                                             <Row className="align-items-center">
-                                                <Col sm={4} className="text-center">
+                                                <Col sm={4} className="text-center" style={{ width: "128px", margin: "0px 10px 0px 10px" }}>
                                                     <img
                                                         alt="Icon_Server"
+                                                        className="img-fluid rounded-circle"
+                                                        style={{ width: "100%" }}
                                                         onError={(e: any) => {
                                                             e.target.onerror = null;
-                                                            e.target.src = defaulURl;
+                                                            e.target.src = defaulURl + "?size=128";
                                                         }}
-                                                        style={{ borderRadius: "900px", width: "50%", margin: "0px 10px 0px 10px" }}
                                                         src={
                                                             user.guilds.findIndex((g) => g.id === servidor._id.split("-")[0]) > -1
                                                                 ? `https://cdn.discordapp.com/icons/${servidor._id.split("-")[0]}/${
                                                                       user.guilds.find((g) => g.id === servidor._id.split("-")[0])!.icon
-                                                                  }.png?size=512`
-                                                                : defaulURl
+                                                                  }.png?size=128`
+                                                                : defaulURl + "?size=128"
                                                         }
                                                     />
                                                 </Col>
@@ -103,8 +135,8 @@ export const Profile: FC<{ user: IUserObjet }> = ({ user }) => {
                                                         : `Servidor Desconocido (ID: ${servidor._id.split("-")[0]})`}
                                                 </Col>
                                             </Row>
-                                        </Accordion.Header>
-                                        <Accordion.Body>
+                                        </AccordionToggle>
+                                        <Accordion.Collapse eventKey={`S_${servidor._id}`}>
                                             <Card.Body>
                                                 <Row className="align-items-center">
                                                     {/* Dinero */}
@@ -121,21 +153,67 @@ export const Profile: FC<{ user: IUserObjet }> = ({ user }) => {
                                                             <span className="text-stats"> {ConvertString(servidor.banco)} </span>
                                                         </div>
                                                     </Col>
-                                                    {/* Top */}
+                                                    {/* Botones */}
                                                     <Col sm={2}>
-                                                        <Button variant="info" href={`/leaderboard/${servidor._id.split("-")[0]}`} style={{ margin: "10%" }}>
-                                                            Top
-                                                        </Button>
+                                                        <Row>
+                                                            <Col sm>
+                                                                {/* Top */}
+                                                                <Link to={`/leaderboard/${servidor._id.split("-")[0]}`}>
+                                                                    <Button variant="info">Top</Button>
+                                                                </Link>
+                                                            </Col>
+                                                            {/* Eliminar */}
+                                                            <Col sm>
+                                                                <Button
+                                                                    variant="danger"
+                                                                    onClick={() => {
+                                                                        setProfileID(servidor._id);
+                                                                        setShowModal(true);
+                                                                    }}
+                                                                >
+                                                                    Eliminar
+                                                                </Button>
+                                                            </Col>
+                                                        </Row>
                                                     </Col>
                                                 </Row>
                                             </Card.Body>
-                                        </Accordion.Body>
-                                    </Accordion.Item>
-                                </Accordion>
-                            ))}
+                                        </Accordion.Collapse>
+                                    </Card>
+                                ))}
+                            </Accordion>
                         </ListGroup>
                     </Col>
                 </Row>
+
+                <Modal show={showModal && profileID !== undefined} onHide={() => setShowModal(false)} backdrop="static" keyboard={false}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>¿Seguro de eliminar tu perfil?</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p>
+                            Si eliminas tu perfil de este servidor, no podrás volver a recuperarlo, y perderás todo tu dinero y tus items adquiridos para
+                            siempre
+                        </p>
+                        <p>Ten en cuenta que puede ser que el servidor no esté disponible por el momento y por eso no veas su icono o su nombre.</p>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => setShowModal(false)}>
+                            Cancelar
+                        </Button>
+                        <Button
+                            variant="primary"
+                            onClick={() => {
+                                deleteProfileGQL({ variables: { id: profileID } });
+                                setServersComun(serversComun.filter((s) => s._id !== profileID));
+                                setProfileID(undefined);
+                                setShowModal(false);
+                            }}
+                        >
+                            Eliminar
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </Container>
         );
     }

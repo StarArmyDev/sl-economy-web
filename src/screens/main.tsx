@@ -8,6 +8,7 @@ import commandLoot from "img/command_loot.png";
 import commandTop from "img/command_top.png";
 import splash from "img/splash.png";
 import { getMonitors } from "libs";
+import Helmet from "react-helmet";
 
 const status: { [k: number]: { text: string; color: string } } = {
     0: { text: "Monitor Pausado", color: "gray" },
@@ -43,8 +44,8 @@ export function Main() {
                 .then((monitors) => {
                     setMonitor((monitors.data.monitors as any[]).find((m) => m.id === 789361399));
                 })
-                .catch((err) => null);
-    });
+                .catch(() => null);
+    }, [monitor]);
 
     const search = useLocation().search;
     const guild_id = new URLSearchParams(search).get("guild_id");
@@ -56,6 +57,9 @@ export function Main() {
     return (
         <div ref={targetRef}>
             <Container>
+                <Helmet>
+                    <title>StarLight Economy | Inicio</title>
+                </Helmet>
                 <Row className="text-center">
                     <Col sm={12} className="py-5">
                         <img src={splash} alt="Banner StarLight-E" style={{ width: "50%" }} />
@@ -66,8 +70,12 @@ export function Main() {
                             {/* Estado */}
                             {monitor && (
                                 <Col sm={2}>
-                                    <Card>Estado</Card>
-                                    <Card bg={status[(monitor as any)?.status].color}>{status[(monitor as any)?.status].text}</Card>
+                                    <Link to="/status" style={{ textDecoration: "none", color: "#fff" }}>
+                                        <Card>
+                                            Estado
+                                            <Card bg={status[(monitor as any)?.status].color}>{status[(monitor as any)?.status].text}</Card>
+                                        </Card>
+                                    </Link>
                                 </Col>
                             )}
                             {/* TopGG */}

@@ -1,5 +1,5 @@
+import type { User } from "components/discord/interface";
 import { MemberCardPopup } from "../MemberCardPopup";
-import { User } from "components/discord/interface";
 
 export const handleMemberClick = (element: React.MouseEvent<HTMLElement, MouseEvent>, member: User) => {
     const { target } = element;
