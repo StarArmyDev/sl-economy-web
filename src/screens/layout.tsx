@@ -9,20 +9,14 @@ export const Layout = ({ user }: { user?: IUserObjet }) => {
     };
 
     return (
-        <>
+        <div style={{ height: "100vh", overflowY: "hidden" }}>
             <NavBar user={user} />
-            <div
-                style={{
-                    height: "85vh",
-                    overflowY: "scroll"
-                }}
-                onScroll={onScroll}
-            >
+            <div style={{ height: "85vh", overflowY: "scroll" }} onScroll={onScroll}>
                 <div className="container-fluid p-4">
                     <Outlet />
                 </div>
                 <Footer />
             </div>
-        </>
+        </div>
     );
 };

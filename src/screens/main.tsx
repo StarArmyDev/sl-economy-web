@@ -281,13 +281,14 @@ export function Main() {
                                     </Card.Header>
                                     <Card.Body>
                                         <Card.Text>
-                                            No te ha pasado que usar una aplicación de origen extranjero y no viene en español o viene pero te tomas con algunos
-                                            textos en inglés a pesar de estar "en español"? No te preocupes, StarLight está pensada por y para hispanohablantes.
+                                            ¿Te ha pasado alguna vez que usas una aplicación de origen extranjero y no viene en español o viene pero te
+                                            encuentras algunos textos en inglés a pesar de estar "en español"? No te preocupes, StarLight está diseñado por y
+                                            para hispanohablantes.
                                             <br />
                                             <br />
                                             <br />
-                                            Es más probable que, configurando el bot en inglés, te encuentres con fracmentos de texto en español. (Se voltearon
-                                            los papeles EU).
+                                            Si configura el bot en inglés, es más probable que encuentre fragmentos o textos en español. (Se voltearon los
+                                            papeles EU!).
                                         </Card.Text>
                                     </Card.Body>
                                 </Card>
