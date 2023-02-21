@@ -1,0 +1,23 @@
+{
+    "loaging": "Cargando",
+    "Grequired": "El campo es requerido",
+    "GonlyNumbers": "Solo números",
+    "GnumberMin": "Mínimo {{min}} dígitos",
+    "GnumberMax": "Máximo {{max}} dígitos",
+    "GnumberInvalid": "El número es inválido",
+    "GinvalidEmail": "El correo electrónico es inválido",
+    "GnotFound": "Sin resultados",
+    "GbuttonNext": "Continuar",
+    "GbuttonCancel": "Cancelar",
+    "GbuttonDelete": "Eliminar",
+    "GbuttonAccept": "Aceptar",
+    "GbuttonClose": "Cerrar",
+    "GbuttonSave": "Guardar",
+    "Gerror": "Error",
+    "Gunknown": "Desconocido",
+    "Gversion": "Versión: {{version}}",
+    "GexpiredTitle": "Sesión Expirada",
+    "GexpiredMessage": "Su sesión ha expirado, por temas de seguridad, se valida cada cierto tiempo",
+    "GexpiredAddTime": "¿Necesita más tiempo?",
+    "GminorTime": "La hora debe ser menor o igual a {{time}}"
+}

@@ -1,0 +1,23 @@
+{
+    "loaging": "Loading",
+    "Grequired": "Field is required",
+    "GonlyNumbers": "Only numbers",
+    "GnumberMin": "Minimum {{min}} digits",
+    "GnumberMax": "Maximum {{max}} digits",
+    "GnumberInvalid": "The number is invalid",
+    "GinvalidEmail": "Invalid email",
+    "GnotFound": "No results",
+    "GbuttonNext": "Continue",
+    "GbuttonCancel": "Cancel",
+    "GbuttonDelete": "Delete",
+    "GbuttonAccept": "OK",
+    "GbuttonClose": "Close",
+    "GbuttonSave": "Save",
+    "Gerror": "Error",
+    "Gunknown": "Unknown",
+    "Gversion": "Version: {{version}}",
+    "GexpiredTitle": "Session Expired",
+    "GexpiredMessage": "Your session has expired, for security reasons, it is validated from time to time",
+    "GexpiredAddTime": "Needs more time?",
+    "GminorTime": "Time must be less than or equal to {{time}}"
+}

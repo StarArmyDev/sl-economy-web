@@ -1,21 +1,15 @@
-export * from '@app/components/navbar';
-export * from '@app/components/footer';
+export * from './Layout';
+export * from './Error';
+export * from './Auth/logout';
 
-export * from './layout';
-
-export * from './about';
-export * from './commands';
-export * from './dashboard';
-export * from './error403';
-export * from './error404';
-export * from './invite';
-export * from './leaderboard';
-export * from './logout';
-export * from './main';
-export * from './profile';
-export * from './support';
-export * from './status';
-
-export * from './privacy';
-export * from './terms';
-export * from './developer';
+export * from './About';
+export * from './Commands';
+export * from './Dashboard';
+export * from './Developer';
+export * from './Invite';
+export * from './Leaderboard';
+export * from './Legal';
+export * from './Main';
+export * from './Profile';
+export * from './Status';
+export * from './Support';

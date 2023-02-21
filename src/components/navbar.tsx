@@ -1,12 +1,15 @@
 import { Navbar, Container, Nav, NavDropdown, Col, Row, Spinner, Image } from 'react-bootstrap';
-import { UpdateGuildsGQL, useMutation, useQuery, UserGuildsGQL } from '../graphql';
-import type { IUserObjet } from '@app/models';
 import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+
+import { UpdateGuildsGQL, useMutation, useQuery, UserGuildsGQL } from '@app/graphql';
+import { useAppSelector } from '@app/storage';
 import { CLIENT_ID } from '@app/helpers';
 import iconImg from '@img/icon.png';
-import { useState } from 'react';
 
-export function NavBar({ user }: { user?: IUserObjet }) {
+export function NavBar() {
+    const user = useAppSelector(state => state.web.user);
+
     const { loading, data, error, refetch } = useQuery(UserGuildsGQL, { variables: { id: user?._id || '0' } });
     const [updateUserGuilds] = useMutation(UpdateGuildsGQL);
     const [guilds, setGuilds] = useState({ admin: [], adminMutual: [], mutual: [] });
@@ -37,7 +40,9 @@ export function NavBar({ user }: { user?: IUserObjet }) {
         setChanges(false);
     }
 
-    if (!loading && !error && changes) loader(data.getUserGuilds);
+    React.useEffect(() => {
+        if (!loading && !error && changes) loader(data.getUserGuilds);
+    }, [loading, error, changes, data]);
 
     return (
         <Navbar expand="lg" bg="dark" variant="dark">

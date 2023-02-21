@@ -1,10 +1,14 @@
+import { User, ErrorResponse } from '@app/models';
 import axios from 'axios';
 
 const baseUrlUpTimeRobot = 'https://api.uptimerobot.com/v2';
 
-export function getUserDetails() {
-    return axios.get(`${import.meta.env.VITE_API_URL}/oauth`, { withCredentials: true });
-}
+export const getUserDetails = async (): Promise<User | undefined> => {
+    return await axios
+        .get<User | ErrorResponse>(`${import.meta.env.VITE_API_URL}/oauth`, { withCredentials: true })
+        .then(res => ('error' in res.data ? undefined : res.data))
+        .catch(() => undefined);
+};
 
 export function getGuildsUser() {
     return axios.get(`${import.meta.env.VITE_API_URL}/oauth/guilds`, { withCredentials: true });

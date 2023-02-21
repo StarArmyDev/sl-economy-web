@@ -10,7 +10,7 @@ export const Error403 = () => {
     return (
         <Container>
             <Helmet>
-                <title>No autorizado</title>
+                <title>No Autorizado</title>
             </Helmet>
             <Row className="text-center pt-4">
                 <Col md={12}>

@@ -116,6 +116,7 @@ export const UpdateServerGQL = gql`
         }
     }
 `;
+
 export const DeleteProfileGQL = gql`
     mutation deleteProfileGQL($id: String!) {
         deleteProfile(id: $id) {

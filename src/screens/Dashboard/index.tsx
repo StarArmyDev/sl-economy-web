@@ -1,5 +1,5 @@
 import { Container, Spinner, Alert, Col, Row, Tab, Nav, Button, Card, Form, InputGroup, Modal } from 'react-bootstrap';
-import React, { useEffect, useState, FC } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
@@ -7,9 +7,10 @@ import styled from 'styled-components';
 import Helmet from 'react-helmet';
 import ms from 'ms';
 
-import { ChannelsGuildGQL, ServerGQL, UpdateServerGQL, useMutation, useQuery } from '../graphql';
+import { ChannelsGuildGQL, ServerGQL, UpdateServerGQL, useMutation, useQuery } from '@app/graphql';
 import { BOT_MANAGER, ConvertString, ConvertorTime } from '@app/helpers';
-import type { ISistemas, IUserObjet } from '@app/models';
+import { useAppSelector } from '@app/storage';
+import type { ISistemas } from '@app/models';
 
 const Styled = styled.div`
     .nav-link.active {
@@ -49,11 +50,14 @@ interface IAlert {
     prefix: string;
 }; */
 
-export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
+export const Dashboard: React.FC = () => {
+    const user = useAppSelector(state => state.web.user);
+
     if (!user) {
         window.history.replaceState(null, 'error403', '/error403');
         return <></>;
     }
+
     const { id } = useParams();
     const [loading, setLoading] = useState(true);
     const [guild, setGuild] = useState(null as any);
@@ -73,7 +77,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
 
     const load = async () => {
         if (!guild || guild.id !== id) {
-            const Servidor = user.guilds.find(g => g.id === id);
+            const Servidor = user.guilds?.find(g => g.id === id);
             setGuild(Servidor);
         }
         setLoading(false);
@@ -94,7 +98,7 @@ export const Dashboard: FC<{ user: IUserObjet }> = ({ user }) => {
 
     useEffect(() => {
         setLoading(true);
-        const guild = user.guilds.find(g => g.id === id);
+        const guild = user.guilds?.find(g => g.id === id);
         if (!guild || (!((guild.permissions & 2146958591) === 2146958591) && !BOT_MANAGER.includes(user._id)))
             return window.location.replace('/error403');
 

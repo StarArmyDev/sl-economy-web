@@ -7,7 +7,7 @@ import commandShop from '@img/command_shop.png';
 import commandLoot from '@img/command_loot.png';
 import commandTop from '@img/command_top.png';
 import splash from '@img/splash.png';
-import { getMonitors } from '@app/helpers';
+import { getMonitors } from '@app/services';
 import Helmet from 'react-helmet';
 
 const status: { [k: number]: { text: string; color: string } } = {

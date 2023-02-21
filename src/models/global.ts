@@ -1,25 +1,3 @@
-export interface IGuildObjet {
-    id: string;
-    name: string;
-    icon: string;
-    owner: boolean;
-    permissions: number;
-    features: string[];
-}
-
-export interface IUserObjet {
-    _id: string;
-    avatar: string;
-    username: string;
-    discriminator: string;
-    flags: number;
-    guilds: IGuildObjet[];
-    /* locale: string;
-    mfa_enabled: boolean;
-    public_flags: number;
-    timestamp: number; */
-}
-
 export interface IPerfil {
     /**
      * Dinero en el bolsillo del usuario.
@@ -252,3 +230,30 @@ export interface IItemInventory {
 }
 
 export type ILanguages = 'en-US' | 'es-ES' | 'es-MX' | 'pt-BR';
+
+export enum Months {
+    'Enero',
+    'Febrero',
+    'Marzo',
+    'Abril',
+    'Mayo',
+    'Junio',
+    'Julio',
+    'Agosto',
+    'Septiembre',
+    'Octubre',
+    'Noviembre',
+    'Diciembre',
+}
+
+export interface AlertMessage {
+    show: boolean;
+    message: string;
+    title?: string;
+    variant?: string;
+    time?: number;
+}
+
+export interface ErrorResponse {
+    error: string;
+}

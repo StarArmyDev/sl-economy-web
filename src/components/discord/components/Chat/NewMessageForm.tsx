@@ -5,7 +5,6 @@ const StyledNewMessageForm = styled.form`
     border-radius: 5px;
     background: rgba(114, 118, 125, 0.3);
     display: flex;
-    align-items: center;
 `;
 
 const StyledDivider = styled.div`

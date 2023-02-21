@@ -1,14 +1,19 @@
 import { Spinner, Container, ListGroup, Col, Row, Badge, Button, Card } from 'react-bootstrap';
-import { GuildGQL, ProfileGQL, useQuery } from '../graphql';
-import React, { Fragment, useState, FC } from 'react';
-import type { IPerfil, IUserObjet } from '@app/models';
-import { ConvertString, EventRegister } from '@app/helpers';
+import React, { Fragment, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Helmet from 'react-helmet';
 
-export const LeaderBoard: FC<{ user?: IUserObjet }> = props => {
+import { ConvertString, EventRegister } from '@app/helpers';
+import { GuildGQL, ProfileGQL, useQuery } from '../../graphql';
+import { useAppSelector } from '@app/storage';
+import type { IPerfil } from '@app/models';
+
+export const LeaderBoard: React.FC = () => {
     const { id } = useParams();
     const defaulURl = 'https://cdn.discordapp.com/embed/avatars/0.png';
+
+    const user = useAppSelector(state => state.web.user);
+
     const [userRank, setUserRank] = useState({
         position: -1,
         dinero: 0,
@@ -28,7 +33,7 @@ export const LeaderBoard: FC<{ user?: IUserObjet }> = props => {
             };
             profiles: IPerfil[];
         };
-    }>(ProfileGQL, { variables: { id, orden, userId: props.user?._id } });
+    }>(ProfileGQL, { variables: { id, orden, userId: user?._id } });
     const GuildData = useQuery(GuildGQL, { variables: { id } });
 
     EventRegister.on('scroll', (e: any) => {
@@ -42,7 +47,7 @@ export const LeaderBoard: FC<{ user?: IUserObjet }> = props => {
     React.useEffect(() => {
         if (data) {
             const list = data.AllProfilesInServer.profiles;
-            if (props.user && userRank.position !== data!.AllProfilesInServer.userRank.position) {
+            if (user && userRank.position !== data!.AllProfilesInServer.userRank.position) {
                 setUserRank({
                     position: data!.AllProfilesInServer.userRank.position,
                     dinero: data!.AllProfilesInServer.userRank.profile?.dinero || 0,
@@ -163,7 +168,7 @@ export const LeaderBoard: FC<{ user?: IUserObjet }> = props => {
                                     </Col>
                                 </Row>
                             ) : null}
-                            {props.user && usersList.length > 0 ? (
+                            {user && usersList.length > 0 ? (
                                 <Fragment>
                                     <ListGroup.Item key="rank">
                                         <Row className="align-items-center">
@@ -182,9 +187,9 @@ export const LeaderBoard: FC<{ user?: IUserObjet }> = props => {
                                                         e.target.src = defaulURl;
                                                     }}
                                                     style={{ borderRadius: '900px', width: '15%', margin: '0px 10px 0px 10px' }}
-                                                    src={`https://cdn.discordapp.com/avatars/${props.user._id}/${props.user.avatar}.png?size=256`}
+                                                    src={`https://cdn.discordapp.com/avatars/${user._id}/${user.avatar}.png?size=256`}
                                                 />
-                                                {props.user.username}
+                                                {user.username}
                                             </Col>
                                             <Col sm={4} className="text-center">
                                                 <Row>

@@ -10,7 +10,7 @@ export const Error404 = () => {
     return (
         <Container>
             <Helmet>
-                <title>Página no encontrada</title>
+                <title>Página No Encontrada</title>
             </Helmet>
             <Row className="text-center pt-4">
                 <Col md={12}>

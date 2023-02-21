@@ -1,6 +1,8 @@
 import { Col, Container, Row } from 'react-bootstrap';
 import type { Embed } from '../../interface';
 import styled from 'styled-components';
+import React from 'react';
+
 import { parseMarkdown } from '@app/helpers';
 
 const StyledMessagesEmbed = styled.div`
@@ -194,7 +196,7 @@ const StyledMessagesEmbed = styled.div`
 `;
 
 const createMessageEmbed = (embed: Embed) => (
-    <>
+    <React.Fragment key={embed.title || '0'}>
         <Container
             className="embed embedFull embedWrapper container"
             style={{ borderColor: embed.color }}
@@ -263,7 +265,7 @@ const createMessageEmbed = (embed: Embed) => (
                 </Col>
             </Container>
         </Container>
-    </>
+    </React.Fragment>
 );
 
 const openImage = (url: string) => {

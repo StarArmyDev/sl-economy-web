@@ -1,10 +1,11 @@
 import { Row, Container, Button, Col, ListGroup, Accordion, Spinner, Card, Modal, useAccordionButton } from 'react-bootstrap';
-import { ProfilesUserGQL, DeleteProfileGQL, useQuery, useMutation } from '../graphql';
-import type { IUserObjet } from '@app/models';
 import { Link } from 'react-router-dom';
-import { ConvertString } from '@app/helpers';
-import React, { FC } from 'react';
 import Helmet from 'react-helmet';
+import React from 'react';
+
+import { ProfilesUserGQL, DeleteProfileGQL, useQuery, useMutation } from '@app/graphql';
+import { useAppSelector } from '@app/storage';
+import { ConvertString } from '@app/helpers';
 
 const AccordionToggle = ({ children, eventKey, callback }: { children: any; eventKey: string; callback?: (key: string) => void }) => {
     const decoratedOnClick = useAccordionButton(eventKey, () => callback && callback(eventKey));
@@ -16,7 +17,9 @@ const AccordionToggle = ({ children, eventKey, callback }: { children: any; even
     );
 };
 
-export const Profile: FC<{ user: IUserObjet }> = ({ user }) => {
+export const Profile: React.FC = () => {
+    const user = useAppSelector(state => state.web.user);
+
     if (!user) {
         window.location.replace(`${import.meta.env.VITE_API_URL}/oauth/login`);
         return <></>;
@@ -119,9 +122,9 @@ export const Profile: FC<{ user: IUserObjet }> = ({ user }) => {
                                                             e.target.src = defaulURl + '?size=128';
                                                         }}
                                                         src={
-                                                            user.guilds.findIndex(g => g.id === servidor._id.split('-')[0]) > -1
+                                                            (user.guilds?.findIndex(g => g.id === servidor._id.split('-')[0]) || -1) > -1
                                                                 ? `https://cdn.discordapp.com/icons/${servidor._id.split('-')[0]}/${
-                                                                      user.guilds.find(g => g.id === servidor._id.split('-')[0])!.icon
+                                                                      user.guilds?.find(g => g.id === servidor._id.split('-')[0])!.icon
                                                                   }.png?size=128`
                                                                 : defaulURl + '?size=128'
                                                         }
@@ -131,8 +134,8 @@ export const Profile: FC<{ user: IUserObjet }> = ({ user }) => {
                                                     sm
                                                     className="align-text-bottom text-center text-sm-start"
                                                     style={{ margin: '20px 0px 20px 0px' }}>
-                                                    {user.guilds.findIndex(g => g.id === servidor._id.split('-')[0]) > -1
-                                                        ? user.guilds.find(g => g.id === servidor._id.split('-')[0])!.name
+                                                    {(user.guilds?.findIndex(g => g.id === servidor._id.split('-')[0]) || -1) > -1
+                                                        ? user.guilds?.find(g => g.id === servidor._id.split('-')[0])!.name
                                                         : `Servidor Desconocido (ID: ${servidor._id.split('-')[0]})`}
                                                 </Col>
                                             </Row>
