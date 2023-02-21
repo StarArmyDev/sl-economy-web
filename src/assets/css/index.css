@@ -8,23 +8,30 @@ body {
 
 /* Trabajar con Firefox */
 * {
-    scrollbar-width: thin; /* "auto" o "thin" */
-    scrollbar-color: rgb(200, 140, 51) rgb(237, 191, 16) orange; /* scroll de desplazamiento y pista */
+    scrollbar-width: thin;
+    /* "auto" o "thin" */
+    scrollbar-color: rgb(200, 140, 51) rgb(237, 191, 16) orange;
+    /* scroll de desplazamiento y pista */
 }
 
 /* Trabajar con Chrome, Edge, and Safari */
 *::-webkit-scrollbar {
-    width: 12px; /* Ancho de toda la barra de desplazamiento */
+    width: 12px;
+    /* Ancho de toda la barra de desplazamiento */
 }
 
 *::-webkit-scrollbar-track {
-    background: rgb(237, 191, 16); /* Color del área de seguimiento */
+    background: rgb(237, 191, 16);
+    /* Color del área de seguimiento */
 }
 
 *::-webkit-scrollbar-thumb {
-    background-color: rgb(200, 140, 51); /* Color del scroll de desplazamiento */
-    border-radius: 20px; /* Ronda del scroll de desplazamiento */
-    border: 3px solid rgb(200, 140, 51); /* Crea relleno alrededor del scroll de desplazamiento */
+    background-color: rgb(200, 140, 51);
+    /* Color del scroll de desplazamiento */
+    border-radius: 20px;
+    /* Ronda del scroll de desplazamiento */
+    border: 3px solid rgb(200, 140, 51);
+    /* Crea relleno alrededor del scroll de desplazamiento */
 }
 
 code {

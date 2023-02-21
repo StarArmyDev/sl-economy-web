@@ -1,9 +1,9 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Container, Spinner } from "react-bootstrap";
-import { useEffect, useState } from "react";
-import type { IUserObjet } from "interfaces";
-import { getUserDetails } from "libs";
-import * as Screens from "screens";
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Container, Spinner } from 'react-bootstrap';
+import { useEffect, useState } from 'react';
+import type { IUserObjet } from '@app/models';
+import { getUserDetails } from '@app/helpers';
+import * as Screens from '@app/screens';
 
 //=========[ Main App
 const App = () => {
@@ -27,15 +27,14 @@ const App = () => {
         return (
             <Container
                 style={{
-                    height: "100vh",
-                    width: "100vw",
-                    position: "relative",
+                    height: '100vh',
+                    width: '100vw',
+                    position: 'relative',
                     zIndex: 9999,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    display: "flex"
-                }}
-            >
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    display: 'flex',
+                }}>
                 <Spinner animation="border" variant="warning" role="status" />
             </Container>
         );

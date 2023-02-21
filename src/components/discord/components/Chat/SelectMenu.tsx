@@ -1,6 +1,6 @@
-import type { SelectMenuComponent } from "../../interface";
-import styled from "styled-components";
-import Select from "react-select";
+import type { SelectMenuComponent } from '../../interface';
+import styled from 'styled-components';
+import Select from 'react-select';
 
 const StyledSelectMenu = styled.div`
     .container {
@@ -42,59 +42,59 @@ export const SelectMenu = ({ data }: { data: SelectMenuComponent }) => {
                     className="select"
                     isDisabled
                     styles={{
-                        menu: (base) => ({
+                        menu: base => ({
                             ...base,
-                            backgroundColor: "#2f3136",
-                            textAlign: "left",
-                            color: "#fff"
+                            backgroundColor: '#2f3136',
+                            textAlign: 'left',
+                            color: '#fff',
                         }),
-                        container: (base) => ({
-                            ...base
-                        }),
-                        control: (base) => ({
+                        container: base => ({
                             ...base,
-                            backgroundColor: "#202225",
-                            color: "#fff",
-                            border: "none"
                         }),
-                        option: (base) => ({
+                        control: base => ({
                             ...base,
-                            borderBottom: "1px dotted pink",
+                            backgroundColor: '#202225',
+                            color: '#fff',
+                            border: 'none',
+                        }),
+                        option: base => ({
+                            ...base,
+                            borderBottom: '1px dotted pink',
                             padding: 10,
-                            ":active": {
-                                ...base[":active"],
-                                backgroundColor: "#202225"
+                            ':active': {
+                                ...base[':active'],
+                                backgroundColor: '#202225',
                             },
-                            ":hover": {
-                                ...base[":hover"],
-                                backgroundColor: "#777"
+                            ':hover': {
+                                ...base[':hover'],
+                                backgroundColor: '#777',
                             },
-                            ":before": {
-                                ...base[":before"],
-                                backgroundColor: "#777"
-                            }
+                            ':before': {
+                                ...base[':before'],
+                                backgroundColor: '#777',
+                            },
                         }),
                         indicatorsContainer: () => ({}),
-                        valueContainer: (base) => ({
-                            ...base
-                        }),
-                        singleValue: (base) => ({
+                        valueContainer: base => ({
                             ...base,
-                            textAlign: "left",
-                            color: "#fff"
                         }),
-                        placeholder: (base) => ({
+                        singleValue: base => ({
                             ...base,
-                            color: "#a3a6aa",
-                            textAlign: "left",
-                            whiteSpace: "nowrap",
-                            lineHeight: "18px"
-                        })
+                            textAlign: 'left',
+                            color: '#fff',
+                        }),
+                        placeholder: base => ({
+                            ...base,
+                            color: '#a3a6aa',
+                            textAlign: 'left',
+                            whiteSpace: 'nowrap',
+                            lineHeight: '18px',
+                        }),
                     }}
                     placeholder={data.placeholder}
-                    options={data.options.map((option) => ({
+                    options={data.options.map(option => ({
                         value: option.value,
-                        label: `${option.emoji || ""} ${option.label}`
+                        label: `${option.emoji || ''} ${option.label}`,
                     }))}
                 />
             </div>

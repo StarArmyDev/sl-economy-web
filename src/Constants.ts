@@ -1,2 +1,0 @@
-export const CLIENT_ID = "696723299459268728";
-export const BOT_MANAGER = ["445746830563868672"];

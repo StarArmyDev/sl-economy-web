@@ -1,13 +1,13 @@
-import { Navbar, Container, Nav, NavDropdown, Col, Row, Spinner, Image } from "react-bootstrap";
-import { UpdateGuildsGQL, useMutation, useQuery, UserGuildsGQL } from "../graphql";
-import type { IUserObjet } from "interfaces";
-import { Link } from "react-router-dom";
-import { CLIENT_ID } from "Constants";
-import iconImg from "img/icon.png";
-import { useState } from "react";
+import { Navbar, Container, Nav, NavDropdown, Col, Row, Spinner, Image } from 'react-bootstrap';
+import { UpdateGuildsGQL, useMutation, useQuery, UserGuildsGQL } from '../graphql';
+import type { IUserObjet } from '@app/models';
+import { Link } from 'react-router-dom';
+import { CLIENT_ID } from '@app/helpers';
+import iconImg from '@img/icon.png';
+import { useState } from 'react';
 
 export function NavBar({ user }: { user?: IUserObjet }) {
-    const { loading, data, error, refetch } = useQuery(UserGuildsGQL, { variables: { id: user?._id || "0" } });
+    const { loading, data, error, refetch } = useQuery(UserGuildsGQL, { variables: { id: user?._id || '0' } });
     const [updateUserGuilds] = useMutation(UpdateGuildsGQL);
     const [guilds, setGuilds] = useState({ admin: [], adminMutual: [], mutual: [] });
     const [changes, setChanges] = useState(true);
@@ -21,10 +21,10 @@ export function NavBar({ user }: { user?: IUserObjet }) {
                 (
                     await updateUserGuilds({
                         variables: {
-                            id: user?._id || "0"
-                        }
+                            id: user?._id || '0',
+                        },
                     })
-                ).data.updateGuilds
+                ).data.updateGuilds,
             );
             await refetch();
             setChanges(true);
@@ -43,23 +43,23 @@ export function NavBar({ user }: { user?: IUserObjet }) {
         <Navbar expand="lg" bg="dark" variant="dark">
             <Container>
                 <Navbar.Brand className="text-center">
-                    <Link to="/" style={{ textDecoration: "none" }}>
+                    <Link to="/" style={{ textDecoration: 'none' }}>
                         <Image className="rounded" src={iconImg} alt="StarLight Economy Logo" width="55%" />
                     </Link>
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="navbarSupportedContent" />
                 <Navbar.Collapse id="navbarNav">
                     <Nav fill>
-                        <Link to="/invite" style={{ textDecoration: "none" }}>
+                        <Link to="/invite" style={{ textDecoration: 'none' }}>
                             <div className="nav-link">Invitar</div>
                         </Link>
-                        <Link to="/commands" style={{ textDecoration: "none" }}>
+                        <Link to="/commands" style={{ textDecoration: 'none' }}>
                             <div className="nav-link">Comandos</div>
                         </Link>
-                        <Link to="/about" style={{ textDecoration: "none" }}>
+                        <Link to="/about" style={{ textDecoration: 'none' }}>
                             <div className="nav-link">Acerca De</div>
                         </Link>
-                        <Link to="/status" style={{ textDecoration: "none" }}>
+                        <Link to="/status" style={{ textDecoration: 'none' }}>
                             <div className="nav-link">Status</div>
                         </Link>
                     </Nav>
@@ -78,9 +78,8 @@ export function NavBar({ user }: { user?: IUserObjet }) {
                                             {guilds.adminMutual.map((servidor: any) => (
                                                 <Link
                                                     to={`/dashboard/${servidor.id}`}
-                                                    style={{ textDecoration: "none", color: "#fff" }}
-                                                    key={`NI${servidor.id}`}
-                                                >
+                                                    style={{ textDecoration: 'none', color: '#fff' }}
+                                                    key={`NI${servidor.id}`}>
                                                     <div className="dropdown-item">
                                                         <Row>
                                                             <Col xs="1" className="material-icons pe-3">
@@ -99,8 +98,10 @@ export function NavBar({ user }: { user?: IUserObjet }) {
                                                     key={`NI${servidor.id}`}
                                                     href={`https://discord.com/oauth2/authorize?client_id=${CLIENT_ID}&permissions=268437520&scope=bot&response_type=code&guild_id=${
                                                         servidor.id
-                                                    }&redirect_uri=${process.env.REACT_APP_REDIRECT_URL?.replace(/\//gi, "%2F").replace(/:/gi, "%3A")}`}
-                                                >
+                                                    }&redirect_uri=${import.meta.env.BASE_URL?.replace(/\//gi, '%2F').replace(
+                                                        /:/gi,
+                                                        '%3A',
+                                                    )}`}>
                                                     <Row>
                                                         <Col xs="1" className="material-icons pe-3">
                                                             add
@@ -125,25 +126,25 @@ export function NavBar({ user }: { user?: IUserObjet }) {
                                         </div>
                                     </NavDropdown>
                                 ) : null}
-                                <Link to="/profile" style={{ textDecoration: "none" }}>
+                                <Link to="/profile" style={{ textDecoration: 'none' }}>
                                     <div className="nav-link">
                                         {user ? (
                                             <img
                                                 className="rounded"
-                                                style={{ borderRadius: 1, margin: "0px 10px 0px 10px" }}
+                                                style={{ borderRadius: 1, margin: '0px 10px 0px 10px' }}
                                                 src={`https://cdn.discordapp.com/avatars/${user._id}/${user.avatar}.png?size=32`}
                                                 alt="avatar"
                                                 onError={(e: any) => {
                                                     e.target.onerror = null;
-                                                    e.target.src = "https://cdn.discordapp.com/embed/avatars/3.png";
-                                                    e.target.style.width = "32px";
+                                                    e.target.src = 'https://cdn.discordapp.com/embed/avatars/3.png';
+                                                    e.target.style.width = '32px';
                                                 }}
                                             />
                                         ) : null}
                                         {user.username}
                                     </div>
                                 </Link>
-                                <Link to="/logout" style={{ textDecoration: "none" }}>
+                                <Link to="/logout" style={{ textDecoration: 'none' }}>
                                     <div className="nav-link">Cerrar Sesión</div>
                                 </Link>
                             </>
@@ -154,9 +155,9 @@ export function NavBar({ user }: { user?: IUserObjet }) {
                                     onClick={() => {
                                         if (windowReference == null || windowReference.closed) {
                                             windowReference = window.open(
-                                                `${process.env.REACT_APP_API_URL}/oauth/login`,
-                                                "",
-                                                "toolbar=0,status=0,width=400,height=800"
+                                                `${import.meta.env.VITE_API_URL}/oauth/login`,
+                                                '',
+                                                'toolbar=0,status=0,width=400,height=800',
                                             );
                                         } else {
                                             windowReference.focus();
@@ -178,8 +179,7 @@ export function NavBar({ user }: { user?: IUserObjet }) {
                                                 }
                                             }, 500);
                                     }}
-                                    style={{ textDecoration: "none" }}
-                                >
+                                    style={{ textDecoration: 'none' }}>
                                     <div className="nav-link">Inciar Sesión</div>
                                 </Link>
                             </>

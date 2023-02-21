@@ -1,6 +1,6 @@
-import { AttachButtonPlusIcon } from "../../icons";
-import styled from "styled-components";
-import { colors } from "../../utils";
+import { AttachButtonPlusIcon } from '../../icons';
+import styled from 'styled-components';
+import { colors } from '../../utils';
 
 const StyledAttachButton = styled.caption`
     background: 0;

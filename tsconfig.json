@@ -1,62 +1,44 @@
 {
     "compilerOptions": {
-        //!=====[ Language and Environment
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
-        "lib": [
-            "dom",
-            "dom.iterable",
-            "ESNext"
-        ],
         "target": "ESNext",
         "useDefineForClassFields": true,
-        //!=====[ Modules
+        "lib": [
+            "DOM",
+            "DOM.Iterable",
+            "ESNext"
+        ],
+        "allowJs": false,
+        "skipLibCheck": true,
+        "esModuleInterop": false,
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
         "module": "ESNext",
         "moduleResolution": "Node",
         "resolveJsonModule": true,
-        "allowJs": true,
-        //!=====[ Type Checking
-        "allowUnreachableCode": false,
-        "allowUnusedLabels": false,
-        //"exactOptionalPropertyTypes": true,
-        "noFallthroughCasesInSwitch": true,
-        //"noImplicitOverride": true,
-        //"noImplicitReturns": true,
-        //"noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "strict": true,
-        "useUnknownInCatchVariables": true,
-        "noImplicitAny": true,
-        //!=====[ Emit
-        "declaration": true,
-        "importHelpers": true,
-        "importsNotUsedAsValues": "error",
-        "inlineSources": true,
-        "newLine": "lf",
-        "noEmitHelpers": true,
-        "preserveConstEnums": true,
-        "removeComments": true,
-        "sourceMap": true,
-        "esModuleInterop": true,
-        "forceConsistentCasingInFileNames": true,
-        //!=====[ Completeness
-        "skipLibCheck": true,
-        //!=====[ Others
-        "allowSyntheticDefaultImports": true,
         "isolatedModules": true,
         "noEmit": true,
+        /* Web */
         "jsx": "react-jsx",
-        "declarationMap": true,
-        "rootDir": "./src",
-        "baseUrl": "./src",
+        "baseUrl": ".",
         "paths": {
-            "src/*": [
-                "./src/*"
+            "@app/*": [
+                "src/*"
+            ],
+            "@css/*": [
+                "src/assets/css/*"
+            ],
+            "@img/*": [
+                "src/assets/img/*"
             ],
         }
     },
-    "exclude": [
-        "node_modules",
-        "**/*.spec.ts"
+    "include": [
+        "src"
+    ],
+    "references": [
+        {
+            "path": "./tsconfig.node.json"
+        }
     ]
 }

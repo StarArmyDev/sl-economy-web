@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { NewMessageForm } from ".";
+import styled from 'styled-components';
+import { NewMessageForm } from '.';
 
 const StyledNewMessageWrapper = styled.div`
     margin: 0 20px;
@@ -11,7 +11,15 @@ const StyledContainer = styled.div`
     padding-top: 20px;
 `;
 
-export const NewMessageWrapper = ({ channelName, isPrivate, isReduced }: { channelName: string; isPrivate?: boolean; isReduced?: boolean }) => (
+export const NewMessageWrapper = ({
+    channelName,
+    isPrivate,
+    isReduced,
+}: {
+    channelName: string;
+    isPrivate?: boolean;
+    isReduced?: boolean;
+}) => (
     <StyledNewMessageWrapper>
         <StyledContainer>
             <NewMessageForm channelName={channelName} isPrivate={isPrivate} isReduced={isReduced} />

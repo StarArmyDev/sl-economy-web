@@ -1,5 +1,5 @@
-import { AttachButton, NewMessageButtons } from ".";
-import styled from "styled-components";
+import { AttachButton, NewMessageButtons } from '.';
+import styled from 'styled-components';
 
 const StyledNewMessageForm = styled.form`
     border-radius: 5px;
@@ -31,13 +31,21 @@ const StyledTextarea = styled.textarea`
     width: 100%;
 `;
 
-export const NewMessageForm = ({ channelName, isPrivate, isReduced }: { channelName: string; isPrivate?: boolean; isReduced?: boolean }) => (
+export const NewMessageForm = ({
+    channelName,
+    isPrivate,
+    isReduced,
+}: {
+    channelName: string;
+    isPrivate?: boolean;
+    isReduced?: boolean;
+}) => (
     <StyledNewMessageForm>
         <AttachButton />
 
         <StyledDivider />
 
-        <StyledTextarea rows={1} placeholder={`Enviar mensaje a ${(isPrivate ? "@" : "#") + channelName}`} />
+        <StyledTextarea rows={1} placeholder={`Enviar mensaje a ${(isPrivate ? '@' : '#') + channelName}`} />
 
         <NewMessageButtons isReduced={isReduced} />
     </StyledNewMessageForm>

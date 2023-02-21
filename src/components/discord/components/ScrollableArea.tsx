@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 const StyledScrollableArea = styled.div`
     /* position: absolute; */
@@ -29,7 +29,7 @@ export const ScrollableArea = ({
     forceVertical,
     tinyStyle,
     autoHide,
-    invisible
+    invisible,
 }: {
     children: any;
     forceVertical?: boolean;
@@ -40,14 +40,13 @@ export const ScrollableArea = ({
     <StyledScrollableArea>
         <div
             className={[
-                "scroller",
-                forceVertical && "force-vertical",
-                !tinyStyle && "scrollbar-default",
-                tinyStyle && "scrollbar-tiny",
-                autoHide && "scrollbar-autoHide",
-                invisible && "scrollbar-invisible"
-            ].join(" ")}
-        >
+                'scroller',
+                forceVertical && 'force-vertical',
+                !tinyStyle && 'scrollbar-default',
+                tinyStyle && 'scrollbar-tiny',
+                autoHide && 'scrollbar-autoHide',
+                invisible && 'scrollbar-invisible',
+            ].join(' ')}>
             {children}
         </div>
     </StyledScrollableArea>

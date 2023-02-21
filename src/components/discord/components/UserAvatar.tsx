@@ -1,22 +1,22 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
-import { constants, colors } from "../utils";
+import { constants, colors } from '../utils';
 
 const StyledUserAvatar = styled.div`
     width: ${(props: { size: string; statusSize: string; fadeHover?: boolean; isBig?: boolean }) => props.size};
-    height: ${(props) => props.size};
+    height: ${props => props.size};
     margin-right: 10px;
     position: relative;
     box-sizing: content-box;
     transition: 0.1s opacity ease-in;
 
     :hover {
-        opacity: ${(props) => (props.fadeHover ? 0.85 : 1)};
+        opacity: ${props => (props.fadeHover ? 0.85 : 1)};
     }
 
     .avatar {
-        width: ${(props) => props.size};
-        height: ${(props) => props.size};
+        width: ${props => props.size};
+        height: ${props => props.size};
         background-size: cover;
         background-position: center;
         border-radius: 50%;
@@ -29,21 +29,21 @@ const StyledUserAvatar = styled.div`
 
     .status {
         position: absolute;
-        width: ${(props) => props.statusSize};
-        height: ${(props) => props.statusSize};
+        width: ${props => props.statusSize};
+        height: ${props => props.statusSize};
 
         background-clip: padding-box;
         border-color: ${colors.grayNormal};
         border-style: solid;
-        border-width: ${(props) => (props.isBig ? 3 : 2)}px;
+        border-width: ${props => (props.isBig ? 3 : 2)}px;
         border-radius: 999px;
-        bottom: ${(props) => (props.isBig ? 0 : -4)}px;
-        right: ${(props) => (props.isBig ? 0 : -2)}px;
+        bottom: ${props => (props.isBig ? 0 : -4)}px;
+        right: ${props => (props.isBig ? 0 : -2)}px;
     }
 
     .status.online {
         background-color: #43b581;
-        box-shadow: ${(props) => props.isBig && "inset 0 0 0 2px rgba(180, 225, 205, 0.6)"};
+        box-shadow: ${props => props.isBig && 'inset 0 0 0 2px rgba(180, 225, 205, 0.6)'};
     }
 `;
 
@@ -52,7 +52,7 @@ export const UserAvatar = ({
     avatarUrl,
     isBig,
     fadeHover,
-    children
+    children,
 }: {
     className?: string;
     avatarUrl?: string;
@@ -60,8 +60,8 @@ export const UserAvatar = ({
     fadeHover?: boolean;
     children?: JSX.Element;
 }) => {
-    const avatarSize = (isBig ? 90 : 30) + "px";
-    const statusSize = (isBig ? 18 : 10) + "px";
+    const avatarSize = (isBig ? 90 : 30) + 'px';
+    const statusSize = (isBig ? 18 : 10) + 'px';
 
     return (
         <StyledUserAvatar className={className} size={avatarSize} statusSize={statusSize} fadeHover={fadeHover} isBig={isBig}>

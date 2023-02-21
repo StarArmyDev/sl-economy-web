@@ -1,5 +1,5 @@
-import { TooltipsContainer } from ".";
-import React from "react";
+import { TooltipsContainer } from '.';
+import React from 'react';
 
 export const TooltipWrapper = ({ direction, content, children }: { direction: string; content: string; children: JSX.Element }) => {
     const handleMouseEnter = (element: any) => {
@@ -8,17 +8,17 @@ export const TooltipWrapper = ({ direction, content, children }: { direction: st
 
         let x, y;
 
-        if (direction === "right") {
+        if (direction === 'right') {
             x = targetRect.left + targetRect.width + 8;
             y = targetRect.top + targetRect.height / 2;
         }
 
-        if (direction === "bottom") {
+        if (direction === 'bottom') {
             x = targetRect.left + targetRect.width / 2;
             y = targetRect.top + targetRect.height + 8;
         }
 
-        if (direction === "top") {
+        if (direction === 'top') {
             x = targetRect.left + targetRect.width / 2;
             y = targetRect.top - 8;
         }
@@ -26,7 +26,7 @@ export const TooltipWrapper = ({ direction, content, children }: { direction: st
         TooltipsContainer.show({
             position: { x, y },
             direction,
-            content
+            content,
         });
     };
 
@@ -34,10 +34,10 @@ export const TooltipWrapper = ({ direction, content, children }: { direction: st
         TooltipsContainer.hide();
     };
 
-    return React.Children.map(children, (child) =>
+    return React.Children.map(children, child =>
         React.cloneElement(child, {
             onMouseEnter: handleMouseEnter,
-            onMouseLeave: handleMouseLeave
-        })
+            onMouseLeave: handleMouseLeave,
+        }),
     )[0];
 };

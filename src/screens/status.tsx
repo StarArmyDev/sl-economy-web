@@ -1,15 +1,15 @@
-import { Container, Row, Col, Card } from "react-bootstrap";
-import { CircularProgress, Divider } from "@mui/material";
-import { useState, useEffect } from "react";
-import { getMonitors } from "libs";
-import Helmet from "react-helmet";
+import { Container, Row, Col, Card } from 'react-bootstrap';
+import { CircularProgress, Divider } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { getMonitors } from '@app/helpers';
+import Helmet from 'react-helmet';
 
 const status: { [k: number]: { text: string; color: string } } = {
-    0: { text: "Monitor Pausado", color: "gray" },
-    1: { text: "No Comprobado Todavía", color: "#f29030" },
-    2: { text: "En Linea", color: "#3bd671" },
-    8: { text: "Desconocido", color: "black" },
-    9: { text: "Caído", color: "#ba3737" }
+    0: { text: 'Monitor Pausado', color: 'gray' },
+    1: { text: 'No Comprobado Todavía', color: '#f29030' },
+    2: { text: 'En Linea', color: '#3bd671' },
+    8: { text: 'Desconocido', color: 'black' },
+    9: { text: 'Caído', color: '#ba3737' },
 };
 
 export const Status = () => {
@@ -20,12 +20,12 @@ export const Status = () => {
     useEffect(() => {
         if (!bot || !backend)
             getMonitors()
-                .then((monit) => {
-                    setBot((monit.data.monitors as IStatus[]).find((m) => [789361399].includes(m.id)));
-                    setBackend((monit.data.monitors as IStatus[]).find((m) => [786758750].includes(m.id)));
+                .then(monit => {
+                    setBot((monit.data.monitors as IStatus[]).find(m => [789361399].includes(m.id)));
+                    setBackend((monit.data.monitors as IStatus[]).find(m => [786758750].includes(m.id)));
                     setLoading(false);
                 })
-                .catch((_) => setLoading(false));
+                .catch(() => setLoading(false));
     });
 
     return (
@@ -37,7 +37,7 @@ export const Status = () => {
                 <h2>
                     <Row className="align-items-center">
                         <Col className="text-end">
-                            <i className="material-icons" style={{ fontSize: "300%" }}>
+                            <i className="material-icons" style={{ fontSize: '300%' }}>
                                 dns
                             </i>
                         </Col>
@@ -58,39 +58,38 @@ export const Status = () => {
                                         <i
                                             className="material-icons col-1 mx-5"
                                             style={{
-                                                fontSize: "400%",
+                                                fontSize: '400%',
                                                 color:
                                                     !bot && !backend
-                                                        ? ""
+                                                        ? ''
                                                         : bot?.status === 2 && backend?.status === 2
-                                                        ? "#3bd671"
+                                                        ? '#3bd671'
                                                         : ![0, 2].includes(bot?.status || 0) && ![0, 2].includes(backend?.status || 0)
-                                                        ? "#ba3737"
-                                                        : "#f29030"
-                                            }}
-                                        >
+                                                        ? '#ba3737'
+                                                        : '#f29030',
+                                            }}>
                                             circle
                                         </i>
                                         <h4 className="col">
                                             {!bot && !backend ? (
-                                                "Desconocido"
+                                                'Desconocido'
                                             ) : (
                                                 <>
                                                     {bot?.status === 2 && backend?.status === 2
-                                                        ? "Todos los sitemas"
+                                                        ? 'Todos los sitemas'
                                                         : ![0, 2].includes(bot?.status || 0) && ![0, 2].includes(backend?.status || 0)
-                                                        ? "Todos los sistemas no"
-                                                        : "Algunos Sistemas"}{" "}
+                                                        ? 'Todos los sistemas no'
+                                                        : 'Algunos Sistemas'}{' '}
                                                     <span
                                                         style={{
                                                             color:
                                                                 bot?.status === 2 && backend?.status === 2
-                                                                    ? "#3bd671"
-                                                                    : ![0, 2].includes(bot?.status || 0) && ![0, 2].includes(backend?.status || 0)
-                                                                    ? "#ba3737"
-                                                                    : "#f29030"
-                                                        }}
-                                                    >
+                                                                    ? '#3bd671'
+                                                                    : ![0, 2].includes(bot?.status || 0) &&
+                                                                      ![0, 2].includes(backend?.status || 0)
+                                                                    ? '#ba3737'
+                                                                    : '#f29030',
+                                                        }}>
                                                         operativos
                                                     </span>
                                                 </>
@@ -107,7 +106,7 @@ export const Status = () => {
                                         <Row key={bot.id} className="m-2 align-items-center text-center">
                                             <Col sm>
                                                 <h4>{bot.friendly_name}</h4>
-                                                <h6 style={{ color: "#edbf10" }}> Bot de Discord</h6>
+                                                <h6 style={{ color: '#edbf10' }}> Bot de Discord</h6>
                                             </Col>
                                             <Col sm>
                                                 <Card style={{ backgroundColor: status[bot.status].color }}>{status[bot.status].text}</Card>
@@ -119,11 +118,13 @@ export const Status = () => {
                                         <Row key={backend.id} className="m-2 align-items-center text-center">
                                             <Col sm>
                                                 <h4>{backend.friendly_name}</h4>
-                                                <h6 style={{ color: "#edbf10" }}>Backend para la web</h6>
+                                                <h6 style={{ color: '#edbf10' }}>Backend para la web</h6>
                                             </Col>
                                             <Col sm>
                                                 <p>
-                                                    <Card style={{ backgroundColor: status[backend.status].color }}>{status[backend.status].text}</Card>
+                                                    <Card style={{ backgroundColor: status[backend.status].color }}>
+                                                        {status[backend.status].text}
+                                                    </Card>
                                                 </p>
                                             </Col>
                                         </Row>
@@ -135,7 +136,7 @@ export const Status = () => {
                     </>
                 )}
                 <p>
-                    Más detalles en{" "}
+                    Más detalles en{' '}
                     <a href="https://stats.uptimerobot.com/yX0r2hN910" target="__blank">
                         UptimeRobot
                     </a>
@@ -198,6 +199,6 @@ interface IStatus {
             type: number;
             datetime: number;
             duration: number;
-        }
+        },
     ];
 }

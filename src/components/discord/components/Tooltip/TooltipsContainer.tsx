@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import { Component } from "react";
-import { Tooltip } from ".";
+import styled from 'styled-components';
+import { Component } from 'react';
+import { Tooltip } from '.';
 
 const StyledTooltipsContainer = styled.div`
     position: absolute;
@@ -13,7 +13,7 @@ const StyledTooltipWrapper = styled.div`
     z-index: 999;
 
     top: ${(props: { position: { x: number; y: number } }) => props.position && props.position.y}px;
-    left: ${(props) => props.position && props.position.x}px;
+    left: ${props => props.position && props.position.x}px;
 
     &.bottom {
         transform: translateX(-50%);
@@ -31,7 +31,10 @@ const StyledTooltipWrapper = styled.div`
 export class TooltipsContainer extends Component {
     state = { isVisible: false } as { isVisible: boolean; content: string; direction: string; position: { x: number; y: number } };
 
-    static instance: { showTooltip: (arg0: { content: string; direction: string; position: { x: number; y: number } }) => any; hideTooltip: () => any };
+    static instance: {
+        showTooltip: (arg0: { content: string; direction: string; position: { x: number; y: number } }) => any;
+        hideTooltip: () => any;
+    };
     static show(config: { content: string; direction: string; position: { x: number; y: number } }) {
         this.instance && this.instance.showTooltip(config);
     }
@@ -44,7 +47,7 @@ export class TooltipsContainer extends Component {
             isVisible: true,
             direction,
             content,
-            position
+            position,
         });
     };
 

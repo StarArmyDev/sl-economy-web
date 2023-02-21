@@ -1,8 +1,8 @@
-import { handleMemberClick, ReplyMessage } from ".";
-import { constants, colors } from "../../utils";
-import type { Reply, User } from "../../interface";
-import styled from "styled-components";
-import React from "react";
+import { handleMemberClick, ReplyMessage } from '.';
+import { constants, colors } from '../../utils';
+import type { Reply, User } from '../../interface';
+import styled from 'styled-components';
+import React from 'react';
 
 const StyledMemberMessageGroup = styled.div`
     padding: 20px 0;
@@ -21,7 +21,9 @@ const StyledMemberMessageGroup = styled.div`
 
 export const MemberMessageGroup = ({ member, time, children }: { member: User; time: Date; children: JSX.Element[] }) => (
     <StyledMemberMessageGroup>
-        {React.Children.map(children, (child, index) => React.cloneElement(child, { member, time, isHeading: index === 0, handleMemberClick }))}
+        {React.Children.map(children, (child, index) =>
+            React.cloneElement(child, { member, time, isHeading: index === 0, handleMemberClick }),
+        )}
         <div className="divider" />
     </StyledMemberMessageGroup>
 );
@@ -89,7 +91,7 @@ export const MemberMessage = ({
     reply,
     time,
     children,
-    isHeading
+    isHeading,
 }: {
     user: User;
     time: Date;
@@ -100,16 +102,16 @@ export const MemberMessage = ({
     const rol = user.roles ? user.roles[0] : undefined;
 
     return (
-        <StyledMessage usernameColor={rol?.color || "#fff"}>
+        <StyledMessage usernameColor={rol?.color || '#fff'}>
             <>
                 {reply && <ReplyMessage reply={reply} />}
                 {isHeading && (
                     <div className="header">
-                        <div className="avatar-wrapper" onClick={(e) => handleMemberClick(e, user)}>
+                        <div className="avatar-wrapper" onClick={e => handleMemberClick(e, user)}>
                             <div className="avatar" style={{ backgroundImage: `url(${user.avatarUrl || constants.defaultAvatar})` }} />
                         </div>
                         <div className="data">
-                            <span className="username" onClick={(e) => handleMemberClick(e, user)}>
+                            <span className="username" onClick={e => handleMemberClick(e, user)}>
                                 {user.username}
                             </span>
                             <span className="time">{time.toLocaleDateString()}</span>

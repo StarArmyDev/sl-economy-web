@@ -1,4 +1,4 @@
-import { gql, useMutation } from "@apollo/client";
+import { gql, useMutation } from '@apollo/client';
 
 export const UpdateServerGQL = gql`
     mutation updateServerGQL($id: String!, $name: String!, $value: String, $valueNumber: Float, $create: Boolean = false) {

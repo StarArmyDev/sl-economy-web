@@ -11,7 +11,14 @@ export interface Command {
     options?: CommandOptionData[];
 }
 
-export type CommandOptionData = SubGroupData | NonOptionsData | ChannelOptionData | ChoicesData | AutocompleteOption | NumericOptionData | SubCommandData;
+export type CommandOptionData =
+    | SubGroupData
+    | NonOptionsData
+    | ChannelOptionData
+    | ChoicesData
+    | AutocompleteOption
+    | NumericOptionData
+    | SubCommandData;
 
 export interface BaseCommandOptionsData {
     name: string;
@@ -46,7 +53,7 @@ export interface ChannelOptionData extends BaseCommandOptionsData {
     channel_types?: ChannelType[];
 }
 
-export interface AutocompleteOption extends Omit<BaseCommandOptionsData, "autocomplete"> {
+export interface AutocompleteOption extends Omit<BaseCommandOptionsData, 'autocomplete'> {
     type: OptionType.String | OptionType.Number | OptionType.Integer;
     autocomplete: true;
 }
@@ -74,7 +81,7 @@ export enum OptionType {
     Role = 8,
     Mentionable = 9,
     Number = 10,
-    Attachment = 11
+    Attachment = 11,
 }
 
 export enum ChannelType {
@@ -89,7 +96,7 @@ export enum ChannelType {
     GuildPrivateThread = 12,
     GuildStageVoice = 13,
     GuildDirectory = 14,
-    GuildForum = 15
+    GuildForum = 15,
 }
 
 export type TypeResolvable = OptionType;

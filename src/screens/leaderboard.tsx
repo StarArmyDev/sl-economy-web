@@ -1,18 +1,18 @@
-import { Spinner, Container, ListGroup, Col, Row, Badge, Button, Card } from "react-bootstrap";
-import { GuildGQL, ProfileGQL, useQuery } from "../graphql";
-import React, { Fragment, useState, FC } from "react";
-import type { IPerfil, IUserObjet } from "interfaces";
-import { ConvertString, EventRegister } from "libs";
-import { useParams } from "react-router-dom";
-import Helmet from "react-helmet";
+import { Spinner, Container, ListGroup, Col, Row, Badge, Button, Card } from 'react-bootstrap';
+import { GuildGQL, ProfileGQL, useQuery } from '../graphql';
+import React, { Fragment, useState, FC } from 'react';
+import type { IPerfil, IUserObjet } from '@app/models';
+import { ConvertString, EventRegister } from '@app/helpers';
+import { useParams } from 'react-router-dom';
+import Helmet from 'react-helmet';
 
-export const LeaderBoard: FC<{ user?: IUserObjet }> = (props) => {
+export const LeaderBoard: FC<{ user?: IUserObjet }> = props => {
     const { id } = useParams();
-    const defaulURl = "https://cdn.discordapp.com/embed/avatars/0.png";
+    const defaulURl = 'https://cdn.discordapp.com/embed/avatars/0.png';
     const [userRank, setUserRank] = useState({
         position: -1,
         dinero: 0,
-        banco: 0
+        banco: 0,
     });
 
     const [usersList, setUsersList] = useState<IPerfil[]>([]);
@@ -31,7 +31,7 @@ export const LeaderBoard: FC<{ user?: IUserObjet }> = (props) => {
     }>(ProfileGQL, { variables: { id, orden, userId: props.user?._id } });
     const GuildData = useQuery(GuildGQL, { variables: { id } });
 
-    EventRegister.on("scroll", (e: any) => {
+    EventRegister.on('scroll', (e: any) => {
         const target = e.target;
 
         if (target.scrollHeight - target.scrollTop <= target.clientHeight + 100) {
@@ -46,29 +46,27 @@ export const LeaderBoard: FC<{ user?: IUserObjet }> = (props) => {
                 setUserRank({
                     position: data!.AllProfilesInServer.userRank.position,
                     dinero: data!.AllProfilesInServer.userRank.profile?.dinero || 0,
-                    banco: data!.AllProfilesInServer.userRank.profile?.banco || 0
+                    banco: data!.AllProfilesInServer.userRank.profile?.banco || 0,
                 });
             }
 
             setGuildDiscord(GuildData.data.getGuild);
             setUsersList(list);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data]);
 
     if (loading || GuildData.loading)
         return (
             <Container
                 style={{
-                    height: "67vh",
-                    width: "100vw",
-                    position: "relative",
+                    height: '67vh',
+                    width: '100vw',
+                    position: 'relative',
                     zIndex: 9999,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    display: "flex"
-                }}
-            >
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    display: 'flex',
+                }}>
                 <Helmet>
                     <title>SL-Economy | Leaderboard</title>
                 </Helmet>
@@ -82,7 +80,7 @@ export const LeaderBoard: FC<{ user?: IUserObjet }> = (props) => {
                     <Col md={12}>
                         <h2>
                             <p>
-                                <i className="material-icons" style={{ fontSize: "300%" }}>
+                                <i className="material-icons" style={{ fontSize: '300%' }}>
                                     search_off
                                 </i>
                             </p>
@@ -100,8 +98,7 @@ export const LeaderBoard: FC<{ user?: IUserObjet }> = (props) => {
                                 e.preventDefault();
                                 // Regresar a la página anterior
                                 window.history.back();
-                            }}
-                        >
+                            }}>
                             <i className="material-icons align-middle">reply</i>Volver
                         </Button>
                     </Col>
@@ -112,7 +109,7 @@ export const LeaderBoard: FC<{ user?: IUserObjet }> = (props) => {
         return (
             <Container>
                 <Helmet>
-                    <title>Leaderboard | {guildDiscord?.name || ""}</title>
+                    <title>Leaderboard | {guildDiscord?.name || ''}</title>
                 </Helmet>
                 <Row>
                     <Col></Col>
@@ -129,7 +126,7 @@ export const LeaderBoard: FC<{ user?: IUserObjet }> = (props) => {
                                                 e.target.src = defaulURl;
                                             }}
                                             className="img-fluid rounded"
-                                            style={{ width: "40%", margin: "5%" }}
+                                            style={{ width: '40%', margin: '5%' }}
                                             src={`https://cdn.discordapp.com/icons/${id}/${guildDiscord.icon}.png?size=128`}
                                         />
                                     </Col>
@@ -143,15 +140,24 @@ export const LeaderBoard: FC<{ user?: IUserObjet }> = (props) => {
                             {usersList.length > 2 ? (
                                 <Row>
                                     <Col className="text-center">
-                                        <Button variant="outline-warning" style={{ margin: "1% 2% 1% 2%" }} onClick={() => setOrden({ dinero: -1 })}>
+                                        <Button
+                                            variant="outline-warning"
+                                            style={{ margin: '1% 2% 1% 2%' }}
+                                            onClick={() => setOrden({ dinero: -1 })}>
                                             Dinero
                                         </Button>
 
-                                        <Button variant="outline-warning" style={{ margin: "1% 2% 1% 2%" }} onClick={() => setOrden({ banco: -1 })}>
+                                        <Button
+                                            variant="outline-warning"
+                                            style={{ margin: '1% 2% 1% 2%' }}
+                                            onClick={() => setOrden({ banco: -1 })}>
                                             Banco
                                         </Button>
 
-                                        <Button variant="outline-warning" style={{ margin: "1% 2% 1% 2%" }} onClick={() => setOrden({ total: -1 })}>
+                                        <Button
+                                            variant="outline-warning"
+                                            style={{ margin: '1% 2% 1% 2%' }}
+                                            onClick={() => setOrden({ total: -1 })}>
                                             Total
                                         </Button>
                                     </Col>
@@ -175,7 +181,7 @@ export const LeaderBoard: FC<{ user?: IUserObjet }> = (props) => {
                                                         e.target.onerror = null;
                                                         e.target.src = defaulURl;
                                                     }}
-                                                    style={{ borderRadius: "900px", width: "15%", margin: "0px 10px 0px 10px" }}
+                                                    style={{ borderRadius: '900px', width: '15%', margin: '0px 10px 0px 10px' }}
                                                     src={`https://cdn.discordapp.com/avatars/${props.user._id}/${props.user.avatar}.png?size=256`}
                                                 />
                                                 {props.user.username}
@@ -196,7 +202,11 @@ export const LeaderBoard: FC<{ user?: IUserObjet }> = (props) => {
                                     <Row className="align-items-center">
                                         <Col sm={1} className="text-center"></Col>
                                         <Col sm className="text-start">
-                                            <img alt="" style={{ borderRadius: "900px", width: "15%", margin: "0px 10px 0px 10px" }} src={defaulURl} />
+                                            <img
+                                                alt=""
+                                                style={{ borderRadius: '900px', width: '15%', margin: '0px 10px 0px 10px' }}
+                                                src={defaulURl}
+                                            />
                                             Sin datos
                                         </Col>
                                         <Col sm={4} className="text-center"></Col>
@@ -220,14 +230,14 @@ export const LeaderBoard: FC<{ user?: IUserObjet }> = (props) => {
                                                         e.target.onerror = null;
                                                         e.target.src = defaulURl;
                                                     }}
-                                                    style={{ borderRadius: "900px", width: "15%", margin: "0px 10px 0px 10px" }}
+                                                    style={{ borderRadius: '900px', width: '15%', margin: '0px 10px 0px 10px' }}
                                                     src={
                                                         dato.user && dato.user.avatar
                                                             ? `https://cdn.discordapp.com/avatars/${dato.user._id}/${dato.user.avatar}.png?size=64`
                                                             : defaulURl
                                                     }
                                                 />
-                                                {dato.user ? dato.user.username : `ID: ${(dato._id as string).split("-")[1]}`}
+                                                {dato.user ? dato.user.username : `ID: ${(dato._id as string).split('-')[1]}`}
                                             </Col>
                                             <Col sm={4} className="text-center">
                                                 <Row>

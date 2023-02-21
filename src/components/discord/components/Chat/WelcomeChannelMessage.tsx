@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { colors } from "../../utils";
+import styled from 'styled-components';
+import { colors } from '../../utils';
 
 const StyledWelcomeChannelMessage = styled.div`
     margin: 0 20px;

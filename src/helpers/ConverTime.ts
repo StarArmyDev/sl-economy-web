@@ -4,7 +4,7 @@
  * @returns {string} El tiempo convertido a una fecha legible.
  */
 export const ConvertorTime = (ms: string | number): string => {
-    if (typeof ms == "string") ms = parseInt(ms);
+    if (typeof ms == 'string') ms = parseInt(ms);
     const años = Math.floor(ms / (1000 * 60 * 60 * 24 * 365));
     const meses = Math.floor((ms % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30));
     const dias = Math.floor((ms % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));
@@ -12,7 +12,7 @@ export const ConvertorTime = (ms: string | number): string => {
     const minutos = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
     const segundos = Math.floor((ms % (1000 * 60)) / 1000);
 
-    let final = "";
+    let final = '';
     if (años > 0) final += años > 1 ? `${años} años, ` : `${años} año, `;
     if (meses > 0) final += meses > 1 ? `${meses} meses, ` : `${meses} mes, `;
     if (dias > 0) final += dias > 1 ? `${dias} dias, ` : `${dias} dia, `;

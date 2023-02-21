@@ -1,17 +1,16 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-import { Row, Container, Button, Col, ListGroup, Accordion, Spinner, Card, Modal, useAccordionButton } from "react-bootstrap";
-import { ProfilesUserGQL, DeleteProfileGQL, useQuery, useMutation } from "../graphql";
-import type { IUserObjet } from "interfaces";
-import { Link } from "react-router-dom";
-import { ConvertString } from "libs";
-import React, { FC } from "react";
-import Helmet from "react-helmet";
+import { Row, Container, Button, Col, ListGroup, Accordion, Spinner, Card, Modal, useAccordionButton } from 'react-bootstrap';
+import { ProfilesUserGQL, DeleteProfileGQL, useQuery, useMutation } from '../graphql';
+import type { IUserObjet } from '@app/models';
+import { Link } from 'react-router-dom';
+import { ConvertString } from '@app/helpers';
+import React, { FC } from 'react';
+import Helmet from 'react-helmet';
 
 const AccordionToggle = ({ children, eventKey, callback }: { children: any; eventKey: string; callback?: (key: string) => void }) => {
     const decoratedOnClick = useAccordionButton(eventKey, () => callback && callback(eventKey));
 
     return (
-        <Card.Header onClick={decoratedOnClick} style={{ cursor: "pointer" }}>
+        <Card.Header onClick={decoratedOnClick} style={{ cursor: 'pointer' }}>
             {children}
         </Card.Header>
     );
@@ -19,10 +18,10 @@ const AccordionToggle = ({ children, eventKey, callback }: { children: any; even
 
 export const Profile: FC<{ user: IUserObjet }> = ({ user }) => {
     if (!user) {
-        window.location.replace(`${process.env.REACT_APP_API_URL}/oauth/login`);
+        window.location.replace(`${import.meta.env.VITE_API_URL}/oauth/login`);
         return <></>;
     }
-    const defaulURl = "https://cdn.discordapp.com/embed/avatars/0.png";
+    const defaulURl = 'https://cdn.discordapp.com/embed/avatars/0.png';
 
     const { loading, data } = useQuery(ProfilesUserGQL, { variables: { id: user._id } });
     const [deleteProfileGQL] = useMutation(DeleteProfileGQL);
@@ -38,15 +37,14 @@ export const Profile: FC<{ user: IUserObjet }> = ({ user }) => {
         return (
             <Container
                 style={{
-                    height: "67vh",
-                    width: "100vw",
-                    position: "relative",
+                    height: '67vh',
+                    width: '100vw',
+                    position: 'relative',
                     zIndex: 9999,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    display: "flex"
-                }}
-            >
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    display: 'flex',
+                }}>
                 <Helmet>
                     <title>SL-Economy | Perfil</title>
                 </Helmet>
@@ -60,25 +58,25 @@ export const Profile: FC<{ user: IUserObjet }> = ({ user }) => {
                     <title>SL-Economy | Perfil</title>
                 </Helmet>
                 <Row className="align-items-center">
-                    <Container fluid style={{ margin: "20px 0px 20px 0px" }}>
+                    <Container fluid style={{ margin: '20px 0px 20px 0px' }}>
                         <div className="p-top align-middle">
                             <Row className="align-items-center">
-                                <Col sm className="text-center" style={{ margin: "20px 0px 20px 0px" }}>
+                                <Col sm className="text-center" style={{ margin: '20px 0px 20px 0px' }}>
                                     <img
                                         alt="avatar"
                                         onError={(e: any) => {
                                             e.target.onerror = null;
-                                            e.target.src = "https://cdn.discordapp.com/embed/avatars/3.png";
+                                            e.target.src = 'https://cdn.discordapp.com/embed/avatars/3.png';
                                         }}
                                         className="img-fluid rounded"
-                                        style={{ width: "25%" }}
+                                        style={{ width: '25%' }}
                                         src={`https://cdn.discordapp.com/avatars/${user._id}/${user.avatar}.png?size=256`}
                                     />
                                 </Col>
                                 <Col sm className="text-center">
-                                    <span className="h3" style={{ color: "aliceblue" }}>
-                                        {user.username}{" "}
-                                        <span className="h6" style={{ color: "rgb(21, 219, 226)" }}>
+                                    <span className="h3" style={{ color: 'aliceblue' }}>
+                                        {user.username}{' '}
+                                        <span className="h6" style={{ color: 'rgb(21, 219, 226)' }}>
                                             #{user.discriminator}
                                         </span>
                                     </span>
@@ -96,7 +94,7 @@ export const Profile: FC<{ user: IUserObjet }> = ({ user }) => {
                                         <Col sm className="text-center">
                                             <img
                                                 alt="Icon_Server_Default"
-                                                style={{ borderRadius: "900px", width: "50%", margin: "0px 10px 0px 10px" }}
+                                                style={{ borderRadius: '900px', width: '50%', margin: '0px 10px 0px 10px' }}
                                                 src={defaulURl}
                                             />
                                         </Col>
@@ -107,32 +105,35 @@ export const Profile: FC<{ user: IUserObjet }> = ({ user }) => {
                                 </ListGroup.Item>
                             ) : null}
                             <Accordion flush>
-                                {serversComun.map((servidor) => (
+                                {serversComun.map(servidor => (
                                     <Card key={`S_${servidor._id}`}>
                                         <AccordionToggle eventKey={`S_${servidor._id}`}>
                                             <Row className="align-items-center">
-                                                <Col sm={4} className="text-center" style={{ width: "128px", margin: "0px 10px 0px 10px" }}>
+                                                <Col sm={4} className="text-center" style={{ width: '128px', margin: '0px 10px 0px 10px' }}>
                                                     <img
                                                         alt="Icon_Server"
                                                         className="img-fluid rounded-circle"
-                                                        style={{ width: "100%" }}
+                                                        style={{ width: '100%' }}
                                                         onError={(e: any) => {
                                                             e.target.onerror = null;
-                                                            e.target.src = defaulURl + "?size=128";
+                                                            e.target.src = defaulURl + '?size=128';
                                                         }}
                                                         src={
-                                                            user.guilds.findIndex((g) => g.id === servidor._id.split("-")[0]) > -1
-                                                                ? `https://cdn.discordapp.com/icons/${servidor._id.split("-")[0]}/${
-                                                                      user.guilds.find((g) => g.id === servidor._id.split("-")[0])!.icon
+                                                            user.guilds.findIndex(g => g.id === servidor._id.split('-')[0]) > -1
+                                                                ? `https://cdn.discordapp.com/icons/${servidor._id.split('-')[0]}/${
+                                                                      user.guilds.find(g => g.id === servidor._id.split('-')[0])!.icon
                                                                   }.png?size=128`
-                                                                : defaulURl + "?size=128"
+                                                                : defaulURl + '?size=128'
                                                         }
                                                     />
                                                 </Col>
-                                                <Col sm className="align-text-bottom text-center text-sm-start" style={{ margin: "20px 0px 20px 0px" }}>
-                                                    {user.guilds.findIndex((g) => g.id === servidor._id.split("-")[0]) > -1
-                                                        ? user.guilds.find((g) => g.id === servidor._id.split("-")[0])!.name
-                                                        : `Servidor Desconocido (ID: ${servidor._id.split("-")[0]})`}
+                                                <Col
+                                                    sm
+                                                    className="align-text-bottom text-center text-sm-start"
+                                                    style={{ margin: '20px 0px 20px 0px' }}>
+                                                    {user.guilds.findIndex(g => g.id === servidor._id.split('-')[0]) > -1
+                                                        ? user.guilds.find(g => g.id === servidor._id.split('-')[0])!.name
+                                                        : `Servidor Desconocido (ID: ${servidor._id.split('-')[0]})`}
                                                 </Col>
                                             </Row>
                                         </AccordionToggle>
@@ -158,7 +159,7 @@ export const Profile: FC<{ user: IUserObjet }> = ({ user }) => {
                                                         <Row>
                                                             <Col sm>
                                                                 {/* Top */}
-                                                                <Link to={`/leaderboard/${servidor._id.split("-")[0]}`}>
+                                                                <Link to={`/leaderboard/${servidor._id.split('-')[0]}`}>
                                                                     <Button variant="info">Top</Button>
                                                                 </Link>
                                                             </Col>
@@ -169,8 +170,7 @@ export const Profile: FC<{ user: IUserObjet }> = ({ user }) => {
                                                                     onClick={() => {
                                                                         setProfileID(servidor._id);
                                                                         setShowModal(true);
-                                                                    }}
-                                                                >
+                                                                    }}>
                                                                     Eliminar
                                                                 </Button>
                                                             </Col>
@@ -192,10 +192,13 @@ export const Profile: FC<{ user: IUserObjet }> = ({ user }) => {
                     </Modal.Header>
                     <Modal.Body>
                         <p>
-                            Si eliminas tu perfil de este servidor, no podrás volver a recuperarlo, y perderás todo tu dinero y tus items adquiridos para
-                            siempre
+                            Si eliminas tu perfil de este servidor, no podrás volver a recuperarlo, y perderás todo tu dinero y tus items
+                            adquiridos para siempre
                         </p>
-                        <p>Ten en cuenta que puede ser que el servidor no esté disponible por el momento y por eso no veas su icono o su nombre.</p>
+                        <p>
+                            Ten en cuenta que puede ser que el servidor no esté disponible por el momento y por eso no veas su icono o su
+                            nombre.
+                        </p>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={() => setShowModal(false)}>
@@ -205,11 +208,10 @@ export const Profile: FC<{ user: IUserObjet }> = ({ user }) => {
                             variant="primary"
                             onClick={() => {
                                 deleteProfileGQL({ variables: { id: profileID } });
-                                setServersComun(serversComun.filter((s) => s._id !== profileID));
+                                setServersComun(serversComun.filter(s => s._id !== profileID));
                                 setProfileID(undefined);
                                 setShowModal(false);
-                            }}
-                        >
+                            }}>
                             Eliminar
                         </Button>
                     </Modal.Footer>

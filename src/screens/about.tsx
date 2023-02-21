@@ -1,5 +1,5 @@
-import { Container, Row, Col, Image } from "react-bootstrap";
-import Helmet from "react-helmet";
+import { Container, Row, Col, Image } from 'react-bootstrap';
+import Helmet from 'react-helmet';
 
 export const About = () => {
     return (
@@ -9,7 +9,7 @@ export const About = () => {
             </Helmet>
             <Row className="text-center pt-4">
                 <Col sm={12}>
-                    <Image src="stararmy.png" rounded style={{ width: "200px" }} />
+                    <Image src="stararmy.png" rounded style={{ width: '200px' }} />
                 </Col>
                 <Col sm={12}>
                     <h1>StarArmy Soporte</h1>
@@ -17,18 +17,18 @@ export const About = () => {
                 <Col md={12}>
                     <h4>¿Quienes Somos?</h4>
                     <p>
-                        Este proyecto se inició con <a href="https://github.com/DavichoStar">DavichoStar</a> y se han sumando distintas personas al equipo como
-                        moderadores y soportes.
+                        Este proyecto se inició con <a href="https://github.com/DavichoStar">DavichoStar</a> y se han sumando distintas
+                        personas al equipo como moderadores y soportes.
                     </p>
 
                     <p>
-                        Lo que buscamos es crear la soluciones a las comunidades de otros servidores, bots y código en español, soporte mas cercano al creador
-                        de los mismos, un lugar donde su opinión se escucha y no es ignorada.
+                        Lo que buscamos es crear la soluciones a las comunidades de otros servidores, bots y código en español, soporte mas
+                        cercano al creador de los mismos, un lugar donde su opinión se escucha y no es ignorada.
                     </p>
                     <h4>¿Qué podrás encontrar en nuestro servidor?</h4>
                     <p>
-                        Un lugar donde pedir ayuda sobre los bots, ayuda con tu código, enterarte de todas las novedades, solucionar problemas, participar en
-                        eventos, pero sobre todo es para socializar y convivir con el staff o con los miembros.
+                        Un lugar donde pedir ayuda sobre los bots, ayuda con tu código, enterarte de todas las novedades, solucionar
+                        problemas, participar en eventos, pero sobre todo es para socializar y convivir con el staff o con los miembros.
                     </p>
                     <h4>Nuestros Bots</h4>
                     <p>
@@ -46,7 +46,7 @@ export const About = () => {
                     <img
                         alt=""
                         onClick={() => {
-                            window.open("https://discord.gg/VG6D4ss", "", "toolbar=yes");
+                            window.open('https://discord.gg/VG6D4ss', '', 'toolbar=yes');
                         }}
                         src="https://discordapp.com/api/guilds/491819854307917826/embed.png?style=banner3"
                     />

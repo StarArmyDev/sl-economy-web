@@ -1,7 +1,7 @@
-import { Col, Container, Row } from "react-bootstrap";
-import type { Embed } from "../../interface";
-import styled from "styled-components";
-import { parseMarkdown } from "libs";
+import { Col, Container, Row } from 'react-bootstrap';
+import type { Embed } from '../../interface';
+import styled from 'styled-components';
+import { parseMarkdown } from '@app/helpers';
 
 const StyledMessagesEmbed = styled.div`
     .container > * {
@@ -198,8 +198,7 @@ const createMessageEmbed = (embed: Embed) => (
         <Container
             className="embed embedFull embedWrapper container"
             style={{ borderColor: embed.color }}
-            key={embed.title?.substring(0, 5) || embed.author?.name?.substring(0, 5)}
-        >
+            key={embed.title?.substring(0, 5) || embed.author?.name?.substring(0, 5)}>
             <Container className="grid" key={embed.title?.substring(0, 5) || embed.author?.name?.substring(0, 5)}>
                 <Col className="embedAuthor embedMargin">
                     {embed.author?.iconUrl && <img className="embedAuthorIcon" src={embed.author.iconUrl} alt={embed.author?.name} />}
@@ -210,7 +209,7 @@ const createMessageEmbed = (embed: Embed) => (
                     {embed.description && (
                         <span
                             dangerouslySetInnerHTML={{
-                                __html: parseMarkdown(embed.description)
+                                __html: parseMarkdown(embed.description),
                             }}
                         />
                     )}
@@ -223,18 +222,17 @@ const createMessageEmbed = (embed: Embed) => (
                             style={
                                 field.inline
                                     ? {
-                                          gridColumn: index % 3 === 0 ? "1/5" : index % 3 === 2 ? "9/13" : "5/9"
+                                          gridColumn: index % 3 === 0 ? '1/5' : index % 3 === 2 ? '9/13' : '5/9',
                                       }
-                                    : { gridColumn: "1/3" }
-                            }
-                        >
+                                    : { gridColumn: '1/3' }
+                            }>
                             <Row className="embedFieldName">
                                 <strong>{field.name}</strong>
                             </Row>
                             <Row className="embedFieldValue">
                                 <span
                                     dangerouslySetInnerHTML={{
-                                        __html: parseMarkdown(field.value)
+                                        __html: parseMarkdown(field.value),
                                     }}
                                 />
                             </Row>
@@ -245,7 +243,7 @@ const createMessageEmbed = (embed: Embed) => (
                     {embed.thumbnail && (
                         <>
                             <Col className="clickableWrapper" role="button" onClick={() => openImage(embed.thumbnail!)}>
-                                <img alt="Imagen" src={embed.thumbnail} style={{ width: "80px", height: "80px" }} />
+                                <img alt="Imagen" src={embed.thumbnail} style={{ width: '80px', height: '80px' }} />
                             </Col>
                         </>
                     )}
@@ -254,7 +252,7 @@ const createMessageEmbed = (embed: Embed) => (
                     {embed.image && (
                         <>
                             <Col className="clickableWrapper" role="button" onClick={() => openImage(embed.image!)}>
-                                <img alt="ImagenWrapper" src={embed.image} style={{ width: "256px", height: "256px" }} />
+                                <img alt="ImagenWrapper" src={embed.image} style={{ width: '256px', height: '256px' }} />
                             </Col>
                         </>
                     )}
@@ -269,7 +267,7 @@ const createMessageEmbed = (embed: Embed) => (
 );
 
 const openImage = (url: string) => {
-    window.open(url, "_blank");
+    window.open(url, '_blank');
 };
 
 export const MessagesEmbed = ({ embeds }: { embeds: Embed[] }) => {

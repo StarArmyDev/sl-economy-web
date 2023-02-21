@@ -1,7 +1,7 @@
-import { ThreadsIcon, NotificationBellIcon, PinIcon, PeopleIcon, InboxIcon, QuestionMarkIcon } from "../../icons";
-import styled from "styled-components";
-import { TooltipWrapper } from "..";
-import { HeaderSearchBar } from ".";
+import { ThreadsIcon, NotificationBellIcon, PinIcon, PeopleIcon, InboxIcon, QuestionMarkIcon } from '../../icons';
+import styled from 'styled-components';
+import { TooltipWrapper } from '..';
+import { HeaderSearchBar } from '.';
 
 const StyledHeaderActionBar = styled.div`
     display: flex;
@@ -38,7 +38,7 @@ const StyledIconButton = styled.span`
 export const HeaderActionBar = ({
     isMembersListActive = false,
     onMembersToggleClick,
-    isReduced = false
+    isReduced = false,
 }: {
     isMembersListActive?: boolean;
     onMembersToggleClick?: React.MouseEventHandler<HTMLSpanElement>;
@@ -67,7 +67,7 @@ export const HeaderActionBar = ({
 
                 <TooltipWrapper content="Lista de Miembros" direction="bottom">
                     <StyledIconButton onClick={onMembersToggleClick}>
-                        <PeopleIcon className={isMembersListActive ? "active" : ""} />
+                        <PeopleIcon className={isMembersListActive ? 'active' : ''} />
                     </StyledIconButton>
                 </TooltipWrapper>
 

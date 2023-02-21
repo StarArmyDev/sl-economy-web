@@ -1,7 +1,7 @@
-import { GiftIcon, GiftPickerIcon } from "../../icons";
-import styled from "styled-components";
-import { EmojiPickerButton } from ".";
-import { colors } from "../../utils";
+import { GiftIcon, GiftPickerIcon } from '../../icons';
+import styled from 'styled-components';
+import { EmojiPickerButton } from '.';
+import { colors } from '../../utils';
 
 const StyledButtonsBar = styled.div`
     display: flex;
@@ -23,16 +23,16 @@ const ButtonContainer = styled.caption`
     flex: 0 0 auto;
 
     > div {
-        width: ${(props) => props.iconWidth}px;
-        height: ${(props) => props.iconHeight}px;
+        width: ${props => props.iconWidth}px;
+        height: ${props => props.iconHeight}px;
         color: ${colors.icon};
         transition: all 0.2s ease;
     }
 
     :hover > div {
         color: ${colors.iconHover};
-        width: ${(props) => props.iconWidth + 2}px;
-        height: ${(props) => props.iconHeight + 2}px;
+        width: ${props => props.iconWidth + 2}px;
+        height: ${props => props.iconHeight + 2}px;
     }
 
     svg {

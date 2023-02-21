@@ -1,5 +1,5 @@
-import { Container, Row, Col, Button } from "react-bootstrap";
-import Helmet from "react-helmet";
+import { Container, Row, Col, Button } from 'react-bootstrap';
+import Helmet from 'react-helmet';
 
 export const Error404 = () => {
     const prevPage = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -16,7 +16,7 @@ export const Error404 = () => {
                 <Col md={12}>
                     <h2>
                         <p>
-                            <i className="material-icons" style={{ fontSize: "300%" }}>
+                            <i className="material-icons" style={{ fontSize: '300%' }}>
                                 error_outline
                             </i>
                         </p>

@@ -223,7 +223,7 @@ export interface IItem extends Document {
     };
     obtiene?: {
         rol?: string;
-        canal?: "text" | "voice";
+        canal?: 'text' | 'voice';
         item?: {
             id: string;
             cantidad: number;
@@ -251,4 +251,4 @@ export interface IItemInventory {
     cantidad: number;
 }
 
-export type ILanguages = "en-US" | "es-ES" | "es-MX" | "pt-BR";
+export type ILanguages = 'en-US' | 'es-ES' | 'es-MX' | 'pt-BR';

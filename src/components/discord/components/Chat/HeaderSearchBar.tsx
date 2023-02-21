@@ -1,7 +1,7 @@
-import searchBarEyeGlassUrl from "../../icons/searchBarEyeGlass.svg";
-import searchBarClearUrl from "../../icons/searchBarClear.svg";
-import styled from "styled-components";
-import { useState } from "react";
+import searchBarEyeGlassUrl from '../../icons/searchBarEyeGlass.svg';
+import searchBarClearUrl from '../../icons/searchBarClear.svg';
+import styled from 'styled-components';
+import { useState } from 'react';
 
 const StyledHeaderSearchBar = styled.div`
     margin: 0 4px 0 8px;
@@ -91,17 +91,17 @@ const StyledHeaderSearchBar = styled.div`
 `;
 
 export const HeaderSearchBar = () => {
-    const [text, setText] = useState("");
+    const [text, setText] = useState('');
     const hasText = !!text;
 
     return (
         <StyledHeaderSearchBar expanded={hasText}>
             <div className="input-wrapper">
-                <input type="text" placeholder="Buscar" onChange={(e) => setText(e.target.value)} value={text} />
+                <input type="text" placeholder="Buscar" onChange={e => setText(e.target.value)} value={text} />
             </div>
             <div className="icon-wrapper" role="button">
-                <i className={`searchBarEyeGlass ${!hasText ? "visible" : ""}`} />
-                <i className={`searchBarClear ${hasText ? "visible" : ""}`} onClick={() => setText("")} />
+                <i className={`searchBarEyeGlass ${!hasText ? 'visible' : ''}`} />
+                <i className={`searchBarClear ${hasText ? 'visible' : ''}`} onClick={() => setText('')} />
             </div>
         </StyledHeaderSearchBar>
     );

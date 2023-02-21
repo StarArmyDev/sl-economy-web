@@ -32,7 +32,7 @@ export class EventRegister {
     static removeAllListeners() {
         let removeError = false;
 
-        Object.keys(EventRegister.listeners).forEach((_id) => {
+        Object.keys(EventRegister.listeners).forEach(_id => {
             const removed = delete EventRegister.listeners[_id];
             removeError = !removeError ? !removed : removeError;
         });
