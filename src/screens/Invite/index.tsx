@@ -1,10 +1,9 @@
 import { Container, Spinner } from 'react-bootstrap';
-import { CLIENT_ID } from '@app/helpers';
 import Helmet from 'react-helmet';
 
 export const Invite = () => {
     window.location.replace(
-        `https://discord.com/oauth2/authorize?client_id=${CLIENT_ID}&permissions=268437520&scope=bot%20applications.commands&response_type=code`,
+        `https://discord.com/oauth2/authorize?client_id=${import.meta.env.VITE_CLIENT_ID}&permissions=268437520&scope=bot%20applications.commands&response_type=code`,
     );
 
     return (

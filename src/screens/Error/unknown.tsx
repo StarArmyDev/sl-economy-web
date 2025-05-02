@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet';
 import React from 'react';
 
 import { useAppSelector } from '@app/storage';
-import LogoTrack from '@img/logo-track.png';
+import LogoTrack from '@img/icon.png';
 
 export const ErrorUnknown = () => {
     const navigate = useNavigate();

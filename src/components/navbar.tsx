@@ -1,48 +1,47 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Navbar, Container, Nav, NavDropdown, Col, Row, Spinner, Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import React, { useState } from 'react';
 
 import { UpdateGuildsGQL, useMutation, useQuery, UserGuildsGQL } from '@app/graphql';
 import { useAppSelector } from '@app/storage';
-import { CLIENT_ID } from '@app/helpers';
+import { GuildInfo } from '@app/models';
 import iconImg from '@img/icon.png';
 
-export function NavBar() {
+type Guilds = { admin: GuildInfo[]; adminMutual: GuildInfo[]; mutual: GuildInfo[] };
+
+export const NavBar: React.FC = () => {
     const user = useAppSelector(state => state.web.user);
 
-    const { loading, data, error, refetch } = useQuery(UserGuildsGQL, { variables: { id: user?._id || '0' } });
+    const { loading, data, error } = useQuery(UserGuildsGQL, { variables: { id: user?._id || '0' }, skip: !user });
     const [updateUserGuilds] = useMutation(UpdateGuildsGQL);
-    const [guilds, setGuilds] = useState({ admin: [], adminMutual: [], mutual: [] });
+    const [guilds, setGuilds] = useState<Guilds>({ admin: [], adminMutual: [], mutual: [] });
     const [changes, setChanges] = useState(true);
     const [load, setLoading] = useState(false);
     let windowReference: Window | null;
 
-    async function reloaderGuilds() {
+    const reloaderGuilds = async () => {
         if (!load) {
             setLoading(true);
-            setGuilds(
-                (
-                    await updateUserGuilds({
-                        variables: {
-                            id: user?._id || '0',
-                        },
-                    })
-                ).data.updateGuilds,
-            );
-            await refetch();
+            const userGuilds = await updateUserGuilds({
+                variables: {
+                    id: user?._id || '0',
+                },
+            });
+            if (userGuilds?.data?.updateGuilds) setGuilds(userGuilds.data.updateGuilds);
             setChanges(true);
             setLoading(false);
         }
-    }
+    };
 
-    function loader(datos: any) {
+    const loader = (datos: Guilds) => {
         setGuilds(datos);
         setChanges(false);
-    }
+    };
 
     React.useEffect(() => {
-        if (!loading && !error && changes) loader(data.getUserGuilds);
-    }, [loading, error, changes, data]);
+        if (!loading && !error && changes && data?.getUserGuilds) loader(data.getUserGuilds);
+    }, [user, loading, error, changes, data]);
 
     return (
         <Navbar expand="lg" bg="dark" variant="dark">
@@ -80,7 +79,7 @@ export function NavBar() {
                                 ) : guilds.adminMutual.length > 0 || guilds.admin.length > 0 ? (
                                     <NavDropdown title="Dashboard" id="dropdown-guilds">
                                         <div style={{ minWidth: 240 }}>
-                                            {guilds.adminMutual.map((servidor: any) => (
+                                            {guilds.adminMutual.map(servidor => (
                                                 <Link
                                                     to={`/dashboard/${servidor.id}`}
                                                     style={{ textDecoration: 'none', color: '#fff' }}
@@ -98,10 +97,10 @@ export function NavBar() {
                                                 </Link>
                                             ))}
                                             {guilds.admin.length > 0 ? <NavDropdown.Divider /> : null}
-                                            {guilds.admin.map((servidor: any) => (
+                                            {guilds.admin.map(servidor => (
                                                 <NavDropdown.Item
                                                     key={`NI${servidor.id}`}
-                                                    href={`https://discord.com/oauth2/authorize?client_id=${CLIENT_ID}&permissions=268437520&scope=bot&response_type=code&guild_id=${
+                                                    href={`https://discord.com/oauth2/authorize?client_id=${import.meta.env.VITE_CLIENT_ID}&permissions=268437520&scope=bot&response_type=code&guild_id=${
                                                         servidor.id
                                                     }&redirect_uri=${import.meta.env.BASE_URL?.replace(/\//gi, '%2F').replace(
                                                         /:/gi,
@@ -139,9 +138,12 @@ export function NavBar() {
                                                 style={{ borderRadius: 1, margin: '0px 10px 0px 10px' }}
                                                 src={`https://cdn.discordapp.com/avatars/${user._id}/${user.avatar}.png?size=32`}
                                                 alt="avatar"
-                                                onError={(e: any) => {
+                                                onError={e => {
+                                                    // @ts-ignore
                                                     e.target.onerror = null;
+                                                    // @ts-ignore
                                                     e.target.src = 'https://cdn.discordapp.com/embed/avatars/3.png';
+                                                    // @ts-ignore
                                                     e.target.style.width = '32px';
                                                 }}
                                             />
@@ -194,4 +196,4 @@ export function NavBar() {
             </Container>
         </Navbar>
     );
-}
+};

@@ -2,8 +2,8 @@ import { useTranslation } from 'react-i18next';
 import '@css/spinner.css';
 import React from 'react';
 
-export const LoadingSpinner = () => {
-    const { t } = useTranslation('Global');
+export const LoadingSpinner: React.FC = () => {
+    //const { t } = useTranslation('Global');
     const ref = React.useRef(document.getElementById('mainContainer')?.clientHeight || window.innerHeight);
 
     React.useEffect(() => {
@@ -19,7 +19,8 @@ export const LoadingSpinner = () => {
                 <div className="loader--dot"></div>
                 <div className="loader--dot"></div>
                 <div className="loader--dot"></div>
-                <div className="loader--text">{t('loaging')}</div>
+                <div className="loader--text">Cargando</div>
+                {/* <div className="loader--text">{t('loaging')}</div> */}
             </div>
         </div>
     );

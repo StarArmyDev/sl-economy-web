@@ -1,9 +1,17 @@
-import { useEffect } from 'react';
 import { Container, Spinner } from 'react-bootstrap';
+import * as Sentry from '@sentry/react';
+import React from 'react';
 
-export const Logout = () => {
-    useEffect(() => {
+import { WebAction, useAppDispatch } from '@app/storage';
+
+export const Logout: React.FC = () => {
+    const dispatch = useAppDispatch();
+
+    React.useEffect(() => {
         // window.localStorage.removeItem("user");
+
+        dispatch(WebAction.onSetUser(null));
+        Sentry.setUser(null);
         window.location.replace(`${import.meta.env.VITE_API_URL}/oauth/logout`);
     });
 

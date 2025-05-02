@@ -13,6 +13,9 @@ export default defineConfig({
             '@img': resolve('src/assets/img'),
         },
     },
+    server: {
+        port: 2020,
+    },
     build: {
         sourcemap: true,
     },

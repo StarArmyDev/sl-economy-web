@@ -2,7 +2,6 @@ import { RouterProvider, createRoutesFromChildren, matchRoutes, useLocation, use
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { PersistGate } from 'redux-persist/integration/react';
-import { BrowserTracing } from '@sentry/tracing';
 import { Alert } from 'react-bootstrap';
 import * as Sentry from '@sentry/react';
 import { Provider } from 'react-redux';
@@ -25,20 +24,27 @@ Sentry.init({
     release: `${import.meta.env.VITE_NAME}@${import.meta.env.VITE_VERSION}`,
     environment: import.meta.env.MODE,
     integrations: [
-        new BrowserTracing({
-            tracePropagationTargets: ['localhost', 'trackcash.ideosoftware.com.mx', /^\//],
-            routingInstrumentation: Sentry.reactRouterV6Instrumentation(
-                React.useEffect,
-                useLocation,
-                useNavigationType,
-                createRoutesFromChildren,
-                matchRoutes,
-            ),
-            tracingOrigins: ['localhost', 'trackcash.ideosoftware.com.mx', /^\//],
+        Sentry.browserTracingIntegration(),
+        Sentry.reactRouterV6BrowserTracingIntegration({
+            useEffect: React.useEffect,
+            useLocation,
+            useNavigationType,
+            createRoutesFromChildren,
+            matchRoutes,
+        }),
+        Sentry.replayIntegration({
+            //@ts-ignore ignore
+            collectFonts: true,
+            inlineImages: true,
+            blockAllMedia: false,
+            maskAllInputs: false,
+            maskAllText: false,
         }),
     ],
     normalizeDepth: 10,
     tracesSampleRate: import.meta.env.MODE === 'production' ? 1.0 : 0,
+    replaysSessionSampleRate: import.meta.env.MODE === 'production' ? 0.4 : 0,
+    replaysOnErrorSampleRate: import.meta.env.MODE === 'production' ? 1.0 : 0,
     beforeSend(event) {
         // Compruebe si es una excepción, y si es así, muestre el cuadro de diálogo del informe
         if (event.exception) {
@@ -58,7 +64,7 @@ const queryClient = new QueryClient({
 });
 
 //! Clase App principal
-const App = () => {
+const App: React.FC = () => {
     const dispatch = useAppDispatch();
 
     const [isLoading, setIsLoading] = React.useState(true);
@@ -66,18 +72,31 @@ const App = () => {
     const [alertMessage, setAlertMessage] = React.useState<AlertMessage>({ show: false, message: '' });
     const [timeout, setTimeo] = React.useState<NodeJS.Timeout>();
 
-    const userDetails = useQuery(
-        ['getUserDetails'],
-        async () => {
+    const userDetails = useQuery({
+        queryKey: ['getUserDetails'],
+        queryFn: async () => {
             const user = await getUserDetails();
 
-            if (user) dispatch(WebAction.onSetUser(user));
+            if (user) {
+                dispatch(WebAction.onSetUser(user));
+                Sentry.setUser({
+                    id: user._id,
+                    username: user.username,
+                    discriminator: user.discriminator,
+                    permissions: user.permissions || [],
+                    premium: user.premium,
+                    guilds: user.guilds || [],
+                });
+            } else {
+                dispatch(WebAction.onSetUser(null));
+                Sentry.setUser(null);
+            }
             setIsLoading(false);
 
-            return user;
+            return user || null;
         },
-        { enabled: false },
-    );
+        enabled: false,
+    });
 
     React.useEffect(() => {
         const init = async () => {

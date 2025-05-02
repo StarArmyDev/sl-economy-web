@@ -1,4 +1,3 @@
-export * from './Constants';
 export * from './ConvertString';
 export * from './ConverTime';
 export * from './EventRegister';

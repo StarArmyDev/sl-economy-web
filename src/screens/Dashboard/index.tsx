@@ -7,14 +7,14 @@ import styled from 'styled-components';
 import Helmet from 'react-helmet';
 import ms from 'ms';
 
-import { ChannelsGuildGQL, ServerGQL, UpdateServerGQL, useMutation, useQuery } from '@app/graphql';
-import { BOT_MANAGER, ConvertString, ConvertorTime } from '@app/helpers';
+import { ChannelsGuildGQL, ServerGQL, ShopServerGQL, UpdateServerGQL, useMutation, useQuery } from '@app/graphql';
+import { ConvertString, ConvertorTime } from '@app/helpers';
+import type { ServerSystem, GuildInfo, Item } from '@app/models';
 import { useAppSelector } from '@app/storage';
-import type { ISistemas } from '@app/models';
 
-const Styled = styled.div`
+const Styled = styled.div<{ bgColor?: string }>`
     .nav-link.active {
-        background-color: ${(props: { bgColor?: string }) => props.bgColor || '#375a7f'} !important;
+        background-color: ${props => props.bgColor || '#375a7f'} !important;
     }
 
     .nav-link.disabled {
@@ -52,6 +52,7 @@ interface IAlert {
 
 export const Dashboard: React.FC = () => {
     const user = useAppSelector(state => state.web.user);
+    const defaultAvatar = 'https://cdn.discordapp.com/embed/avatars/0.png';
 
     if (!user) {
         window.history.replaceState(null, 'error403', '/error403');
@@ -60,10 +61,12 @@ export const Dashboard: React.FC = () => {
 
     const { id } = useParams();
     const [loading, setLoading] = useState(true);
-    const [guild, setGuild] = useState(null as any);
+    const [guild, setGuild] = useState<GuildInfo | undefined>();
     const [alert, setAlert] = useState([] as IAlert[]);
     const [chatExclude, setChatExclude] = useState([] as { name: string; id: string }[]);
     const [showModal, setShowModal] = useState(false);
+    const [showModalNewItem, setShowModalNewItem] = useState(false);
+    const [items, setItems] = useState<Item[]>([]);
     const {
         register,
         formState: { errors },
@@ -71,19 +74,62 @@ export const Dashboard: React.FC = () => {
         reset,
         setValue,
     } = useForm();
+    const itemForm = useForm<Item>();
 
     const [updateServerGQL] = useMutation(UpdateServerGQL);
-    const [dbServer, setDbServer] = useState(null as ISistemas | null);
+    const [dbServer, setDbServer] = useState<ServerSystem | undefined>();
 
-    const load = async () => {
-        if (!guild || guild.id !== id) {
-            const Servidor = user.guilds?.find(g => g.id === id);
-            setGuild(Servidor);
+    const serverGQL = useQuery(ServerGQL, { variables: { id } });
+    const channelsGQL = useQuery(ChannelsGuildGQL, { variables: { id } });
+    const shopGQL = useQuery(ShopServerGQL, { variables: { id } });
+
+    useEffect(() => {
+        setLoading(true);
+        const Servidor = user.guilds?.find(g => g.id === id);
+        let usersManager: string[] = [];
+        try {
+            usersManager = JSON.parse(import.meta.env.VITE_BOT_MANAGER);
+        } catch (error) {
+            usersManager = [];
         }
-        setLoading(false);
+
+        if (!Servidor || (!((Servidor.permissions & 2146958591) === 2146958591) && !usersManager.includes(user._id)))
+            return window.location.replace('/error403');
+        else setGuild(Servidor);
+
+        init();
+    }, [id, serverGQL.loading, channelsGQL.loading, shopGQL.loading]);
+
+    const init = () => {
+        if (!dbServer && !!serverGQL.data?.getServer && !channelsGQL.loading && !shopGQL.loading) {
+            setDbServer(serverGQL.data.getServer);
+            loadDB(serverGQL.data.getServer, channelsGQL.data.getChannelsGuild);
+            setLoading(false);
+        } else {
+            setLoading(true);
+            reset();
+            setDbServer(undefined);
+            serverGQL
+                .refetch({ id })
+                .then(({ data }) => {
+                    if (data) {
+                        setDbServer(data.getServer);
+                        channelsGQL.refetch({ id }).then(chData => {
+                            setChatExclude([]);
+                            if (chData.data) loadDB(data.getServer, chData.data.getChannelsGuild);
+                            setLoading(false);
+                        });
+                        shopGQL.refetch({ id }).then(shData => {
+                            if (shData.data) setItems(shData.data.getShop.items);
+                            console.log(shData?.data?.getShop);
+                        });
+                    } else setLoading(false);
+                })
+                .catch(() => setLoading(false));
+        }
     };
 
-    const loadDB = async (db: ISistemas | null, channels: { name: string; id: string }[]) => {
+    const loadDB = async (db: ServerSystem | null, channels: { name: string; id: string }[]) => {
         if (db?.excludedChannels)
             db.excludedChannels.map(ch =>
                 setChatExclude(ec => [
@@ -96,18 +142,9 @@ export const Dashboard: React.FC = () => {
             );
     };
 
-    useEffect(() => {
-        setLoading(true);
-        const guild = user.guilds?.find(g => g.id === id);
-        if (!guild || (!((guild.permissions & 2146958591) === 2146958591) && !BOT_MANAGER.includes(user._id)))
-            return window.location.replace('/error403');
-
-        load();
-    }, [id]);
-
     const removeAlert = (alert: IAlert) => setAlert(alerts => alerts.filter(x => x !== alert));
 
-    const onSubmit = async (data: any, e: React.BaseSyntheticEvent<object, any, any> | undefined) => {
+    const onSubmit = async (data: any, e: React.BaseSyntheticEvent<object> | undefined) => {
         const values: string[] = [];
 
         for (const key in data) {
@@ -129,14 +166,14 @@ export const Dashboard: React.FC = () => {
                                             valueNumber: data[key][key2],
                                         },
                                     })
-                                ).data.updateServer,
+                                ).data?.updateServer,
                             );
                         } else
                             for (const key3 in data[key][key2]) {
                                 if (
                                     data[key][key2][key3] &&
                                     (!isNaN(data[key][key2][key3]) || data[key][key2][key3].length > 0) &&
-                                    (!(dbServer as any)[key] ||
+                                    (!dbServer?.[key as keyof typeof dbServer] ||
                                         !(dbServer as any)[key][key2] ||
                                         data[key][key2][key3] !== (dbServer as any)[key][key2][key3])
                                 ) {
@@ -205,7 +242,7 @@ export const Dashboard: React.FC = () => {
             }
         }
 
-        function updateData(newData: ISistemas | null) {
+        function updateData(newData: ServerSystem | null) {
             if (newData) {
                 if (e) e.target.reset();
                 setAlert(at => [...at, { type: 'success', show: true, text: 'Cambios Guardados Correctamente' }]);
@@ -215,6 +252,8 @@ export const Dashboard: React.FC = () => {
             }
         }
     };
+
+    const onNewItem = async () => {};
 
     const onDelete = async (name: string) => {
         const newData = (
@@ -316,34 +355,7 @@ export const Dashboard: React.FC = () => {
         );
     }; */
 
-    const graphql = useQuery(ServerGQL, { variables: { id } });
-    const channelsGQL = useQuery(ChannelsGuildGQL, { variables: { id } });
-
-    useEffect(() => {
-        if (!dbServer && graphql.data?.getServer) {
-            setDbServer(graphql.data.getServer);
-            loadDB(graphql.data.getServer, channelsGQL.data.getChannelsGuild);
-        } else if (guild?.id !== id) {
-            setLoading(true);
-            reset();
-            setDbServer(null);
-            graphql
-                .refetch({ id })
-                .then(({ data }) => {
-                    if (data) {
-                        setDbServer(data.getServer);
-                        channelsGQL.refetch({ id }).then(chData => {
-                            setChatExclude([]);
-                            if (chData.data) loadDB(data.getServer, chData.data.getChannelsGuild);
-                            setLoading(false);
-                        });
-                    } else setLoading(false);
-                })
-                .catch(() => setLoading(false));
-        }
-    }, [dbServer, id, guild, graphql.loading]);
-
-    if (loading || graphql.loading || channelsGQL.loading)
+    if (loading || serverGQL.loading || channelsGQL.loading)
         return (
             <Container
                 style={{
@@ -380,27 +392,31 @@ export const Dashboard: React.FC = () => {
                                                     alt=""
                                                     onError={(e: any) => {
                                                         e.target.onerror = null;
-                                                        e.target.src = 'https://cdn.discordapp.com/embed/avatars/0.png';
+                                                        e.target.src = defaultAvatar;
                                                     }}
                                                     className="rounded"
                                                     style={{ width: '15%' }}
-                                                    src={`https://cdn.discordapp.com/icons/${id}/${guild.icon}.png?size=128`}
+                                                    src={
+                                                        id && guild?.icon
+                                                            ? `https://cdn.discordapp.com/icons/${id}/${guild.icon}.png?size=128`
+                                                            : defaultAvatar
+                                                    }
                                                 />
                                             </Col>
-                                            {guild.ownerID === user?._id ? (
+                                            {guild?.owner ? (
                                                 <Col sm={12}>
                                                     <h3>👑</h3>
                                                 </Col>
                                             ) : null}
                                             <Col sm={12}>
-                                                <h4>{guild.name}</h4>
+                                                <h4>{guild?.name}</h4>
                                             </Col>
                                         </Row>
                                     </Card>
                                 </Col>
 
                                 {/* Contenido */}
-                                <Tab.Container defaultActiveKey="bot">
+                                <Tab.Container defaultActiveKey="shop">
                                     {/* Menú Lateral */}
                                     <Col sm={2} className="text-center">
                                         <Nav variant="pills" className="flex-column">
@@ -409,7 +425,7 @@ export const Dashboard: React.FC = () => {
                                             <Nav.Link eventKey="shop">Tienda</Nav.Link>
                                         </Nav>
                                     </Col>
-                                    {/* Contenido de los menñus */}
+                                    {/* Contenido de los menús */}
                                     <Col className="text-center pt-4">
                                         <Tab.Content>
                                             {/* Alertas */}
@@ -1882,29 +1898,199 @@ export const Dashboard: React.FC = () => {
                                                         <h3>Tienda</h3>
                                                     </Col>
                                                     <Col sm={12}>
-                                                        Sección en construcción
-                                                        <Form className="g-3 needs-validation" onSubmit={handleSubmit(onSubmit)}>
-                                                            <Row className="align-items-center">
-                                                                {/**
-                                                                 * ClearItems
-                                                                 */}
-                                                                {/**
-                                                                 * CrearteItems
-                                                                 */}
-                                                                {/* Guardar */}
-                                                                {/* <Col sm className="pt-4">
+                                                        <Row className="align-items-center">
+                                                            {/**
+                                                             * CrearteItems
+                                                             */}
+                                                            <Button
+                                                                variant="outline-success"
+                                                                type="button"
+                                                                onClick={() => setShowModalNewItem(true)}>
+                                                                Crear Item
+                                                            </Button>
+                                                            {/**
+                                                             * ClearItems
+                                                             */}
+                                                            {/**
+                                                             * Items
+                                                             */}
+                                                            <Col sm={12} className="pb-3">
+                                                                <Form.Label>Artículos en Tienda</Form.Label>
+                                                                <ul className="channelUl">
+                                                                    {items.map((it: Item) => (
+                                                                        <li className="channelCard" key={'it_' + it.nombre}>
+                                                                            <span>
+                                                                                {/* Verificar si el emoji tiene números */}
+                                                                                {!it.emoji || it.emoji.match(/:/g) ? <></> : it.emoji}
+                                                                                {it.nombre}
+                                                                            </span>
+                                                                            {/* <button
+                                                                                type="button"
+                                                                                aria-label="Close"
+                                                                                onClick={d => {
+                                                                                    setChatExclude(channels =>
+                                                                                        channels.filter(x => x.id !== ce.id),
+                                                                                    );
+                                                                                }}>
+                                                                                <i className="material-icons channelButtonIcon">clear</i>
+                                                                            </button> */}
+                                                                        </li>
+                                                                    ))}
+                                                                    {/* <li>
+                                                                            <button
+                                                                                className="channelButtonAdd"
+                                                                                type="button"
+                                                                                aria-label="Close"
+                                                                                onClick={() => {
+                                                                                    setChatExclude((ce) => [...ce, { name: "bot", id: "bot" }]);
+                                                                                }}
+                                                                            >
+                                                                                <i className="material-icons channelButtonIcon">add</i>
+                                                                            </button>
+                                                                        </li> */}
+                                                                </ul>
+                                                            </Col>
+                                                            {/* Guardar */}
+                                                            {/* <Col sm className="pt-4">
                                                                 <Button variant="outline-warning" type="submit" name="action">
                                                                     Guardar
                                                                 </Button>
                                                             </Col> */}
-                                                            </Row>
-                                                        </Form>
+                                                        </Row>
                                                     </Col>
                                                 </Row>
                                             </Tab.Pane>
                                         </Tab.Content>
                                     </Col>
                                 </Tab.Container>
+
+                                {/* Modal - Crear Item */}
+                                <Modal show={showModalNewItem} onHide={() => setShowModalNewItem(false)}>
+                                    <Modal.Header closeButton>
+                                        <Modal.Title>Nuevo Item</Modal.Title>
+                                    </Modal.Header>
+                                    <Modal.Body>
+                                        <Form
+                                            className="g-3 needs-validation"
+                                            onSubmit={itemForm.handleSubmit(onNewItem)}
+                                            name="economyForm">
+                                            <Row>
+                                                {/* Nombre */}
+                                                <Col md={6}>
+                                                    <Form.Label>Nombre</Form.Label>
+                                                    <InputGroup className="mb-2">
+                                                        <Form.Control
+                                                            {...itemForm.register('nombre', { required: true })}
+                                                            placeholder="Nombre del artículo"
+                                                        />
+                                                    </InputGroup>
+                                                </Col>
+                                                {/* Descripción */}
+                                                <Col md={6}>
+                                                    <Form.Label>Descripción</Form.Label>
+                                                    <InputGroup className="mb-2">
+                                                        <Form.Control
+                                                            {...itemForm.register('descripcion')}
+                                                            placeholder="Descripción detallada del artículo"
+                                                        />
+                                                    </InputGroup>
+                                                </Col>
+                                                {/* Precios */}
+                                                <Form.Label>Precios</Form.Label>
+                                                <Col md={6}>
+                                                    <InputGroup className="mb-2">
+                                                        <Form.Control
+                                                            {...itemForm.register('precio.compra', { required: true })}
+                                                            placeholder="Precio de Compra"
+                                                        />
+                                                    </InputGroup>
+                                                </Col>
+                                                <Col md={6}>
+                                                    <InputGroup className="mb-2">
+                                                        <Form.Control
+                                                            {...itemForm.register('precio.venta', { required: true })}
+                                                            placeholder="Precio de Venta"
+                                                        />
+                                                    </InputGroup>
+                                                </Col>
+                                                {/* Disponible */}
+                                                <Col sm>
+                                                    <Form.Label>Disponible para mostar en tienda</Form.Label>
+                                                    <InputGroup className="mb-2">
+                                                        <Form.Check {...itemForm.register('disponible')} placeholder="Disponible" />
+                                                    </InputGroup>
+                                                </Col>
+                                                {/* Transferir */}
+                                                <Col sm>
+                                                    <Form.Label>Se puede transferir</Form.Label>
+                                                    <InputGroup className="mb-2">
+                                                        <Form.Check {...itemForm.register('transferible')} placeholder="Transferible" />
+                                                    </InputGroup>
+                                                </Col>
+                                                {/* Basura */}
+                                                <Col sm>
+                                                    <Form.Label>Artículo para /Loot</Form.Label>
+                                                    <InputGroup className="mb-2">
+                                                        <Form.Check {...itemForm.register('basura')} placeholder="Basura" />
+                                                    </InputGroup>
+                                                </Col>
+                                                {/* Compra Única */}
+                                                <Col sm>
+                                                    <Form.Label>Comprar una vez</Form.Label>
+                                                    <InputGroup className="mb-2">
+                                                        <Form.Check {...itemForm.register('compraunica')} placeholder="Compra Única" />
+                                                    </InputGroup>
+                                                </Col>
+                                                {/* Tiempo */}
+                                                <Col md={6}>
+                                                    <Form.Label>Fecha de Expiración</Form.Label>
+                                                    {/* <InputGroup className="mb-2">
+                                                        <Form.Control
+                                                            {...itemForm.register('tiempo')}
+                                                            placeholder="Descripción detallada del artículo"
+                                                        />
+                                                    </InputGroup> */}
+                                                </Col>
+                                                {/* Stock */}
+                                                <Col md={6}>
+                                                    <Form.Label>Cantidad Disponible</Form.Label>
+                                                    <InputGroup className="mb-2">
+                                                        <Form.Control
+                                                            {...itemForm.register('stock', { valueAsNumber: true })}
+                                                            defaultValue={0}
+                                                            placeholder="Stock"
+                                                        />
+                                                    </InputGroup>
+                                                </Col>
+                                                {/* Requiere */}
+                                                {/* Obtiene */}
+                                                {/* Elimina */}
+                                                {/* Mensaje */}
+                                                <Col md={6}>
+                                                    <Form.Label>Mensaje al usar el artículo</Form.Label>
+                                                    <InputGroup className="mb-2">
+                                                        <Form.Control {...itemForm.register('mensaje')} placeholder="Mensaje" />
+                                                    </InputGroup>
+                                                </Col>
+                                                {/* Evento */}
+                                                <Col md={6}>
+                                                    <Form.Label>Evento temático del servidor</Form.Label>
+                                                    <InputGroup className="mb-2">
+                                                        <Form.Control {...itemForm.register('evento')} placeholder="Evento" />
+                                                    </InputGroup>
+                                                </Col>
+                                            </Row>
+                                        </Form>
+                                    </Modal.Body>
+                                    <Modal.Footer>
+                                        <Button variant="secondary" onClick={() => setShowModalNewItem(false)}>
+                                            Cancelar
+                                        </Button>
+                                        <Button variant="primary" type="submit">
+                                            Crear
+                                        </Button>
+                                    </Modal.Footer>
+                                </Modal>
 
                                 {/* Modal - Borrar Todo */}
                                 <Modal show={showModal} onHide={() => setShowModal(false)}>

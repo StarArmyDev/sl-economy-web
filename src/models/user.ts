@@ -102,7 +102,7 @@ export interface User {
 
 export type Permissions = 'Admin' | 'UserAdmin' | 'BotAdmin';
 
-interface GuildInfo {
+export interface GuildInfo {
     id: string;
     name: string;
     icon?: string;

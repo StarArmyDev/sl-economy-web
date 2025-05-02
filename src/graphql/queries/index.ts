@@ -208,4 +208,18 @@ export const UserGuildsGQL = gql`
     }
 `;
 
+export const ShopServerGQL = gql`
+    query Shop($id: String!) {
+        getShop(id: $id) {
+            _id
+            items {
+                nombre
+                emoji
+                stock
+            }
+            error
+        }
+    }
+`;
+
 export { useQuery };

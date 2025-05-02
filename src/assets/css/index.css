@@ -4,11 +4,13 @@ body {
         sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background-color: #222222;
+    height: 98vh;
 }
 
-/* Trabajar con Firefox */
+/* Trabajar con Firefox, Opera y Safari */
 * {
-    scrollbar-width: thin;
+    scrollbar-width: auto;
     /* "auto" o "thin" */
     scrollbar-color: rgb(200, 140, 51) rgb(237, 191, 16) orange;
     /* scroll de desplazamiento y pista */

@@ -77,7 +77,7 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 LLLL: 'dddd, MMMM D YYYY',
             },
         });
-    }, [lng]);
+    }, [isi18n, lng]);
 
     if (!isi18n) return <LoadingSpinner />;
 
