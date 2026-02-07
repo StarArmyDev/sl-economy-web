@@ -224,4 +224,26 @@ export const ShopServerGQL = gql`
     }
 `;
 
+export const ItemShopGQL = gql`
+    query GetItemShop($id: String!, $itemId: ID!) {
+        getItemShop(id: $id, itemId: $itemId) {
+            _id
+            nombre
+            descripcion
+            emoji
+            stock
+            disponible
+            transferible
+            basura
+            compraunica
+            precio {
+                compra
+                venta
+            }
+            mensaje
+            evento
+        }
+    }
+`;
+
 export { useQuery };

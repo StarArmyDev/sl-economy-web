@@ -1,3 +1,4 @@
+export * from './ChannelGuildModel';
 export * from './command';
 export * from './global';
 export * from './server';

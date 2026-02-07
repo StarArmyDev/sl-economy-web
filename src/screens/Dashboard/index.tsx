@@ -1,5 +1,5 @@
 import { Container, Spinner, Alert, Col, Row, Tab, Nav, Button, Card, Modal } from 'react-bootstrap';
-import * as ReactQuery from '@tanstack/react-query';
+import { useQuery, useLazyQuery } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -16,11 +16,10 @@ import {
     UpdateServerGQL,
     UpdateItemShopGQL,
     useMutation,
-    useQuery,
     ItemShopGQL,
 } from '@app/graphql';
 import { ItemFormModal, ShopManager, GeneralSettings, EconomySettings } from './components';
-import type { ServerSystem, GuildInfo, Item } from '@app/models';
+import type { ServerSystem, GuildInfo, Item, Tienda, ChannelGuildModel } from '@app/models';
 import { useAppSelector } from '@app/storage';
 
 const Styled = styled.div<{ bgColor?: string }>`
@@ -90,12 +89,12 @@ export const Dashboard: React.FC = () => {
     const itemForm = useForm<Item>();
 
     const [updateServerGQL] = useMutation(UpdateServerGQL);
-    const [itemDetails] = useMutation(ItemShopGQL);
     const [dbServer, setDbServer] = useState<ServerSystem | undefined>();
 
-    const serverGQL = useQuery(ServerGQL, { variables: { id } });
-    const channelsGQL = useQuery(ChannelsGuildGQL, { variables: { id } });
-    const shopGQL = useQuery(ShopServerGQL, { variables: { id } });
+    const serverGQL = useQuery<{ getServer: ServerSystem }>(ServerGQL, { variables: { id } });
+    const channelsGQL = useQuery<{ getChannelsGuild: ChannelGuildModel[] }>(ChannelsGuildGQL, { variables: { id } });
+    const shopGQL = useQuery<{ getShop: Tienda }>(ShopServerGQL, { variables: { id } });
+    const [getItemDetails] = useLazyQuery<{ getItemShop: Item }>(ItemShopGQL);
 
     useEffect(() => {
         setLoading(true);
@@ -117,7 +116,7 @@ export const Dashboard: React.FC = () => {
     const init = () => {
         if (!dbServer && !!serverGQL.data?.getServer && !channelsGQL.loading && !shopGQL.loading) {
             setDbServer(serverGQL.data.getServer);
-            loadDB(serverGQL.data.getServer, channelsGQL.data.getChannelsGuild);
+            loadDB(serverGQL.data.getServer, channelsGQL.data?.getChannelsGuild || []);
             setLoading(false);
         } else {
             setLoading(true);
@@ -376,7 +375,7 @@ export const Dashboard: React.FC = () => {
     };
 
     const handleOpenEditModal = async (itemId: string | number) => {
-        const itemResp = await itemDetails({ variables: { id, itemId } });
+        const itemResp = await getItemDetails({ variables: { id, itemId } });
         const item = itemResp.data?.getItemShop;
 
         if (!item) {

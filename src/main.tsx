@@ -6,10 +6,13 @@ import App from './App';
 import '@css/index.css';
 import '@app/styles/discord-theme.css';
 
+const isDev = import.meta.env.MODE === 'development';
+
 const client = new ApolloClient({
     uri: `${import.meta.env.VITE_API_URL}/graphql`,
     credentials: 'same-origin', //includes
     cache: new InMemoryCache(),
+    connectToDevTools: isDev,
 });
 
 const container = document.getElementById('root') as HTMLElement;
