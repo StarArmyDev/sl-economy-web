@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client';
 import React from 'react';
 import App from './App';
 import '@css/index.css';
+import '@app/styles/discord-theme.css';
 
 const client = new ApolloClient({
     uri: `${import.meta.env.VITE_API_URL}/graphql`,

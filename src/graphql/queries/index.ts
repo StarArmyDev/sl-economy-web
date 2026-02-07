@@ -213,9 +213,11 @@ export const ShopServerGQL = gql`
         getShop(id: $id) {
             _id
             items {
+                _id
                 nombre
                 emoji
                 stock
+                disponible
             }
             error
         }

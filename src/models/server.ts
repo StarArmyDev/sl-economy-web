@@ -245,6 +245,7 @@ export interface Item {
     };
     mensaje?: string;
     evento?: string;
+    expiracion?: string;
 }
 
 export interface ItemInventory {

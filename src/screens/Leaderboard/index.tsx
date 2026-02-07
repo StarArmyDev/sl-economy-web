@@ -1,5 +1,5 @@
 import { Container, ListGroup, Col, Row, Badge, Button, Card, InputGroup, Form } from 'react-bootstrap';
-import React, { Fragment, useState, useRef } from 'react';
+import React, { Fragment, useState, useRef, useCallback } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { useParams } from 'react-router-dom';
 import { debounce } from 'lodash';
@@ -7,8 +7,8 @@ import Helmet from 'react-helmet';
 
 import type { AllProfilesInServer, ProfileTop } from '@app/models';
 import { GuildGQL, ProfileGQL, useQuery } from '../../graphql';
-import { ConvertString, EventRegister } from '@app/helpers';
 import { useAppSelector } from '@app/storage';
+import { ConvertString } from '@app/helpers';
 
 // Destacar los primeros 3 lugares con estilos especiales
 const getPodiumStyle = (position: number) => {
@@ -132,22 +132,30 @@ export const LeaderBoard: React.FC = () => {
         }
     }, [data, userRank.position, user]);
 
-    // --- SCROLL GLOBAL PARA PAGINACIÓN INFINITA ---
-    React.useEffect(() => {
-        const onScroll = () => {
-            const scrollContainer = document.querySelector('div[style*="overflow-y: scroll"]');
-            if (!scrollContainer) return;
-            const { scrollTop, scrollHeight, clientHeight } = scrollContainer;
+    // Referencia para el elemento sentinel del IntersectionObserver
+    const observerRef = useRef<IntersectionObserver | null>(null);
+    const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
-            if (!loading && scrollHeight - scrollTop - clientHeight < 300) {
-                loadMore();
-            }
-        };
-        EventRegister.on('scroll', onScroll);
-        return () => {
-            EventRegister.removeListener('scroll');
-        };
-    }, [loadMore, data?.AllProfilesInServer.profiles.length, loading]);
+    // Callback para el último elemento (IntersectionObserver)
+    // TODO: Arreglar loop infinito, necesitamos un count del total de usuarios desde el backend
+    const lastElementCallback = useCallback(
+        (node: HTMLDivElement | null) => {
+            if (loading) return;
+            if (observerRef.current) observerRef.current.disconnect();
+
+            observerRef.current = new IntersectionObserver(
+                entries => {
+                    if (entries[0].isIntersecting && !loading) {
+                        loadMore();
+                    }
+                },
+                { rootMargin: '200px' },
+            );
+
+            if (node) observerRef.current.observe(node);
+        },
+        [loading, loadMore],
+    );
 
     if ((loading && !usersList.length) || GuildData.loading)
         return (
@@ -248,14 +256,15 @@ export const LeaderBoard: React.FC = () => {
                             </Card>
                         ) : null}
 
-                        {/* <InputGroup className="mb-3">
-                            <InputGroup.Text>🔍</InputGroup.Text>
+                        {/* Barra de búsqueda */}
+                        <InputGroup className="mb-3 mt-3">
+                            <InputGroup.Text className="discord-bg-tertiary border-0">🔍</InputGroup.Text>
                             <Form.Control
-                                placeholder="Buscar usuario..."
+                                className="discord-bg-tertiary border-0"
+                                placeholder="Buscar usuario por nombre..."
                                 onChange={e => debouncedSearch(e.target.value)}
-                                value={searchTerm}
                             />
-                        </InputGroup> */}
+                        </InputGroup>
 
                         <div style={{ width: '100%', maxWidth: '100%', margin: 0, padding: 0 }}>
                             {usersList.length > 2 ? (
@@ -363,6 +372,8 @@ export const LeaderBoard: React.FC = () => {
                                             </Row>
                                         </ListGroup.Item>
                                     )}
+                                    {/* Sentinel element para IntersectionObserver - carga más al ser visible */}
+                                    {!loading && filteredList.length > 0 && <div ref={lastElementCallback} style={{ height: 1 }} />}
                                 </ListGroup>
                             )}
                         </div>

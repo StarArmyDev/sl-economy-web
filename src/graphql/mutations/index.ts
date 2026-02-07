@@ -151,4 +151,147 @@ export const UpdateGuildsGQL = gql`
     }
 `;
 
+export const AddItemShopGQL = gql`
+    mutation addItemShop(
+        $id: ID!
+        $nombre: String!
+        $descripcion: String!
+        $precio: PrecioItemInput
+        $emoji: String
+        $disponible: Boolean!
+        $transferible: Boolean!
+        $basura: Boolean!
+        $compraunica: Boolean!
+        $stock: Int
+        $mensaje: String
+        $evento: String
+    ) {
+        addItemShop(
+            id: $id
+            nombre: $nombre
+            descripcion: $descripcion
+            precio: $precio
+            emoji: $emoji
+            disponible: $disponible
+            transferible: $transferible
+            basura: $basura
+            compraunica: $compraunica
+            stock: $stock
+            mensaje: $mensaje
+            evento: $evento
+        ) {
+            _id
+            items {
+                _id
+                nombre
+                descripcion
+                emoji
+                stock
+                disponible
+                transferible
+                basura
+                compraunica
+                precio {
+                    compra
+                    venta
+                }
+                mensaje
+                evento
+            }
+            error
+        }
+    }
+`;
+
+export const RemoveItemShopGQL = gql`
+    mutation removeItemShop($id: ID!, $itemId: ID!) {
+        removeItemShop(id: $id, itemId: $itemId) {
+            _id
+            items {
+                _id
+                nombre
+                emoji
+                stock
+            }
+            error
+        }
+    }
+`;
+
+export const UpdateItemShopGQL = gql`
+    mutation updateItemShop(
+        $id: ID!
+        $itemId: ID!
+        $nombre: String!
+        $descripcion: String!
+        $precio: PrecioItemInput
+        $emoji: String
+        $disponible: Boolean!
+        $transferible: Boolean!
+        $basura: Boolean!
+        $compraunica: Boolean!
+        $stock: Int
+        $mensaje: String
+        $evento: String
+    ) {
+        updateItemShop(
+            id: $id
+            _id: $itemId
+            nombre: $nombre
+            descripcion: $descripcion
+            precio: $precio
+            emoji: $emoji
+            disponible: $disponible
+            transferible: $transferible
+            basura: $basura
+            compraunica: $compraunica
+            stock: $stock
+            mensaje: $mensaje
+            evento: $evento
+        ) {
+            _id
+            items {
+                _id
+                nombre
+                descripcion
+                emoji
+                stock
+                disponible
+                transferible
+                basura
+                compraunica
+                precio {
+                    compra
+                    venta
+                }
+                mensaje
+                evento
+            }
+            error
+        }
+    }
+`;
+
+export const ItemShopGQL = gql`
+    mutation GetItemShop($id: String!, $itemId: ID!) {
+        getItemShop(id: $id, itemId: $itemId) {
+            _id
+            nombre
+            descripcion
+            emoji
+            stock
+            disponible
+            transferible
+            basura
+            compraunica
+            precio {
+                compra
+                venta
+            }
+            mensaje
+            evento
+        }
+    }
+`;
+
 export { useMutation };
