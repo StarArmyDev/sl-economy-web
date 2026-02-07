@@ -1,8 +1,8 @@
-import { constants, colors } from "../../utils";
-import { UserAvatar } from "../UserAvatar";
-import { User } from "../../interface";
-import styled from "styled-components";
-import { MemberRolesList } from ".";
+import { constants, colors } from '../../utils';
+import { UserAvatar } from '../UserAvatar';
+import type { User } from '../../interface';
+import styled from 'styled-components';
+import { MemberRolesList } from '.';
 
 const StyledMemberCard = styled.div`
     width: ${constants.memberCardWidth}px;
@@ -17,7 +17,7 @@ const StyledMemberCard = styled.div`
             cursor: pointer;
 
             .status {
-                border-color: ${(props) => (props.isPlaying ? colors.memberCardHeaderPlayingBackground : colors.memberCardHeaderBackground)};
+                border-color: ${props => (props.isPlaying ? colors.memberCardHeaderPlayingBackground : colors.memberCardHeaderBackground)};
             }
 
             :hover .view-profile {
@@ -153,7 +153,7 @@ export const MemberCard = ({ member }: { member: User }) => (
         <div className="content">
             {member.roles && (
                 <>
-                    <div className="field-key roles-key">{member.roles.length > 0 ? "Roles" : "Sin Roles"}</div>
+                    <div className="field-key roles-key">{member.roles.length > 0 ? 'Roles' : 'Sin Roles'}</div>
                     <div className="field-value roles">
                         <MemberRolesList roles={member.roles} />
                     </div>

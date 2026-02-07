@@ -1,6 +1,6 @@
-import { Reply } from "../../interface";
-import styled from "styled-components";
-import { handleMemberClick } from ".";
+import type { Reply } from '../../interface';
+import styled from 'styled-components';
+import { handleMemberClick } from '.';
 
 const StyledReplyMessage = styled.div`
     .repliedMessage {
@@ -15,7 +15,7 @@ const StyledReplyMessage = styled.div`
     }
 
     .repliedMessage::before {
-        content: ".";
+        content: '.';
         color: #36393f;
 
         margin-right: 6px;
@@ -64,20 +64,19 @@ const StyledReplyMessage = styled.div`
     }
 `;
 
-export const ReplyMessage = ({ reply, isBot }: { reply: Reply; isBot?: boolean }) => (
+export const ReplyMessage = ({ reply }: { reply: Reply; isBot?: boolean }) => (
     <StyledReplyMessage>
         <div className="repliedMessage ps-4" aria-hidden="true">
-            <img className="replyAvatar" src={reply.user.avatarUrl} alt="" role="button" onClick={(e) => handleMemberClick(e, reply.user)} />
+            <img className="replyAvatar" src={reply.user.avatarUrl} alt="" role="button" onClick={e => handleMemberClick(e, reply.user)} />
             <span
                 className="username"
                 style={{ color: reply.user.roles ? reply.user.roles[0].color : undefined }}
                 role="button"
-                onClick={(e) => handleMemberClick(e, reply.user)}
-            >
+                onClick={e => handleMemberClick(e, reply.user)}>
                 {reply.user.username}
             </span>
-            {reply.content.startsWith("/") && "ha utilizado"}
-            <span className={reply.content.startsWith("/") ? "commandName" : ""}>{reply.content}</span>
+            {reply.content.startsWith('/') && 'ha utilizado'}
+            <span className={reply.content.startsWith('/') ? 'commandName' : ''}>{reply.content}</span>
         </div>
     </StyledReplyMessage>
 );

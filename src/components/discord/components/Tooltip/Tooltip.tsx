@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 const StyledTooltip = styled.div`
     padding: 1px 11px 0;
@@ -15,7 +15,7 @@ const StyledTooltip = styled.div`
     border-radius: 5px;
 
     ::after {
-        content: " ";
+        content: ' ';
         position: absolute;
         border-width: 5px;
         border-style: solid;

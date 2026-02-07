@@ -1,13 +1,13 @@
-import styled, { keyframes } from "styled-components";
-import { useEffect, useRef } from "react";
-import { User } from "../../interface";
-import { MemberCard } from ".";
+import styled, { keyframes } from 'styled-components';
+import { useEffect, useRef } from 'react';
+import type { User } from '../../interface';
+import { MemberCard } from '.';
 
 const fadeInAnimation = ({ direction }: { direction?: string }) => keyframes`
   from {
     opacity: 0;
     transform: translateX(
-      ${{ left: "15%", right: "-15%" }[direction || "left"]}
+      ${{ left: '15%', right: '-15%' }[direction || 'left']}
     );
   }
   to {
@@ -24,21 +24,21 @@ const StyledMemberCardPopupWrapper = styled.div`
     z-index: 1000;
 
     top: ${(props: { position: { x: number; y: number }; direction: string }) => props.position && props.position.y}px;
-    left: ${(props) => props.position && props.position.x}px;
+    left: ${props => props.position && props.position.x}px;
 
-    animation: ${(props) => fadeInAnimation} ease-in 0.1s forwards;
+    animation: ${() => fadeInAnimation} ease-in 0.1s forwards;
 `;
 
 export const MemberCardPopupWrapper = ({
     direction,
     position,
     member,
-    onClose
+    onClose,
 }: {
     direction: string;
     position: { x: number; y: number };
     member: User;
-    onClose: Function;
+    onClose: () => void;
 }) => {
     const node = useRef(null);
 
@@ -51,10 +51,10 @@ export const MemberCardPopupWrapper = ({
     };
 
     useEffect(() => {
-        document.addEventListener("mousedown", handleDocumentClick, false);
+        document.addEventListener('mousedown', handleDocumentClick, false);
 
         return () => {
-            document.removeEventListener("mousedown", handleDocumentClick, false);
+            document.removeEventListener('mousedown', handleDocumentClick, false);
         };
     });
 

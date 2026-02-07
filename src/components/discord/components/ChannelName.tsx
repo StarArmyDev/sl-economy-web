@@ -1,5 +1,5 @@
-import { AtIcon, HashtagIcon } from "../icons";
-import styled from "styled-components";
+import { AtIcon, HashtagIcon } from '../icons';
+import styled from 'styled-components';
 
 const StyledChannelName = styled.div`
     display: flex;
@@ -13,13 +13,23 @@ const StyledChannelName = styled.div`
     span {
         margin-top: 3px;
         font-weight: ${(props: { isHeader?: boolean; textColor?: string }) => (props.isHeader ? 600 : 500)};
-        font-size: ${(props) => (props.isHeader ? "1.1em" : "1em")};
-        color: ${(props) => props.textColor || "#72767d"};
+        font-size: ${props => (props.isHeader ? '1.1em' : '1em')};
+        color: ${props => props.textColor || '#72767d'};
     }
 `;
 
-export const ChannelName = ({ name, textColor, isHeader, isUser }: { name: string; textColor?: string; isHeader?: boolean; isUser?: boolean }) => (
-    <StyledChannelName isHeader={isHeader} textColor={textColor}>
+export const ChannelName = ({
+    name,
+    textColor,
+    isHeader = false,
+    isUser = false,
+}: {
+    name: string;
+    textColor?: string;
+    isHeader?: boolean;
+    isUser?: boolean;
+}) => (
+    <StyledChannelName isHeader={isHeader} textColor={textColor || '#72767d'}>
         {isUser ? <AtIcon /> : <HashtagIcon />}
         <span>{name}</span>
     </StyledChannelName>

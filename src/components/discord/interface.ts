@@ -60,7 +60,7 @@ export interface Reply {
 export type Component = SelectMenuComponent | ButtonComponent;
 
 export interface SelectMenuComponent {
-    type: "SelectMenu";
+    type: 'SelectMenu';
     placeholder: string;
     options: SelectMenuOption[];
 }
@@ -74,7 +74,7 @@ export interface SelectMenuOption {
 }
 
 export interface ButtonComponent {
-    type: "Button";
+    type: 'Button';
     customId?: string;
     label: string;
     style: ButtonStyle;
@@ -84,9 +84,9 @@ export interface ButtonComponent {
 }
 
 export enum ButtonStyle {
-    "Primary" = 1,
-    "Secondary" = 2,
-    "Success" = 3,
-    "Danger" = 4,
-    "Link" = 5
+    'Primary' = 1,
+    'Secondary' = 2,
+    'Success' = 3,
+    'Danger' = 4,
+    'Link' = 5,
 }

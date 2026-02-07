@@ -1,11 +1,28 @@
-import { gql, useMutation } from "@apollo/client";
+import { gql, useMutation } from '@apollo/client';
 
 export const UpdateServerGQL = gql`
     mutation updateServerGQL($id: String!, $name: String!, $value: String, $valueNumber: Float, $create: Boolean = false) {
         updateServer(id: $id, name: $name, value: $value, valueNumber: $valueNumber, createIfNotExist: $create) {
             _id
-            colorname
-            prefix
+            colorMain
+            images {
+                records
+                flipcoin {
+                    face
+                    stamp
+                }
+                dice {
+                    _1
+                    _2
+                    _3
+                    _4
+                    _5
+                    _6
+                }
+            }
+            buy {
+                category
+            }
             language {
                 server
                 channels {
@@ -13,8 +30,12 @@ export const UpdateServerGQL = gql`
                     lang
                 }
             }
-            pago {
-                mensajes {
+            currency {
+                name
+                id
+            }
+            payment {
+                messages {
                     min
                     max
                 }
@@ -44,23 +65,18 @@ export const UpdateServerGQL = gql`
                     max
                 }
             }
-            multa {
+            fineAmount {
                 rob {
                     min
                     max
                     fail
                 }
-                tarde {
+                trade {
                     min
                     max
                     fail
                 }
                 crime {
-                    min
-                    max
-                    fail
-                }
-                trade {
                     min
                     max
                     fail
@@ -89,18 +105,24 @@ export const UpdateServerGQL = gql`
                 dice
                 flipcoin
                 loot
-                mensajes
+                messages
                 rob
                 roulette
                 slotmachine
                 trade
                 work
             }
-            moneda {
-                name
-                id
-            }
-            chatExcluido
+            excludedChannels
+        }
+    }
+`;
+
+export const DeleteProfileGQL = gql`
+    mutation deleteProfileGQL($id: String!) {
+        deleteProfile(id: $id) {
+            _id
+            dinero
+            banco
         }
     }
 `;

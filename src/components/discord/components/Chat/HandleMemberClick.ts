@@ -1,13 +1,13 @@
-import { MemberCardPopup } from "../MemberCardPopup";
-import { User } from "components/discord/interface";
+import type { User } from '@app/components/discord/interface';
+import { MemberCardPopup } from '../MemberCardPopup';
 
 export const handleMemberClick = (element: React.MouseEvent<HTMLElement, MouseEvent>, member: User) => {
     const { target } = element;
     const targetRect = (target as HTMLDivElement).getBoundingClientRect();
 
     MemberCardPopup.show({
-        direction: "left",
+        direction: 'left',
         position: { x: targetRect.x + 50, y: targetRect.top - 100 },
-        member
+        member,
     });
 };

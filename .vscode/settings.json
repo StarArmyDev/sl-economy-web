@@ -1,0 +1,26 @@
+{
+    "editor.formatOnSave": true,
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "i18n-ally.localesPaths": [
+        "src/translations"
+    ],
+    "i18n-ally.sourceLanguage": "es",
+    "i18n-ally.displayLanguage": "es",
+    "i18n-ally.keystyle": "nested",
+    "i18n-ally.tabStyle": "space",
+    "i18n-ally.indent": 4,
+    //"i18n-ally.namespace": true,
+    "i18n-ally.pathMatcher": "{locale}/{namespaces}.json",
+    "i18n-ally.regex.usageMatch": [
+        "[^\\w\\d]t\\(['\"`]({key})['\"`]"
+    ],
+    "i18n-ally.annotationMaxLength": 150
+}

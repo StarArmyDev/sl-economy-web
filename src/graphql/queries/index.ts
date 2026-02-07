@@ -1,24 +1,10 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql, useQuery } from '@apollo/client';
 
 export const ServerGQL = gql`
     query Server($id: String!) {
         getServer(id: $id) {
             _id
             colorMain
-            language {
-                server
-                channels {
-                    id
-                    lang
-                }
-            }
-            currency {
-                name
-                id
-            }
-            buy {
-                category
-            }
             images {
                 records
                 flipcoin {
@@ -33,6 +19,20 @@ export const ServerGQL = gql`
                     _5
                     _6
                 }
+            }
+            buy {
+                category
+            }
+            language {
+                server
+                channels {
+                    id
+                    lang
+                }
+            }
+            currency {
+                name
+                id
             }
             payment {
                 messages {
@@ -118,18 +118,29 @@ export const ServerGQL = gql`
 `;
 
 export const ProfileGQL = gql`
-    query ProfilesServer($id: String!, $orden: sortProfile, $skip: Int = 0, $limit: Int = 50) {
-        AllProfilesInServer(id: $id, sort: $orden, skip: $skip, limit: $limit) {
-            _id
-            dinero
-            banco
-            locked
-            user {
+    query ProfilesServer($id: String!, $userId: String, $orden: sortProfile, $skip: Int = 0, $limit: Int) {
+        AllProfilesInServer(id: $id, userId: $userId, sort: $orden, skip: $skip, limit: $limit) {
+            userRank {
+                position
+                profile {
+                    _id
+                    dinero
+                    banco
+                    total
+                    locked
+                }
+            }
+            profiles {
                 _id
-                avatar
-                username
-                discriminator
-                flags
+                dinero
+                banco
+                total
+                user {
+                    _id
+                    avatar
+                    username
+                    discriminator
+                }
             }
         }
     }
@@ -194,6 +205,20 @@ export const UserGuildsGQL = gql`
         icon
         owner
         permissions
+    }
+`;
+
+export const ShopServerGQL = gql`
+    query Shop($id: String!) {
+        getShop(id: $id) {
+            _id
+            items {
+                nombre
+                emoji
+                stock
+            }
+            error
+        }
     }
 `;
 

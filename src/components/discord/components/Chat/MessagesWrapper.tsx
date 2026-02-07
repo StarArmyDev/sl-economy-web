@@ -1,9 +1,9 @@
-import { WelcomeChannelMessage, ScrollableArea, MemberMessage, MemberMessageGroup, ButtonCmp, SelectMenu, MessagesEmbed } from "..";
-import { User, Message, Component } from "../../interface";
-import { Col, Row } from "react-bootstrap";
-import styled from "styled-components";
-import { parseMarkdown } from "libs";
-import { useRef } from "react";
+import { WelcomeChannelMessage, ScrollableArea, MemberMessage, MemberMessageGroup, ButtonCmp, SelectMenu, MessagesEmbed } from '..';
+import type { User, Message, Component } from '../../interface';
+import { Col, Row } from 'react-bootstrap';
+import styled from 'styled-components';
+import { parseMarkdown } from '@app/helpers';
+import { useRef } from 'react';
 
 const StyledMessagesWrapper = styled.div`
     .containerDiscord {
@@ -27,31 +27,39 @@ const createComponents = (components: Component[]) => {
     const rowTwoComponents: JSX.Element[] = [];
 
     for (const component of components) {
-        if (component.type === "SelectMenu") rowOneComponents.push(<SelectMenu data={component} key={component.placeholder} />);
-        if (component.type === "Button") rowTwoComponents.push(<ButtonCmp data={component} key={component.label} />);
+        if (component.type === 'SelectMenu') rowOneComponents.push(<SelectMenu data={component} key={component.placeholder} />);
+        if (component.type === 'Button') rowTwoComponents.push(<ButtonCmp data={component} key={component.label} />);
     }
 
     return { rowOneComponents, rowTwoComponents };
 };
 
-export const MessagesWrapper = ({ channelName, messages, isWelcomeMessage }: { channelName: string; messages: Message[]; isWelcomeMessage?: boolean }) => {
+export const MessagesWrapper = ({
+    channelName,
+    messages,
+    isWelcomeMessage,
+}: {
+    channelName: string;
+    messages: Message[];
+    isWelcomeMessage?: boolean;
+}) => {
     const bottomElement = useRef(null);
 
     /* useLayoutEffect(() => {
         (bottomElement.current as any).scrollIntoView({ behavior: "instant" }); // Hace que el scroll se mueva
     }); */
 
-    let lastUserId = "";
+    let lastUserId = '';
     const groupsComponents: JSX.Element[] = [];
     let messagesComponents: JSX.Element[] = [];
     let headingGroupMessage: Message | null = null;
 
     const closeMessageGroupAndClearMessages = () => {
-        const userId = headingGroupMessage!.user.id || "";
-        const guildMembers = messages.map((m) => m.user);
-        const member = guildMembers.find((m) => m.id === userId);
+        const userId = headingGroupMessage!.user.id || '';
+        const guildMembers = messages.map(m => m.user);
+        const member = guildMembers.find(m => m.id === userId);
 
-        const currentGroupId = headingGroupMessage!.user.id || "";
+        const currentGroupId = headingGroupMessage!.user.id || '';
         groupsComponents.push(createMessageGroup(currentGroupId, member!, headingGroupMessage!.time, messagesComponents));
         messagesComponents = [];
     };
@@ -76,7 +84,7 @@ export const MessagesWrapper = ({ channelName, messages, isWelcomeMessage }: { c
             <MemberMessage reply={message.reply} user={message.user} time={message.time} key={message.id}>
                 <Col>
                     <Row sm={12} className="ps-3 pt-2">
-                        {parseMarkdown(message.content || "")}
+                        {parseMarkdown(message.content || '')}
                     </Row>
                     {message.embeds && (
                         <Row>
@@ -88,7 +96,7 @@ export const MessagesWrapper = ({ channelName, messages, isWelcomeMessage }: { c
                         <div className="children">{rowTwoComponents}</div>
                     </div>
                 </Col>
-            </MemberMessage>
+            </MemberMessage>,
         );
         lastUserId = message.user.id;
 

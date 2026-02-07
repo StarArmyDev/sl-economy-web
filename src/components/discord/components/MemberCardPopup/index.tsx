@@ -1,7 +1,7 @@
-import { MemberCardPopupWrapper } from ".";
-import { User } from "../../interface";
-import styled from "styled-components";
-import { Component } from "react";
+import { MemberCardPopupWrapper } from '.';
+import type { User } from '../../interface';
+import styled from 'styled-components';
+import { Component } from 'react';
 
 const StyledMemberCardPopup = styled.div`
     position: absolute;
@@ -22,7 +22,7 @@ export class MemberCardPopup extends Component {
             isPopupVisible: true,
             direction,
             position,
-            member
+            member,
         });
     };
 
@@ -35,12 +35,14 @@ export class MemberCardPopup extends Component {
 
         return (
             <StyledMemberCardPopup>
-                {isPopupVisible && <MemberCardPopupWrapper direction={direction} position={position} member={member} onClose={this.closePopup} />}
+                {isPopupVisible && (
+                    <MemberCardPopupWrapper direction={direction} position={position} member={member} onClose={this.closePopup} />
+                )}
             </StyledMemberCardPopup>
         );
     }
 }
 
-export * from "./MemberCard";
-export * from "./MemberCardPopupWrapper";
-export * from "./MemberRolesList";
+export * from './MemberCard';
+export * from './MemberCardPopupWrapper';
+export * from './MemberRolesList';
