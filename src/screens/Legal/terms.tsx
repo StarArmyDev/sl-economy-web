@@ -1,6 +1,6 @@
 import { Container, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import Helmet from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 export function Terms() {
     const ButtonMailto = ({ mailto, label }: { mailto: string; label: string }) => {

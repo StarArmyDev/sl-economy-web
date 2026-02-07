@@ -22,7 +22,7 @@ export interface EconomySettingsProps {
 
 export const EconomySettings: React.FC<EconomySettingsProps> = ({ register, errors, dbServer, onDelete, onSubmit, chatExclude }) => {
     return (
-        <>
+        <Row className="align-items-center text-center">
             <Col sm={12}>
                 <h3>Economía</h3>
             </Col>
@@ -1243,6 +1243,6 @@ export const EconomySettings: React.FC<EconomySettingsProps> = ({ register, erro
                     </Row>
                 </Form>
             </Col>
-        </>
+        </Row>
     );
 };

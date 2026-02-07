@@ -3,7 +3,7 @@ import { Accordion, Card, Col, Container, Nav, Row, Tab } from 'react-bootstrap'
 import { ConvertString, FirstCapitalLetter } from '@app/helpers';
 import Snackbar from '@mui/material/Snackbar';
 import { Alert } from '@app/components';
-import Helmet from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import { useState } from 'react';
 
 export function Commands() {

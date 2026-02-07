@@ -1,10 +1,10 @@
 import { Container, Spinner, Alert, Col, Row, Tab, Nav, Button, Card, Modal } from 'react-bootstrap';
-import { useQuery, useLazyQuery } from '@apollo/client';
+import { useQuery, useLazyQuery, useMutation } from '@apollo/client/react';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
-import Helmet from 'react-helmet';
 import ms from 'ms';
 
 import {
@@ -15,16 +15,15 @@ import {
     ShopServerGQL,
     UpdateServerGQL,
     UpdateItemShopGQL,
-    useMutation,
     ItemShopGQL,
 } from '@app/graphql';
 import { ItemFormModal, ShopManager, GeneralSettings, EconomySettings } from './components';
 import type { ServerSystem, GuildInfo, Item, Tienda, ChannelGuildModel } from '@app/models';
 import { useAppSelector } from '@app/storage';
 
-const Styled = styled.div<{ bgColor?: string }>`
+const Styled = styled.div<{ $bgColor?: string }>`
     .nav-link.active {
-        background-color: ${props => props.bgColor || '#375a7f'} !important;
+        background-color: ${props => props.$bgColor || '#375a7f'} !important;
     }
 
     .nav-link.disabled {
@@ -70,7 +69,8 @@ export const Dashboard: React.FC = () => {
     }
 
     const { id } = useParams();
-    const [loading, setLoading] = useState(true);
+
+    const [loading, setLoading] = useState(false);
     const [guild, setGuild] = useState<GuildInfo | undefined>();
     const [alert, setAlert] = useState([] as IAlert[]);
     const [chatExclude, setChatExclude] = useState([] as { name: string; id: string }[]);
@@ -79,6 +79,8 @@ export const Dashboard: React.FC = () => {
     const [editingItem, setEditingItem] = useState<Item | null>(null);
     const [isItemModalOpen, setIsItemModalOpen] = useState(false);
     const [isItemSaving, setIsItemSaving] = useState(false);
+    const [dbServer, setDbServer] = useState<ServerSystem | undefined>();
+
     const {
         register,
         formState: { errors },
@@ -88,15 +90,20 @@ export const Dashboard: React.FC = () => {
     } = useForm();
     const itemForm = useForm<Item>();
 
-    const [updateServerGQL] = useMutation(UpdateServerGQL);
-    const [dbServer, setDbServer] = useState<ServerSystem | undefined>();
-
-    const serverGQL = useQuery<{ getServer: ServerSystem }>(ServerGQL, { variables: { id } });
-    const channelsGQL = useQuery<{ getChannelsGuild: ChannelGuildModel[] }>(ChannelsGuildGQL, { variables: { id } });
-    const shopGQL = useQuery<{ getShop: Tienda }>(ShopServerGQL, { variables: { id } });
+    const [onServerGQL, serverGQL] = useLazyQuery<{ getServer: ServerSystem }>(ServerGQL);
+    const [onChannelsGQL, channelsGQL] = useLazyQuery<{ getChannelsGuild: ChannelGuildModel[] }>(ChannelsGuildGQL);
+    const [onShopGQL, shopGQL] = useLazyQuery<{ getShop: Tienda }, { id: string }>(ShopServerGQL);
     const [getItemDetails] = useLazyQuery<{ getItemShop: Item }>(ItemShopGQL);
 
+    const [updateServerGQL] = useMutation<{ updateServer: ServerSystem }>(UpdateServerGQL);
+    const [addItemShopGQL] = useMutation<{ addItemShop: Tienda & { error?: string } }>(AddItemShopGQL);
+    const [removeItemShopGQL] = useMutation<{ removeItemShop: Tienda & { error?: string } }>(RemoveItemShopGQL);
+    const [updateItemShopGQL] = useMutation<{ updateItemShop: Tienda & { error?: string } }>(UpdateItemShopGQL);
+
     useEffect(() => {
+        if (loading) return;
+
+        console.log('init', id);
         setLoading(true);
         const Servidor = user.guilds?.find(g => g.id === id);
         let usersManager: string[] = [];
@@ -106,41 +113,35 @@ export const Dashboard: React.FC = () => {
             usersManager = [];
         }
 
-        if (!Servidor || (!((Servidor.permissions & 2146958591) === 2146958591) && !usersManager.includes(user._id)))
-            return window.location.replace('/error403');
-        else setGuild(Servidor);
-
-        init();
-    }, [id, serverGQL.loading, channelsGQL.loading, shopGQL.loading]);
-
-    const init = () => {
-        if (!dbServer && !!serverGQL.data?.getServer && !channelsGQL.loading && !shopGQL.loading) {
-            setDbServer(serverGQL.data.getServer);
-            loadDB(serverGQL.data.getServer, channelsGQL.data?.getChannelsGuild || []);
+        if (!Servidor || (!((Servidor.permissions & 2146958591) === 2146958591) && !usersManager.includes(user._id))) {
             setLoading(false);
+            return window.location.replace('/error403');
         } else {
-            setLoading(true);
-            reset();
-            setDbServer(undefined);
-            serverGQL
-                .refetch({ id })
-                .then(({ data }) => {
-                    if (data) {
-                        setDbServer(data.getServer);
-                        channelsGQL.refetch({ id }).then(chData => {
-                            setChatExclude([]);
-                            if (chData.data) loadDB(data.getServer, chData.data.getChannelsGuild);
-                            setLoading(false);
-                        });
-                        shopGQL.refetch({ id }).then(shData => {
-                            if (shData.data) setItems(shData.data.getShop.items);
-                            console.log(shData?.data?.getShop);
-                        });
-                    } else setLoading(false);
-                })
-                .catch(() => setLoading(false));
+            setGuild(Servidor);
+            setLoading(false);
+            onServerGQL({ variables: { id } });
         }
-    };
+    }, [id, user]);
+
+    // Efecto separado para cargar datos cuando la query completa
+    useEffect(() => {
+        if (serverGQL.data?.getServer && !dbServer) {
+            setDbServer(serverGQL.data.getServer);
+            setLoading(false);
+        }
+    }, [serverGQL.data, dbServer]);
+
+    useEffect(() => {
+        if (serverGQL.data?.getServer && channelsGQL.data) {
+            loadDB(serverGQL.data.getServer, channelsGQL.data.getChannelsGuild || []);
+        }
+    }, [channelsGQL.data]);
+
+    useEffect(() => {
+        if (shopGQL.data) {
+            setItems(shopGQL.data.getShop?.items || []);
+        }
+    }, [shopGQL.data]);
 
     const loadDB = async (db: ServerSystem | null, channels: { name: string; id: string }[]) => {
         if (db?.excludedChannels)
@@ -208,7 +209,7 @@ export const Dashboard: React.FC = () => {
                                                         data[key][key2][key3],
                                                 },
                                             })
-                                        ).data.updateServer,
+                                        ).data?.updateServer,
                                     );
                                 }
                             }
@@ -234,7 +235,7 @@ export const Dashboard: React.FC = () => {
                                         [timerMs ? 'valueNumber' : 'value']: timerMs ? timerMs : data[key][key2],
                                     },
                                 })
-                            ).data.updateServer,
+                            ).data?.updateServer,
                         );
                     }
                 }
@@ -250,12 +251,12 @@ export const Dashboard: React.FC = () => {
                                 value: data[key],
                             },
                         })
-                    ).data.updateServer,
+                    ).data?.updateServer,
                 );
             }
         }
 
-        function updateData(newData: ServerSystem | null) {
+        function updateData(newData?: ServerSystem | null) {
             if (newData) {
                 if (e) e.target.reset();
                 setAlert(at => [...at, { type: 'success', show: true, text: 'Cambios Guardados Correctamente' }]);
@@ -265,10 +266,6 @@ export const Dashboard: React.FC = () => {
             }
         }
     };
-
-    const [addItemShopGQL] = useMutation(AddItemShopGQL);
-    const [removeItemShopGQL] = useMutation(RemoveItemShopGQL);
-    const [updateItemShopGQL] = useMutation(UpdateItemShopGQL);
 
     const onNewItem = async (data: Item) => {
         setIsItemSaving(true);
@@ -312,12 +309,10 @@ export const Dashboard: React.FC = () => {
                 variables: { id, itemId: String(itemId) },
             });
 
-            if (result.data?.removeItemShop?.error) {
-                setAlert(at => [...at, { type: 'danger', show: true, text: result.data.removeItemShop.error }]);
-            } else if (result.data?.removeItemShop?.items) {
+            if (result.data?.removeItemShop?.items) {
                 setItems(result.data.removeItemShop.items);
                 setAlert(at => [...at, { type: 'success', show: true, text: 'Item eliminado correctamente' }]);
-            }
+            } else throw new Error(result.data?.removeItemShop?.error || 'Error al eliminar el item');
         } catch (error: any) {
             setAlert(at => [...at, { type: 'danger', show: true, text: error.message || 'Error al eliminar el item' }]);
         }
@@ -401,7 +396,7 @@ export const Dashboard: React.FC = () => {
                     name,
                 },
             })
-        ).data.deleteServerGQL;
+        ).data?.updateServer;
         setDbServer(newData);
         reset([name]);
         if (name === 'language.server') setValue('language.server', 'es-MX');
@@ -492,7 +487,7 @@ export const Dashboard: React.FC = () => {
         );
     }; */
 
-    if (loading || serverGQL.loading || channelsGQL.loading)
+    if (loading)
         return (
             <Container
                 style={{
@@ -512,7 +507,7 @@ export const Dashboard: React.FC = () => {
         );
     else {
         return (
-            <Styled bgColor={dbServer?.colorMain || '#edbf10'}>
+            <Styled $bgColor={dbServer?.colorMain || '#edbf10'}>
                 <Container>
                     <Helmet>
                         <title>Dashboard | {guild?.name || ''}</title>
@@ -553,13 +548,17 @@ export const Dashboard: React.FC = () => {
                                 </Col>
 
                                 {/* Contenido */}
-                                <Tab.Container defaultActiveKey="shop">
+                                <Tab.Container defaultActiveKey="bot">
                                     {/* Menú Lateral */}
                                     <Col sm={2} className="text-center">
                                         <Nav variant="pills" className="flex-column">
                                             <Nav.Link eventKey="bot">Inicio</Nav.Link>
-                                            <Nav.Link eventKey="economy">Economía</Nav.Link>
-                                            <Nav.Link eventKey="shop">Tienda</Nav.Link>
+                                            <Nav.Link eventKey="economy" onClick={() => id && onChannelsGQL({ variables: { id } })}>
+                                                Economía
+                                            </Nav.Link>
+                                            <Nav.Link eventKey="shop" onClick={() => id && onShopGQL({ variables: { id } })}>
+                                                Tienda
+                                            </Nav.Link>
                                         </Nav>
                                     </Col>
                                     {/* Contenido de los menús */}
@@ -585,18 +584,32 @@ export const Dashboard: React.FC = () => {
 
                                             {/* Panel de Bot */}
                                             <Tab.Pane eventKey="bot">
-                                                <GeneralSettings
-                                                    register={register}
-                                                    errors={errors}
-                                                    dbServer={dbServer}
-                                                    onSubmit={handleSubmit(onSubmit)}
-                                                    onDelete={onDelete}
-                                                />
+                                                {serverGQL.loading ? (
+                                                    <div
+                                                        className="text-center align-items-center justify-content-center d-flex"
+                                                        style={{ height: '30vh' }}>
+                                                        <Spinner animation="border" variant="warning" role="status" />
+                                                    </div>
+                                                ) : (
+                                                    <GeneralSettings
+                                                        register={register}
+                                                        errors={errors}
+                                                        dbServer={dbServer}
+                                                        onSubmit={handleSubmit(onSubmit)}
+                                                        onDelete={onDelete}
+                                                    />
+                                                )}
                                             </Tab.Pane>
 
                                             {/* Panel de Economía */}
                                             <Tab.Pane eventKey="economy">
-                                                <Row className="align-items-center text-center">
+                                                {channelsGQL.loading ? (
+                                                    <div
+                                                        className="text-center align-items-center justify-content-center d-flex"
+                                                        style={{ height: '30vh' }}>
+                                                        <Spinner animation="border" variant="warning" role="status" />
+                                                    </div>
+                                                ) : (
                                                     <EconomySettings
                                                         register={register}
                                                         errors={errors}
@@ -605,17 +618,25 @@ export const Dashboard: React.FC = () => {
                                                         onSubmit={handleSubmit(onSubmit)}
                                                         chatExclude={chatExclude}
                                                     />
-                                                </Row>
+                                                )}
                                             </Tab.Pane>
 
                                             {/* Panel de Tienda */}
                                             <Tab.Pane eventKey="shop">
-                                                <ShopManager
-                                                    items={items}
-                                                    onCreateItem={handleOpenNewItemModal}
-                                                    onEditItem={handleOpenEditModal}
-                                                    onDeleteItem={onDeleteItem}
-                                                />
+                                                {shopGQL.loading ? (
+                                                    <div
+                                                        className="text-center align-items-center justify-content-center d-flex"
+                                                        style={{ height: '30vh' }}>
+                                                        <Spinner animation="border" variant="warning" role="status" />
+                                                    </div>
+                                                ) : (
+                                                    <ShopManager
+                                                        items={items}
+                                                        onCreateItem={handleOpenNewItemModal}
+                                                        onEditItem={handleOpenEditModal}
+                                                        onDeleteItem={onDeleteItem}
+                                                    />
+                                                )}
                                             </Tab.Pane>
                                         </Tab.Content>
                                     </Col>
@@ -665,7 +686,7 @@ export const Dashboard: React.FC = () => {
                                                             name: 'cooldown',
                                                         },
                                                     })
-                                                ).data.deleteServerGQL;
+                                                ).data?.updateServer;
                                                 setDbServer(newData);
                                                 reset();
                                                 setAlert(at => [

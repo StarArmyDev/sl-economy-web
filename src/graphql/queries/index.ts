@@ -1,4 +1,4 @@
-import { gql, useQuery } from '@apollo/client';
+import { gql } from '@apollo/client/core';
 
 export const ServerGQL = gql`
     query Server($id: String!) {
@@ -135,6 +135,7 @@ export const ProfileGQL = gql`
                 dinero
                 banco
                 total
+                locked
                 user {
                     _id
                     avatar
@@ -152,8 +153,10 @@ export const ProfilesUserGQL = gql`
             _id
             dinero
             banco
+            total
             locked
             user {
+                _id
                 avatar
                 username
                 discriminator
@@ -245,5 +248,3 @@ export const ItemShopGQL = gql`
         }
     }
 `;
-
-export { useQuery };

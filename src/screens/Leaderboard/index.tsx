@@ -1,12 +1,13 @@
 import { Container, ListGroup, Col, Row, Badge, Button, Card, InputGroup, Form } from 'react-bootstrap';
 import React, { Fragment, useState, useRef, useCallback } from 'react';
+import { useQuery } from '@apollo/client/react';
 import Skeleton from 'react-loading-skeleton';
 import { useParams } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { debounce } from 'lodash';
-import Helmet from 'react-helmet';
 
-import type { AllProfilesInServer, ProfileTop } from '@app/models';
-import { GuildGQL, ProfileGQL, useQuery } from '../../graphql';
+import type { AllProfilesInServer, GuildInfoModel, ProfileTop } from '@app/models';
+import { GuildGQL, ProfileGQL } from '../../graphql';
 import { useAppSelector } from '@app/storage';
 import { ConvertString } from '@app/helpers';
 
@@ -78,7 +79,7 @@ export const LeaderBoard: React.FC = () => {
 
     const debouncedSearch = debounce((term: string) => setSearchTerm(term), 300);
 
-    const GuildData = useQuery(GuildGQL, { variables: { id } });
+    const GuildData = useQuery<GuildInfoModel>(GuildGQL, { variables: { id } });
     const { loading, error, data, fetchMore } = useQuery<{
         AllProfilesInServer: AllProfilesInServer;
     }>(ProfileGQL, {

@@ -51,6 +51,7 @@ export interface ProfileTop {
     dinero: number;
     banco: number;
     total: number;
+    locked: boolean;
     user: {
         _id: string;
         avatar: string;
