@@ -1,5 +1,5 @@
 import { Container, Spinner, Alert, Col, Row, Tab, Nav, Button, Card, Modal } from 'react-bootstrap';
-import { useQuery, useLazyQuery, useMutation } from '@apollo/client/react';
+import { useLazyQuery, useMutation } from '@apollo/client/react';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
@@ -16,6 +16,8 @@ import {
     UpdateServerGQL,
     UpdateItemShopGQL,
     ItemShopGQL,
+    UpdateBotServerGQL,
+    UpdateEconomyServerGQL,
 } from '@app/graphql';
 import { ItemFormModal, ShopManager, GeneralSettings, EconomySettings } from './components';
 import type { ServerSystem, GuildInfo, Item, Tienda, ChannelGuildModel } from '@app/models';
@@ -73,13 +75,14 @@ export const Dashboard: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [guild, setGuild] = useState<GuildInfo | undefined>();
     const [alert, setAlert] = useState([] as IAlert[]);
-    const [chatExclude, setChatExclude] = useState([] as { name: string; id: string }[]);
+    const [chatExclude, setChatExclude] = useState<string[]>([]);
     const [showModal, setShowModal] = useState(false);
     const [items, setItems] = useState<Item[]>([]);
     const [editingItem, setEditingItem] = useState<Item | null>(null);
     const [isItemModalOpen, setIsItemModalOpen] = useState(false);
     const [isItemSaving, setIsItemSaving] = useState(false);
     const [dbServer, setDbServer] = useState<ServerSystem | undefined>();
+    const [tabActive, setTabActive] = useState<'bot' | 'economy' | 'shop'>('bot');
 
     const {
         register,
@@ -95,16 +98,17 @@ export const Dashboard: React.FC = () => {
     const [onShopGQL, shopGQL] = useLazyQuery<{ getShop: Tienda }, { id: string }>(ShopServerGQL);
     const [getItemDetails] = useLazyQuery<{ getItemShop: Item }>(ItemShopGQL);
 
-    const [updateServerGQL] = useMutation<{ updateServer: ServerSystem }>(UpdateServerGQL);
     const [addItemShopGQL] = useMutation<{ addItemShop: Tienda & { error?: string } }>(AddItemShopGQL);
     const [removeItemShopGQL] = useMutation<{ removeItemShop: Tienda & { error?: string } }>(RemoveItemShopGQL);
     const [updateItemShopGQL] = useMutation<{ updateItemShop: Tienda & { error?: string } }>(UpdateItemShopGQL);
+    const [updateServerGQL] = useMutation<{ updateServer: ServerSystem }>(UpdateServerGQL);
+    const [updateBotServerGQL] = useMutation<{ updateBotServer: ServerSystem }>(UpdateBotServerGQL);
+    const [updateEconomyServerGQL] = useMutation<{ updateEconomyServer: ServerSystem }>(UpdateEconomyServerGQL);
 
     useEffect(() => {
         if (loading) return;
-
-        console.log('init', id);
         setLoading(true);
+
         const Servidor = user.guilds?.find(g => g.id === id);
         let usersManager: string[] = [];
         try {
@@ -119,6 +123,7 @@ export const Dashboard: React.FC = () => {
         } else {
             setGuild(Servidor);
             setLoading(false);
+            setTabActive('bot');
             onServerGQL({ variables: { id } });
         }
     }, [id, user]);
@@ -132,10 +137,10 @@ export const Dashboard: React.FC = () => {
     }, [serverGQL.data, dbServer]);
 
     useEffect(() => {
-        if (serverGQL.data?.getServer && channelsGQL.data) {
-            loadDB(serverGQL.data.getServer, channelsGQL.data.getChannelsGuild || []);
+        if (serverGQL.data?.getServer) {
+            loadDB(serverGQL.data.getServer);
         }
-    }, [channelsGQL.data]);
+    }, [serverGQL.data]);
 
     useEffect(() => {
         if (shopGQL.data) {
@@ -143,128 +148,152 @@ export const Dashboard: React.FC = () => {
         }
     }, [shopGQL.data]);
 
-    const loadDB = async (db: ServerSystem | null, channels: { name: string; id: string }[]) => {
-        if (db?.excludedChannels)
-            db.excludedChannels.map(ch =>
-                setChatExclude(ec => [
-                    ...ec,
-                    {
-                        name: channels.findIndex(c => c.id === ch) > -1 ? channels.find(c => c.id === ch)!.name : 'Canal Desconocido',
-                        id: ch,
-                    },
-                ]),
-            );
+    const loadDB = async (db: ServerSystem | null) => {
+        if (db?.excludedChannels) {
+            setChatExclude(db.excludedChannels);
+        }
+    };
+
+    const handleExcludedChannelsChange = (channelIds: string[]) => {
+        setChatExclude(channelIds);
     };
 
     const removeAlert = (alert: IAlert) => setAlert(alerts => alerts.filter(x => x !== alert));
 
-    const onSubmit = async (data: any, e: React.BaseSyntheticEvent<object> | undefined) => {
-        const values: string[] = [];
+    /**
+     * Handler para guardar configuración general del bot (pestaña Inicio)
+     */
+    const onSubmitGeneral = async (data: any) => {
+        try {
+            // Construir objeto con los datos del formulario
+            const updateData: Record<string, any> = {};
 
-        for (const key in data) {
-            if (typeof data[key] != 'string')
-                for (const key2 in data[key]) {
-                    if (typeof data[key][key2] != 'string') {
-                        if (
-                            typeof data[key][key2] == 'number' &&
-                            (!(dbServer as any)[key] || data[key][key2] !== (dbServer as any)[key][key2])
-                        ) {
-                            values.push(`${key}.${key2}`);
-                            updateData(
-                                (
-                                    await updateServerGQL({
-                                        variables: {
-                                            id,
-                                            create: true,
-                                            name: `${key}.${key2}`,
-                                            valueNumber: data[key][key2],
-                                        },
-                                    })
-                                ).data?.updateServer,
-                            );
-                        } else
-                            for (const key3 in data[key][key2]) {
-                                if (
-                                    data[key][key2][key3] &&
-                                    (!isNaN(data[key][key2][key3]) || data[key][key2][key3].length > 0) &&
-                                    (!dbServer?.[key as keyof typeof dbServer] ||
-                                        !(dbServer as any)[key][key2] ||
-                                        data[key][key2][key3] !== (dbServer as any)[key][key2][key3])
-                                ) {
-                                    if ((key3 === 'min' && data[key][key2]['max']) || (key3 === 'max' && data[key][key2]['min'])) {
-                                        const minimo = data[key][key2]['min'];
-                                        let maximo = data[key][key2]['max'];
-                                        data[key][key2]['min'] = minimo > maximo ? maximo : minimo;
-                                        data[key][key2]['max'] = maximo < minimo ? minimo : maximo === minimo ? ++maximo : maximo;
-                                    }
-                                    values.push(`${key}.${key2}.${key3}`);
-                                    updateData(
-                                        (
-                                            await updateServerGQL({
-                                                variables: {
-                                                    id,
-                                                    create: true,
-                                                    name: `${key}.${key2}.${key3}`,
-                                                    [typeof data[key][key2][key3] == 'number' ? 'valueNumber' : 'value']:
-                                                        data[key][key2][key3],
-                                                },
-                                            })
-                                        ).data?.updateServer,
-                                    );
-                                }
-                            }
-                    } else if (
-                        data[key][key2] &&
-                        data[key][key2].length > 0 &&
-                        (!(dbServer as any)[key] || data[key][key2] !== (dbServer as any)[key][key2])
-                    ) {
-                        let timerMs;
-                        try {
-                            timerMs = ms(data[key][key2]);
-                        } catch (error) {
-                            console.error(error);
-                        }
-                        values.push(`${key}.${key2}`);
-                        updateData(
-                            (
-                                await updateServerGQL({
-                                    variables: {
-                                        id,
-                                        create: true,
-                                        name: `${key}.${key2}`,
-                                        [timerMs ? 'valueNumber' : 'value']: timerMs ? timerMs : data[key][key2],
-                                    },
-                                })
-                            ).data?.updateServer,
-                        );
+            // Language
+            if (data.language?.server) {
+                updateData.language = { server: data.language.server };
+            }
+
+            // ColorMain
+            if (data.colorMain) {
+                updateData.colorMain = data.colorMain;
+            }
+
+            // Images
+            if (data.images) {
+                updateData.images = data.images;
+            }
+
+            // Buy
+            if (data.buy?.category) {
+                updateData.buy = { category: data.buy.category };
+            }
+
+            // Auditlogs
+            if (data.auditlogs) {
+                updateData.auditlogs = data.auditlogs;
+            }
+
+            const result = await updateBotServerGQL({
+                variables: { id, data: updateData },
+            });
+
+            if (result.data?.updateBotServer) {
+                setDbServer(prev => ({ ...prev, ...result.data!.updateBotServer }));
+                setAlert(at => [...at, { type: 'success', show: true, text: 'Configuración General guardada' }]);
+            }
+        } catch (error: any) {
+            setAlert(at => [...at, { type: 'danger', show: true, text: error.message || 'Error al guardar' }]);
+        }
+    };
+
+    /**
+     * Handler para guardar configuración de economía (pestaña Economía)
+     */
+    const onSubmitEconomy = async (data: any) => {
+        try {
+            // Construir objeto con los datos del formulario
+            const updateData: Record<string, any> = {};
+
+            // Currency
+            if (data.currency) {
+                updateData.currency = {
+                    name: data.currency.name || undefined,
+                    id: data.currency.id || undefined,
+                };
+            }
+
+            // Payment - convertir cooldowns de string a ms
+            if (data.payment) {
+                updateData.payment = {};
+                for (const key in data.payment) {
+                    if (typeof data.payment[key] === 'object') {
+                        updateData.payment[key] = {
+                            min: data.payment[key].min || undefined,
+                            max: data.payment[key].max || undefined,
+                        };
+                    } else if (data.payment[key] !== undefined && data.payment[key] !== null) {
+                        updateData.payment[key] = data.payment[key];
                     }
                 }
-            else if (data[key] && data[key].length > 0 && data[key] !== (dbServer as any)[key]) {
-                values.push(key);
-                updateData(
-                    (
-                        await updateServerGQL({
-                            variables: {
-                                id,
-                                create: true,
-                                name: key,
-                                value: data[key],
-                            },
-                        })
-                    ).data?.updateServer,
-                );
             }
-        }
 
-        function updateData(newData?: ServerSystem | null) {
-            if (newData) {
-                if (e) e.target.reset();
-                setAlert(at => [...at, { type: 'success', show: true, text: 'Cambios Guardados Correctamente' }]);
-                setDbServer(newData);
-                if (newData.language?.server) setValue('language', newData.language.server);
-                reset(values);
+            // FineAmount
+            if (data.fineAmount) {
+                updateData.fineAmount = {};
+                for (const key in data.fineAmount) {
+                    if (typeof data.fineAmount[key] === 'object') {
+                        updateData.fineAmount[key] = {
+                            min: data.fineAmount[key].min || undefined,
+                            max: data.fineAmount[key].max || undefined,
+                            fail: data.fineAmount[key].fail || undefined,
+                        };
+                    }
+                }
             }
+
+            // Cooldown - convertir strings a ms
+            if (data.cooldown) {
+                updateData.cooldown = {};
+                for (const key in data.cooldown) {
+                    const value = data.cooldown[key];
+                    if (value) {
+                        try {
+                            // Si es string, intentar convertir a ms
+                            updateData.cooldown[key] = typeof value === 'string' ? ms(value) : value;
+                        } catch {
+                            updateData.cooldown[key] = value;
+                        }
+                    }
+                }
+            }
+
+            // ExcludedChannels - desde el estado
+            updateData.excludedChannels = chatExclude;
+
+            const result = await updateEconomyServerGQL({
+                variables: { id, data: updateData },
+            });
+
+            if (result.data?.updateEconomyServer) {
+                setDbServer(prev => ({ ...prev, ...result.data!.updateEconomyServer }));
+                setAlert(at => [...at, { type: 'success', show: true, text: 'Configuración de Economía guardada' }]);
+            }
+        } catch (error: any) {
+            setAlert(at => [...at, { type: 'danger', show: true, text: error.message || 'Error al guardar' }]);
         }
+    };
+
+    /**
+     * Handler genérico que selecciona el handler correcto según la pestaña activa
+     */
+    const onSubmit = async (data: any, e: React.BaseSyntheticEvent<object> | undefined) => {
+        if (tabActive === 'bot') {
+            await onSubmitGeneral(data);
+        } else if (tabActive === 'economy') {
+            await onSubmitEconomy(data);
+        }
+        if (e) e.target.reset();
+        reset();
     };
 
     const onNewItem = async (data: Item) => {
@@ -403,90 +432,6 @@ export const Dashboard: React.FC = () => {
         setAlert(at => [...at, { type: 'success', show: true, text: `Propiedad eliminada correctamente.` }]);
     };
 
-    /* const SelectMenu = ({
-        placeholder,
-        options,
-        defaultValue,
-        registerName
-    }: {
-        placeholder: string;
-        options: {
-            value: string;
-            label: string;
-            emoji?: string;
-        }[];
-        defaultValue?: any;
-        registerName?: string;
-    }) => {
-        const ctlRegister = registerName ? register(registerName) : undefined;
-
-        return (
-            <Select
-                ref={ctlRegister?.ref}
-                name={ctlRegister?.name || ""}
-                onBlur={(event) => (ctlRegister ? ctlRegister.onBlur({ target: event }) : undefined)}
-                onChange={(newValue) =>
-                    ctlRegister
-                        ? ctlRegister.onChange({
-                              target: newValue
-                          })
-                        : undefined
-                }
-                className="select"
-                styles={{
-                    menu: (base) => ({
-                        ...base,
-                        backgroundColor: "#2f3136",
-                        textAlign: "left",
-                        color: "#fff"
-                    }),
-                    container: (base) => ({
-                        ...base
-                    }),
-                    control: (base) => ({
-                        ...base,
-                        backgroundColor: "#444444",
-                        color: "#fff",
-                        border: "none"
-                    }),
-                    option: (base, { isDisabled, isFocused, isSelected }) => ({
-                        ...base,
-                        borderBottom: "1px dotted pink",
-                        padding: 10,
-                        backgroundColor: isDisabled ? undefined : isSelected ? "#888" : isFocused ? "#edbf10" : undefined,
-                        color: isDisabled ? "#ccc" : isSelected ? undefined : isFocused ? "#000" : undefined,
-                        ":active": {
-                            ...base[":active"],
-                            backgroundColor: !isDisabled ? (isSelected ? "#edbf10" : "#888") : undefined,
-                            color: !isDisabled ? (isSelected ? "#000" : "#fff") : undefined
-                        }
-                    }),
-                    valueContainer: (base) => ({
-                        ...base
-                    }),
-                    singleValue: (base) => ({
-                        ...base,
-                        textAlign: "left",
-                        color: "#fff"
-                    }),
-                    placeholder: (base) => ({
-                        ...base,
-                        color: "#a3a6aa",
-                        textAlign: "left",
-                        whiteSpace: "nowrap",
-                        lineHeight: "18px"
-                    })
-                }}
-                placeholder={placeholder}
-                options={options.map((option) => ({
-                    value: option.value,
-                    label: `${option.emoji || ""} ${option.label}`
-                }))}
-                defaultValue={defaultValue}
-            />
-        );
-    }; */
-
     if (loading)
         return (
             <Container
@@ -510,7 +455,7 @@ export const Dashboard: React.FC = () => {
             <Styled $bgColor={dbServer?.colorMain || '#edbf10'}>
                 <Container>
                     <Helmet>
-                        <title>Dashboard | {guild?.name || ''}</title>
+                        <title>Dashboard {guild?.name ? `| ${guild?.name}` : ''}</title>
                     </Helmet>
                     <Row>
                         <Col sm>
@@ -548,7 +493,9 @@ export const Dashboard: React.FC = () => {
                                 </Col>
 
                                 {/* Contenido */}
-                                <Tab.Container defaultActiveKey="bot">
+                                <Tab.Container
+                                    activeKey={tabActive}
+                                    onSelect={key => key && setTabActive(key as 'bot' | 'economy' | 'shop')}>
                                     {/* Menú Lateral */}
                                     <Col sm={2} className="text-center">
                                         <Nav variant="pills" className="flex-column">
@@ -617,6 +564,8 @@ export const Dashboard: React.FC = () => {
                                                         onDelete={onDelete}
                                                         onSubmit={handleSubmit(onSubmit)}
                                                         chatExclude={chatExclude}
+                                                        channels={channelsGQL.data?.getChannelsGuild || []}
+                                                        onExcludedChannelsChange={handleExcludedChannelsChange}
                                                     />
                                                 )}
                                             </Tab.Pane>

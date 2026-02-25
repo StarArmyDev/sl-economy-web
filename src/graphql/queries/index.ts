@@ -120,6 +120,7 @@ export const ServerGQL = gql`
 export const ProfileGQL = gql`
     query ProfilesServer($id: String!, $userId: String, $orden: sortProfile, $skip: Int = 0, $limit: Int) {
         AllProfilesInServer(id: $id, userId: $userId, sort: $orden, skip: $skip, limit: $limit) {
+            totalCount
             userRank {
                 position
                 profile {

@@ -33,6 +33,7 @@ export interface Perfil {
 }
 
 export interface AllProfilesInServer {
+    totalCount: number;
     userRank: {
         position: number;
         profile: {

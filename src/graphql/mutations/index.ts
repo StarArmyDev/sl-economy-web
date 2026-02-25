@@ -271,3 +271,140 @@ export const UpdateItemShopGQL = gql`
         }
     }
 `;
+
+/**
+ * Mutación para actualizar configuración general del bot (pestaña Inicio)
+ */
+export const UpdateBotServerGQL = gql`
+    mutation updateBotServer($id: String!, $data: UpdateBotServerInput!) {
+        updateBotServer(id: $id, data: $data) {
+            _id
+            colorMain
+            images {
+                records
+                flipcoin {
+                    face
+                    stamp
+                }
+                dice {
+                    _1
+                    _2
+                    _3
+                    _4
+                    _5
+                    _6
+                }
+            }
+            buy {
+                category
+            }
+            language {
+                server
+                channels {
+                    id
+                    lang
+                }
+            }
+            auditlogs {
+                onlyImportant
+                webhook {
+                    url
+                }
+            }
+        }
+    }
+`;
+
+/**
+ * Mutación para actualizar configuración de economía (pestaña Economía)
+ */
+export const UpdateEconomyServerGQL = gql`
+    mutation updateEconomyServer($id: String!, $data: UpdateEconomyServerInput!) {
+        updateEconomyServer(id: $id, data: $data) {
+            _id
+            currency {
+                name
+                id
+            }
+            payment {
+                messages {
+                    min
+                    max
+                }
+                crime {
+                    min
+                    max
+                }
+                daily
+                dice {
+                    min
+                    max
+                }
+                flipcoin {
+                    min
+                    max
+                }
+                slotmachine {
+                    min
+                    max
+                }
+                trade {
+                    min
+                    max
+                }
+                work {
+                    min
+                    max
+                }
+            }
+            fineAmount {
+                rob {
+                    min
+                    max
+                    fail
+                }
+                trade {
+                    min
+                    max
+                    fail
+                }
+                crime {
+                    min
+                    max
+                    fail
+                }
+                dice {
+                    min
+                    max
+                }
+                slotmachine {
+                    min
+                    max
+                }
+                flipcoin {
+                    min
+                    max
+                }
+                loot {
+                    min
+                    max
+                    fail
+                }
+            }
+            cooldown {
+                crime
+                daily
+                dice
+                flipcoin
+                loot
+                messages
+                rob
+                roulette
+                slotmachine
+                trade
+                work
+            }
+            excludedChannels
+        }
+    }
+`;
