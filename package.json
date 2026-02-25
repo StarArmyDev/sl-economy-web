@@ -3,6 +3,7 @@
     "version": "2.1.0",
     "private": true,
     "type": "module",
+    "packageManager": "pnpm@10.30.2",
     "scripts": {
         "format": "prettier --write . --ignore-path .gitignore",
         "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
