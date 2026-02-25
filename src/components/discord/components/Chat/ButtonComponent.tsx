@@ -1,7 +1,7 @@
 import { ButtonComponent, ButtonStyle } from '../../interface';
 import styled from 'styled-components';
 
-const StyledButtonComponent = styled.div`
+const StyledButtonComponent = styled.div<{ $style: ButtonStyle }>`
     .componentButton {
         width: auto;
         height: 32px;
@@ -15,23 +15,25 @@ const StyledButtonComponent = styled.div`
         border-radius: 3px;
         font-size: 14px;
         padding: 2px 16px;
-        background-color: ${(props: { style: ButtonStyle }) => backgroundColors[props.style]};
+        background-color: ${props => backgroundColors[props.$style]};
         width: auto;
         color: #fff;
         margin: 4px 8px 4px 0;
-        transition: background-color 0.17s ease, color 0.17s ease;
+        transition:
+            background-color 0.17s ease,
+            color 0.17s ease;
     }
 
     .componentButton:hover {
-        background-color: ${(props: { style: ButtonStyle }) => backgroundColorsHover[props.style]};
+        background-color: ${props => backgroundColorsHover[props.$style]};
     }
 
     .componentButton:active {
-        background-color: ${(props: { style: ButtonStyle }) => backgroundColorsActive[props.style]};
+        background-color: ${props => backgroundColorsActive[props.$style]};
     }
 
     .componentButton:disabled {
-        background-color: ${(props: { style: ButtonStyle }) => backgroundColorsDisabled[props.style]};
+        background-color: ${props => backgroundColorsDisabled[props.$style]};
     }
 
     .contentButton {
@@ -61,7 +63,7 @@ const StyledButtonComponent = styled.div`
 
 export const ButtonCmp = ({ data }: { data: ButtonComponent }) => {
     return (
-        <StyledButtonComponent style={data.style}>
+        <StyledButtonComponent $style={data.style}>
             <button
                 className="componentButton"
                 type="button"

@@ -43,7 +43,7 @@ const store = configureStore({
                 ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
             },
         }).concat(middleware),
-    enhancers: [sentryReduxEnhancer],
+    enhancers: getDefaultEnhancers => getDefaultEnhancers().concat(sentryReduxEnhancer),
 });
 
 const persistor = persistStore(store);

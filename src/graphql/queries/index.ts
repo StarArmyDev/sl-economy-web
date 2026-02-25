@@ -1,4 +1,4 @@
-import { gql, useQuery } from '@apollo/client';
+import { gql } from '@apollo/client/core';
 
 export const ServerGQL = gql`
     query Server($id: String!) {
@@ -120,6 +120,7 @@ export const ServerGQL = gql`
 export const ProfileGQL = gql`
     query ProfilesServer($id: String!, $userId: String, $orden: sortProfile, $skip: Int = 0, $limit: Int) {
         AllProfilesInServer(id: $id, userId: $userId, sort: $orden, skip: $skip, limit: $limit) {
+            totalCount
             userRank {
                 position
                 profile {
@@ -135,6 +136,7 @@ export const ProfileGQL = gql`
                 dinero
                 banco
                 total
+                locked
                 user {
                     _id
                     avatar
@@ -152,8 +154,10 @@ export const ProfilesUserGQL = gql`
             _id
             dinero
             banco
+            total
             locked
             user {
+                _id
                 avatar
                 username
                 discriminator
@@ -213,13 +217,35 @@ export const ShopServerGQL = gql`
         getShop(id: $id) {
             _id
             items {
+                _id
                 nombre
                 emoji
                 stock
+                disponible
             }
             error
         }
     }
 `;
 
-export { useQuery };
+export const ItemShopGQL = gql`
+    query GetItemShop($id: String!, $itemId: ID!) {
+        getItemShop(id: $id, itemId: $itemId) {
+            _id
+            nombre
+            descripcion
+            emoji
+            stock
+            disponible
+            transferible
+            basura
+            compraunica
+            precio {
+                compra
+                venta
+            }
+            mensaje
+            evento
+        }
+    }
+`;

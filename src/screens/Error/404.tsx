@@ -1,5 +1,5 @@
 import { Container, Row, Col, Button } from 'react-bootstrap';
-import Helmet from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 export const Error404 = () => {
     const prevPage = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {

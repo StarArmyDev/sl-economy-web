@@ -8,12 +8,12 @@ const StyledTooltipsContainer = styled.div`
     left: 0;
 `;
 
-const StyledTooltipWrapper = styled.div`
+const StyledTooltipWrapper = styled.div<{ $position: { x: number; y: number } }>`
     position: absolute;
     z-index: 999;
 
-    top: ${(props: { position: { x: number; y: number } }) => props.position && props.position.y}px;
-    left: ${props => props.position && props.position.x}px;
+    top: ${props => props.$position.y}px;
+    left: ${props => props.$position.x}px;
 
     &.bottom {
         transform: translateX(-50%);
@@ -61,7 +61,7 @@ export class TooltipsContainer extends Component {
         return (
             <StyledTooltipsContainer>
                 {isVisible && (
-                    <StyledTooltipWrapper className={direction} position={position}>
+                    <StyledTooltipWrapper className={direction} $position={position}>
                         <Tooltip direction={direction}>{content}</Tooltip>
                     </StyledTooltipWrapper>
                 )}

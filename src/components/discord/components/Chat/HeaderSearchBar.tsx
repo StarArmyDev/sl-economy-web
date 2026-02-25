@@ -3,10 +3,10 @@ import searchBarClearUrl from '../../icons/searchBarClear.svg';
 import styled from 'styled-components';
 import { useState } from 'react';
 
-const StyledHeaderSearchBar = styled.div`
+const StyledHeaderSearchBar = styled.div<{ $expanded?: boolean }>`
     margin: 0 4px 0 8px;
     height: 28px;
-    width: ${(props: { expanded?: boolean }) => (props.expanded ? 120 : 90)}px;
+    width: ${props => (props.$expanded ? 120 : 90)}px;
     display: flex;
 
     transition: width 0.2s ease-in-out 0.1s;
@@ -95,7 +95,7 @@ export const HeaderSearchBar = () => {
     const hasText = !!text;
 
     return (
-        <StyledHeaderSearchBar expanded={hasText}>
+        <StyledHeaderSearchBar $expanded={hasText}>
             <div className="input-wrapper">
                 <input type="text" placeholder="Buscar" onChange={e => setText(e.target.value)} value={text} />
             </div>

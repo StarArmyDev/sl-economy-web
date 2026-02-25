@@ -1,11 +1,13 @@
 import { Row, Container, Button, Col, ListGroup, Accordion, Spinner, Card, Modal, useAccordionButton } from 'react-bootstrap';
+import { useQuery, useMutation } from '@apollo/client/react';
+import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import Helmet from 'react-helmet';
 import React from 'react';
 
-import { ProfilesUserGQL, DeleteProfileGQL, useQuery, useMutation } from '@app/graphql';
+import { ProfilesUserGQL, DeleteProfileGQL } from '@app/graphql';
 import { useAppSelector } from '@app/storage';
 import { ConvertString } from '@app/helpers';
+import { ProfileTop } from '@app/models';
 
 const AccordionToggle = ({ children, eventKey, callback }: { children: any; eventKey: string; callback?: (key: string) => void }) => {
     const decoratedOnClick = useAccordionButton(eventKey, () => callback && callback(eventKey));
@@ -26,9 +28,9 @@ export const Profile: React.FC = () => {
     }
     const defaulURl = 'https://cdn.discordapp.com/embed/avatars/0.png';
 
-    const { loading, data } = useQuery(ProfilesUserGQL, { variables: { id: user._id } });
+    const { loading, data } = useQuery<{ AllProfilesOfUserOnServers: ProfileTop[] }>(ProfilesUserGQL, { variables: { id: user._id } });
     const [deleteProfileGQL] = useMutation(DeleteProfileGQL);
-    const [serversComun, setServersComun] = React.useState<{ _id: string; dinero: number; banco: number }[]>([]);
+    const [serversComun, setServersComun] = React.useState<ProfileTop[]>([]);
     const [showModal, setShowModal] = React.useState(false);
     const [profileID, setProfileID] = React.useState<string | undefined>();
 

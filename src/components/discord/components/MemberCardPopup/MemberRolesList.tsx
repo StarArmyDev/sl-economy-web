@@ -8,10 +8,10 @@ const StyledRolesList = styled.ul`
     flex-wrap: wrap;
 `;
 
-const StyledRole = styled.li`
+const StyledRole = styled.li<{ $color?: string }>`
     margin: 0 4px 4px 0;
     padding: 4px 8px 4px 4px;
-    border: 1px solid ${props => props.color};
+    border: 1px solid ${props => props.$color || 'black'};
     border-radius: 11px;
 
     font-size: 0.7em;
@@ -26,7 +26,7 @@ const StyledRole = styled.li`
         margin-right: 4px;
         border: 0;
 
-        background: ${props => props.color};
+        background: ${props => props.$color || 'black'};
         border-radius: 50%;
     }
 
@@ -43,7 +43,7 @@ export const MemberRolesList = ({ roles }: { roles: Role[] }) => (
     <StyledRolesList>
         {roles.map(role => {
             return (
-                <StyledRole key={role.id} color={role.color}>
+                <StyledRole key={role.id} $color={role.color}>
                     <button className="circle" />
                     <span className="name">{role.name}</span>
                 </StyledRole>

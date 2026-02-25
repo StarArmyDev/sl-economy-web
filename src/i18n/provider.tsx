@@ -1,11 +1,16 @@
+import updateLocale from 'dayjs/plugin/updateLocale';
 import localStorage from 'redux-persist/es/storage';
 import { initReactI18next } from 'react-i18next';
-import moment from 'moment';
 import i18n from 'i18next';
+import dayjs from 'dayjs';
 import React from 'react';
+import 'dayjs/locale/es';
+import 'dayjs/locale/en';
 
 import { LoadingSpinner } from '@app/components';
 import { Languages, resources } from '.';
+
+dayjs.extend(updateLocale);
 
 export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [isi18n, setI18n] = React.useState(false);
@@ -38,45 +43,8 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         init();
 
-        //? Traducciones de fechas
-        moment.updateLocale('es', {
-            months: [
-                'Enero',
-                'Febrero',
-                'Marzo',
-                'Abril',
-                'Mayo',
-                'Junio',
-                'Julio',
-                'Agosto',
-                'Septiembre',
-                'Octubre',
-                'Noviembre',
-                'Diciembre',
-            ],
-            monthsShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-            weekdays: ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'],
-            weekdaysShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
-            weekdaysMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
-            longDateFormat: {
-                LT: 'h:mm A',
-                LTS: 'h:mm:ss A',
-                L: 'DD/MM/YYYY',
-                LL: 'D MMMM YYYY',
-                LLL: 'D MMMM YYYY',
-                LLLL: 'dddd, D MMMM YYYY',
-            },
-        });
-        moment.updateLocale('en', {
-            longDateFormat: {
-                LT: 'h:mm A',
-                LTS: 'h:mm:ss A',
-                L: 'MM/DD/YYYY',
-                LL: 'MMMM D YYYY',
-                LLL: 'MMMM D YYYY',
-                LLLL: 'dddd, MMMM D YYYY',
-            },
-        });
+        // Configurar locale para dayjs
+        dayjs.locale(lng === 'es' ? 'es' : 'en');
     }, [isi18n, lng]);
 
     if (!isi18n) return <LoadingSpinner />;

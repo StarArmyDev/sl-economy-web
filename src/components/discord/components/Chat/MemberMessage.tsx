@@ -28,7 +28,7 @@ export const MemberMessageGroup = ({ member, time, children }: { member: User; t
     </StyledMemberMessageGroup>
 );
 
-const StyledMessage = styled.div`
+const StyledMessage = styled.div<{ $usernameColor?: string }>`
     margin-bottom: 0.2em;
 
     .header {
@@ -57,7 +57,7 @@ const StyledMessage = styled.div`
         }
 
         .username {
-            color: ${(props: { usernameColor?: string }) => props.usernameColor || colors.memberUsernameChat};
+            color: ${props => props.$usernameColor || colors.memberUsernameChat};
             cursor: pointer;
 
             :hover {
@@ -102,7 +102,7 @@ export const MemberMessage = ({
     const rol = user.roles ? user.roles[0] : undefined;
 
     return (
-        <StyledMessage usernameColor={rol?.color || '#fff'}>
+        <StyledMessage $usernameColor={rol?.color || '#fff'}>
             <>
                 {reply && <ReplyMessage reply={reply} />}
                 {isHeading && (

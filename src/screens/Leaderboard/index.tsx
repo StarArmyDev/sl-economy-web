@@ -1,14 +1,15 @@
 import { Container, ListGroup, Col, Row, Badge, Button, Card, InputGroup, Form } from 'react-bootstrap';
-import React, { Fragment, useState, useRef } from 'react';
+import React, { Fragment, useState, useRef, useCallback, useMemo } from 'react';
+import { useQuery } from '@apollo/client/react';
 import Skeleton from 'react-loading-skeleton';
 import { useParams } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { debounce } from 'lodash';
-import Helmet from 'react-helmet';
 
-import type { AllProfilesInServer, ProfileTop } from '@app/models';
-import { GuildGQL, ProfileGQL, useQuery } from '../../graphql';
-import { ConvertString, EventRegister } from '@app/helpers';
+import type { AllProfilesInServer, GuildInfoModel, ProfileTop } from '@app/models';
+import { GuildGQL, ProfileGQL } from '../../graphql';
 import { useAppSelector } from '@app/storage';
+import { ConvertString } from '@app/helpers';
 
 // Destacar los primeros 3 lugares con estilos especiales
 const getPodiumStyle = (position: number) => {
@@ -19,13 +20,13 @@ const getPodiumStyle = (position: number) => {
 };
 
 // Implementar React.memo para evitar re-renderizados innecesarios
-const UserListItem = React.memo(({ dato, index, defaulURl }: { dato: any; index: number; defaulURl: string }) => (
-    <ListGroup.Item key={`U${index}`} style={{ ...getPodiumStyle(index + 1), transition: 'all 0.3s ease', animation: 'fadeIn 0.5s' }}>
+const UserListItem = React.memo(({ dato, position, defaulURl }: { dato: ProfileTop; position: number; defaulURl: string }) => (
+    <ListGroup.Item style={{ ...getPodiumStyle(position), transition: 'all 0.3s ease', animation: 'fadeIn 0.5s' }}>
         <Row className="align-items-center">
             <Col sm={1} className="text-center">
                 <h4>
                     <Badge bg="primary" pill>
-                        {ConvertString(++index)}
+                        {ConvertString(position)}
                     </Badge>
                 </h4>
             </Col>
@@ -75,10 +76,18 @@ export const LeaderBoard: React.FC = () => {
     const [guildDiscord, setGuildDiscord] = useState<any>();
     const [orden, setOrden] = useState({ total: -1 } as { _id?: number; dinero?: number; banco?: number; total?: number });
     const [searchTerm, setSearchTerm] = useState('');
+    const [hasMore, setHasMore] = useState(true);
 
     const debouncedSearch = debounce((term: string) => setSearchTerm(term), 300);
 
-    const GuildData = useQuery(GuildGQL, { variables: { id } });
+    // Cambiar orden y resetear estado de paginación
+    const handleSortChange = (newOrden: typeof orden) => {
+        setOrden(newOrden);
+        setHasMore(true);
+        setUsersList([]);
+    };
+
+    const GuildData = useQuery<GuildInfoModel>(GuildGQL, { variables: { id } });
     const { loading, error, data, fetchMore } = useQuery<{
         AllProfilesInServer: AllProfilesInServer;
     }>(ProfileGQL, {
@@ -88,26 +97,48 @@ export const LeaderBoard: React.FC = () => {
         notifyOnNetworkStatusChange: true,
     });
 
-    // Filtrar la lista basada en la búsqueda
-    const filteredList = usersList.filter(user => user.user?.username?.toLowerCase().includes(searchTerm.toLowerCase()));
+    // Filtrar la lista basada en la búsqueda, preservando la posición real del ranking
+    const filteredList = useMemo(() => {
+        const listWithPosition = usersList.map((user, index) => ({ ...user, rankPosition: index + 1 }));
+        if (!searchTerm.trim()) return listWithPosition;
+        const term = searchTerm.toLowerCase();
+        return listWithPosition.filter(u => u.user?.username?.toLowerCase().includes(term));
+    }, [usersList, searchTerm]);
 
     // Función optimizada para cargar más datos
-    const loadMore = () => {
-        //if ((data?.AllProfilesInServer.profiles.length ?? 0) >= (data?.AllProfilesInServer.total ?? 0)) return;
+    const loadMore = useCallback(() => {
+        const currentCount = data?.AllProfilesInServer.profiles.length ?? 0;
+        const total = data?.AllProfilesInServer.totalCount ?? 0;
+
+        // No cargar más si ya tenemos todos los datos
+        if (currentCount >= total) {
+            setHasMore(false);
+            return;
+        }
 
         fetchMore({
-            variables: { skip: data?.AllProfilesInServer.profiles.length ?? 0 },
+            variables: { skip: currentCount },
             updateQuery: (prev, { fetchMoreResult }) => {
                 if (!fetchMoreResult) return prev;
+
+                const newProfiles = fetchMoreResult.AllProfilesInServer.profiles;
+                const allProfiles = [...prev.AllProfilesInServer.profiles, ...newProfiles];
+
+                // Verificar si hay más datos después de esta carga
+                if (allProfiles.length >= fetchMoreResult.AllProfilesInServer.totalCount) {
+                    setHasMore(false);
+                }
+
                 return {
                     AllProfilesInServer: {
                         ...prev.AllProfilesInServer,
-                        profiles: [...prev.AllProfilesInServer.profiles, ...fetchMoreResult.AllProfilesInServer.profiles],
+                        profiles: allProfiles,
+                        totalCount: fetchMoreResult.AllProfilesInServer.totalCount,
                     },
                 };
             },
         });
-    };
+    }, [data, fetchMore]);
 
     const prevDataRef = useRef<any>();
 
@@ -132,22 +163,29 @@ export const LeaderBoard: React.FC = () => {
         }
     }, [data, userRank.position, user]);
 
-    // --- SCROLL GLOBAL PARA PAGINACIÓN INFINITA ---
-    React.useEffect(() => {
-        const onScroll = () => {
-            const scrollContainer = document.querySelector('div[style*="overflow-y: scroll"]');
-            if (!scrollContainer) return;
-            const { scrollTop, scrollHeight, clientHeight } = scrollContainer;
+    // Referencia para el elemento sentinel del IntersectionObserver
+    const observerRef = useRef<IntersectionObserver | null>(null);
+    const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
-            if (!loading && scrollHeight - scrollTop - clientHeight < 300) {
-                loadMore();
-            }
-        };
-        EventRegister.on('scroll', onScroll);
-        return () => {
-            EventRegister.removeListener('scroll');
-        };
-    }, [loadMore, data?.AllProfilesInServer.profiles.length, loading]);
+    // Callback para el último elemento (IntersectionObserver)
+    const lastElementCallback = useCallback(
+        (node: HTMLDivElement | null) => {
+            if (loading || !hasMore) return;
+            if (observerRef.current) observerRef.current.disconnect();
+
+            observerRef.current = new IntersectionObserver(
+                entries => {
+                    if (entries[0].isIntersecting && !loading && hasMore) {
+                        loadMore();
+                    }
+                },
+                { rootMargin: '200px' },
+            );
+
+            if (node) observerRef.current.observe(node);
+        },
+        [loading, loadMore, hasMore],
+    );
 
     if ((loading && !usersList.length) || GuildData.loading)
         return (
@@ -248,14 +286,18 @@ export const LeaderBoard: React.FC = () => {
                             </Card>
                         ) : null}
 
-                        {/* <InputGroup className="mb-3">
-                            <InputGroup.Text>🔍</InputGroup.Text>
+                        {/* Barra de búsqueda */}
+                        <InputGroup className="mb-3 mt-3">
+                            <InputGroup.Text className="discord-bg-tertiary border-0" style={{ color: '#dcddde' }}>
+                                🔍
+                            </InputGroup.Text>
                             <Form.Control
-                                placeholder="Buscar usuario..."
+                                className="discord-bg-tertiary border-0"
+                                placeholder="Buscar usuario por nombre..."
                                 onChange={e => debouncedSearch(e.target.value)}
-                                value={searchTerm}
+                                style={{ color: '#dcddde', backgroundColor: '#40444b' }}
                             />
-                        </InputGroup> */}
+                        </InputGroup>
 
                         <div style={{ width: '100%', maxWidth: '100%', margin: 0, padding: 0 }}>
                             {usersList.length > 2 ? (
@@ -264,21 +306,21 @@ export const LeaderBoard: React.FC = () => {
                                         <Button
                                             variant="outline-warning"
                                             style={{ margin: '1% 2% 1% 2%' }}
-                                            onClick={() => setOrden({ dinero: -1 })}>
+                                            onClick={() => handleSortChange({ dinero: -1 })}>
                                             Dinero
                                         </Button>
 
                                         <Button
                                             variant="outline-warning"
                                             style={{ margin: '1% 2% 1% 2%' }}
-                                            onClick={() => setOrden({ banco: -1 })}>
+                                            onClick={() => handleSortChange({ banco: -1 })}>
                                             Banco
                                         </Button>
 
                                         <Button
                                             variant="outline-warning"
                                             style={{ margin: '1% 2% 1% 2%' }}
-                                            onClick={() => setOrden({ total: -1 })}>
+                                            onClick={() => handleSortChange({ total: -1 })}>
                                             Total
                                         </Button>
                                     </Col>
@@ -345,8 +387,8 @@ export const LeaderBoard: React.FC = () => {
                                 </ListGroup.Item>
                             ) : (
                                 <ListGroup variant="flush">
-                                    {filteredList.map((dato, index) => (
-                                        <UserListItem key={dato._id || index} dato={dato} index={index} defaulURl={defaulURl} />
+                                    {filteredList.map(dato => (
+                                        <UserListItem key={dato._id} dato={dato} position={dato.rankPosition} defaulURl={defaulURl} />
                                     ))}
                                     {loading && (
                                         <ListGroup.Item key="loading">
@@ -363,6 +405,8 @@ export const LeaderBoard: React.FC = () => {
                                             </Row>
                                         </ListGroup.Item>
                                     )}
+                                    {/* Sentinel element para IntersectionObserver - carga más al ser visible */}
+                                    {!loading && filteredList.length > 0 && <div ref={lastElementCallback} style={{ height: 1 }} />}
                                 </ListGroup>
                             )}
                         </div>

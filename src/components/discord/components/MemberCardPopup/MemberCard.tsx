@@ -4,20 +4,19 @@ import type { User } from '../../interface';
 import styled from 'styled-components';
 import { MemberRolesList } from '.';
 
-const StyledMemberCard = styled.div`
+const StyledMemberCard = styled.div<{ $isPlaying: boolean }>`
     width: ${constants.memberCardWidth}px;
     background-color: ${colors.memberCardBackground};
     color: ${colors.memberCardContent};
 
     .header {
-        background-color: ${(props: { isPlaying: boolean }) =>
-            props.isPlaying ? colors.memberCardHeaderPlayingBackground : colors.memberCardHeaderBackground};
+        background-color: ${props => (props.$isPlaying ? colors.memberCardHeaderPlayingBackground : colors.memberCardHeaderBackground)};
 
         .avatar-wrapper {
             cursor: pointer;
 
             .status {
-                border-color: ${props => (props.isPlaying ? colors.memberCardHeaderPlayingBackground : colors.memberCardHeaderBackground)};
+                border-color: ${props => (props.$isPlaying ? colors.memberCardHeaderPlayingBackground : colors.memberCardHeaderBackground)};
             }
 
             :hover .view-profile {
@@ -136,7 +135,7 @@ const StyledMessageInput = styled.input`
 `;
 
 export const MemberCard = ({ member }: { member: User }) => (
-    <StyledMemberCard isPlaying={false}>
+    <StyledMemberCard $isPlaying={false}>
         <div className="header">
             <div className="user-data">
                 <UserAvatar className="avatar-wrapper" avatarUrl={member.avatarUrl} isBig>

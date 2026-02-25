@@ -2,7 +2,7 @@ import { Container, Row, Col, Card } from 'react-bootstrap';
 import { CircularProgress, Divider } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { getMonitors } from '@app/services';
-import Helmet from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 const status: { [k: number]: { text: string; color: string } } = {
     0: { text: 'Monitor Pausado', color: 'gray' },

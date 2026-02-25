@@ -8,7 +8,7 @@ const StyledButtonsBar = styled.div`
     padding-right: 6px;
 `;
 
-const ButtonContainer = styled.caption`
+const ButtonContainer = styled.div<{ $outerWidth: number; $iconWidth: number; $iconHeight: number }>`
     background: 0;
     padding: 0;
     margin: 0;
@@ -18,21 +18,21 @@ const ButtonContainer = styled.caption`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: ${(props: { outerWidth: number; iconWidth: number; iconHeight: number }) => props.outerWidth}px;
+    width: ${props => props.$outerWidth}px;
     height: 35px;
     flex: 0 0 auto;
 
     > div {
-        width: ${props => props.iconWidth}px;
-        height: ${props => props.iconHeight}px;
+        width: ${props => props.$iconWidth}px;
+        height: ${props => props.$iconHeight}px;
         color: ${colors.icon};
         transition: all 0.2s ease;
     }
 
     :hover > div {
         color: ${colors.iconHover};
-        width: ${props => props.iconWidth + 2}px;
-        height: ${props => props.iconHeight + 2}px;
+        width: ${props => props.$iconWidth + 2}px;
+        height: ${props => props.$iconHeight + 2}px;
     }
 
     svg {
@@ -45,13 +45,13 @@ export const NewMessageButtons = ({ isReduced }: { isReduced?: boolean }) => (
     <StyledButtonsBar>
         {!isReduced && (
             <>
-                <ButtonContainer outerWidth={34} iconWidth={20} iconHeight={20}>
+                <ButtonContainer $outerWidth={34} $iconWidth={20} $iconHeight={20}>
                     <div>
                         <GiftIcon />
                     </div>
                 </ButtonContainer>
 
-                <ButtonContainer outerWidth={40} iconWidth={24} iconHeight={18}>
+                <ButtonContainer $outerWidth={40} $iconWidth={24} $iconHeight={18}>
                     <div>
                         <GiftPickerIcon />
                     </div>

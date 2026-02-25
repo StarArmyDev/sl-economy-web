@@ -1,6 +1,6 @@
 import { Container, Row, Col } from 'react-bootstrap';
+import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import Helmet from 'react-helmet';
 
 export function Developer() {
     const ButtonMailto = ({ mailto, label }: { mailto: string; label: string }) => {
@@ -40,29 +40,24 @@ export function Developer() {
             <Row className="text-center pt-4">
                 <p>Soy el creador de esta página y los bots StarLight e StarLight Economy (La luz de las estrellas)</p>
                 <p>
-                    Soy un desarrollador mexicano con experiencia en TypeScript (TS) y NodeJS principalmente pero también conozco de Java,
-                    Python, C#, C++ con menor habilidad, estoy aprendiendo tecnologías como Fluttery ReactJS.
+                    Soy un desarrollador mexicano con experiencia en ReactJS, React Native/Expo, TypeScript, NodeJS, Flutter principalmente
+                    pero también conozco de Java, Micronaut, Grails, Symfony, Python con menor habilidad.
                 </p>
                 <p>
-                    Soy técnico en diseño gráfico digital pero me apasioné por la programación con StarLight, lo cual me llevó a estudiar
-                    una ingeniería en sistemas computacionales actualmente y el conjunto de todo esto me permitieron crear bots, con sus
-                    diseños y banners, sus páginas web y su servidor de soporte en Discord.
+                    Soy desarrollador FUll-Stack, enfocado más en mobile y web, también soy técnico en diseño gráfico digital pero me
+                    apasioné por la programación con StarLight, lo cual me llevó a estudiar una ingeniería en sistemas computacionales
+                    actualmente y el conjunto de todo esto me permitieron crear bots, con sus diseños y banners, sus páginas web y su
+                    servidor de soporte en Discord.
                 </p>
                 <h3>Cómo puedes contactarme</h3>
                 <p>
                     Correo: <ButtonMailto label="davichostar@protonmail.com" mailto="mailto:davichostar@protonmail.com" />
                 </p>
-                <p>Discord: DavichoStar#8104</p>
+                <p>Discord: DavichoStar</p>
                 <p>
-                    GitHub:{' '}
-                    <a href="https://github.com/DavichoStar" target="_blank" rel="noreferrer">
-                        DavichoStar
-                    </a>
-                </p>
-                <p>
-                    Twitter:{' '}
-                    <a href="https://twitter.com/davicho_star" target="_blank" rel="noreferrer">
-                        @Davicho_Star
+                    Mi página web:{' '}
+                    <a href="https://davichostar.dev" target="_blank" rel="noreferrer">
+                        DavichoStar.dev
                     </a>
                 </p>
             </Row>

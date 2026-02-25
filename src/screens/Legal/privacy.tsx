@@ -2,7 +2,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import Snackbar from '@mui/material/Snackbar';
 import { Link } from 'react-router-dom';
 import { Alert } from '@app/components';
-import Helmet from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import { useState } from 'react';
 
 export function Privacy() {

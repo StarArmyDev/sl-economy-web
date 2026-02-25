@@ -33,6 +33,7 @@ export interface Perfil {
 }
 
 export interface AllProfilesInServer {
+    totalCount: number;
     userRank: {
         position: number;
         profile: {
@@ -51,6 +52,7 @@ export interface ProfileTop {
     dinero: number;
     banco: number;
     total: number;
+    locked: boolean;
     user: {
         _id: string;
         avatar: string;
@@ -245,6 +247,7 @@ export interface Item {
     };
     mensaje?: string;
     evento?: string;
+    expiracion?: string;
 }
 
 export interface ItemInventory {

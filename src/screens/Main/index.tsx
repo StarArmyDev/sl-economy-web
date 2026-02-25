@@ -8,7 +8,7 @@ import commandLoot from '@img/command_loot.png';
 import commandTop from '@img/command_top.png';
 import splash from '@img/splash.png';
 import { getMonitors } from '@app/services';
-import Helmet from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 const status: { [k: number]: { text: string; color: string } } = {
     0: { text: 'Monitor Pausado', color: 'gray' },
@@ -18,11 +18,11 @@ const status: { [k: number]: { text: string; color: string } } = {
     9: { text: 'Desactivado', color: 'danger' },
 };
 
-function useWindowSize(targetRef: React.RefObject<HTMLHeadingElement>) {
+function useWindowSize(targetRef: React.RefObject<HTMLHeadingElement | null>) {
     const [size, setSize] = useState([0, 0]);
     useEffect(() => {
         function updateSize() {
-            if (targetRef.current && (targetRef.current.offsetWidth !== size[0] || targetRef.current.offsetHeight !== size[1])) {
+            if (targetRef?.current && (targetRef.current.offsetWidth !== size[0] || targetRef.current.offsetHeight !== size[1])) {
                 setSize([targetRef.current.offsetWidth, targetRef.current.offsetHeight]);
             }
         }
@@ -79,11 +79,11 @@ export function Main() {
                                 </Col>
                             )}
                             {/* TopGG */}
-                            <Col sm className="text-end">
+                            {/* <Col sm className="text-end">
                                 <a href="https://top.gg/bot/696723299459268728">
                                     <img src="https://top.gg/api/widget/servers/696723299459268728.svg" alt="StarLight" />
                                 </a>
-                            </Col>
+                            </Col> */}
                         </Row>
                     </Col>
                     {/* Comando Help */}

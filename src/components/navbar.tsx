@@ -1,21 +1,20 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Navbar, Container, Nav, NavDropdown, Col, Row, Spinner, Image } from 'react-bootstrap';
+import { useQuery, useMutation } from '@apollo/client/react';
 import { Link } from 'react-router-dom';
 import React, { useState } from 'react';
 
-import { UpdateGuildsGQL, useMutation, useQuery, UserGuildsGQL } from '@app/graphql';
+import { GuildsModel, UpdateGuildModel, GetUserGuildsModel } from '@app/models';
+import { UpdateGuildsGQL, UserGuildsGQL } from '@app/graphql';
 import { useAppSelector } from '@app/storage';
-import { GuildInfo } from '@app/models';
 import iconImg from '@img/icon.png';
-
-type Guilds = { admin: GuildInfo[]; adminMutual: GuildInfo[]; mutual: GuildInfo[] };
 
 export const NavBar: React.FC = () => {
     const user = useAppSelector(state => state.web.user);
 
-    const { loading, data, error } = useQuery(UserGuildsGQL, { variables: { id: user?._id || '0' }, skip: !user });
-    const [updateUserGuilds] = useMutation(UpdateGuildsGQL);
-    const [guilds, setGuilds] = useState<Guilds>({ admin: [], adminMutual: [], mutual: [] });
+    const { loading, data, error } = useQuery<GetUserGuildsModel>(UserGuildsGQL, { variables: { id: user?._id || '0' }, skip: !user });
+    const [updateUserGuilds] = useMutation<UpdateGuildModel>(UpdateGuildsGQL);
+    const [guilds, setGuilds] = useState<GuildsModel>({ admin: [], adminMutual: [], mutual: [] });
     const [changes, setChanges] = useState(true);
     const [load, setLoading] = useState(false);
     let windowReference: Window | null;
@@ -34,7 +33,7 @@ export const NavBar: React.FC = () => {
         }
     };
 
-    const loader = (datos: Guilds) => {
+    const loader = (datos: GuildsModel) => {
         setGuilds(datos);
         setChanges(false);
     };
