@@ -80,10 +80,7 @@ export const Profile: React.FC = () => {
                                 </Col>
                                 <Col sm className="text-center">
                                     <span className="h3" style={{ color: 'aliceblue' }}>
-                                        {user.username}{' '}
-                                        <span className="h6" style={{ color: 'rgb(21, 219, 226)' }}>
-                                            #{user.discriminator}
-                                        </span>
+                                        {user.username}
                                     </span>
                                 </Col>
                             </Row>
