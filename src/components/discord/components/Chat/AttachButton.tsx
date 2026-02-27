@@ -2,7 +2,7 @@ import { AttachButtonPlusIcon } from '../../icons';
 import styled from 'styled-components';
 import { colors } from '../../utils';
 
-const StyledAttachButton = styled.caption`
+const StyledAttachButton = styled.button`
     background: 0;
     padding: 0;
     margin: 0;
