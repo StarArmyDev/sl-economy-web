@@ -9,10 +9,15 @@ const StyledWelcomeChannelMessage = styled.div`
     flex-direction: column;
     justify-content: flex-end;
 
-    background-position: 0 100%, 100% 100%;
+    background-position:
+        0 100%,
+        100% 100%;
     background-repeat: no-repeat;
-    background-size: 192px 80px, 216px 64px;
-    background-image: url(https://discordapp.com/assets/5eed3f20bc3c75fd5ff63c60df8f679d.png),
+    background-size:
+        192px 80px,
+        216px 64px;
+    background-image:
+        url(https://discordapp.com/assets/5eed3f20bc3c75fd5ff63c60df8f679d.png),
         url(https://discordapp.com/assets/129bf63f677720a34bc7ffeb74468a0e.png);
 
     color: ${colors.welcomeChannelMessage};

@@ -1,7 +1,7 @@
 import { TooltipsContainer } from '.';
 import React from 'react';
 
-export const TooltipWrapper = ({ direction, content, children }: { direction: string; content: string; children: JSX.Element }) => {
+export const TooltipWrapper = ({ direction, content, children }: { direction: string; content: string; children: React.JSX.Element }) => {
     const handleMouseEnter = (element: any) => {
         const { currentTarget: target } = element;
         const targetRect = target.getBoundingClientRect();

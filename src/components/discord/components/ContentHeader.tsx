@@ -7,12 +7,14 @@ const StyledContentHeader = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 2px 0 rgba(0, 0, 0, 0.06);
+    box-shadow:
+        0 1px 0 rgba(0, 0, 0, 0.2),
+        0 2px 0 rgba(0, 0, 0, 0.06);
     color: #fff;
     z-index: 99;
 `;
 
-export const ContentHeader = ({ content, rightContent }: { content: JSX.Element; rightContent: JSX.Element | null }) => (
+export const ContentHeader = ({ content, rightContent }: { content: React.JSX.Element; rightContent: React.JSX.Element | null }) => (
     <StyledContentHeader>
         <div>{content}</div>
         <div>{rightContent}</div>

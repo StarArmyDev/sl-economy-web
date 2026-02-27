@@ -30,7 +30,7 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
             }
 
             i18n.use(initReactI18next).init({
-                compatibilityJSON: 'v3',
+                compatibilityJSON: 'v4',
                 lng: lng,
                 fallbackLng: 'en',
                 preload: Object.keys(resources) as Languages[],

@@ -3,11 +3,11 @@ import axios from 'axios';
 
 const baseUrlUpTimeRobot = 'https://api.uptimerobot.com/v2';
 
-export const getUserDetails = async (): Promise<User | undefined> => {
+export const getUserDetails = async (): Promise<User | null> => {
     return await axios
         .get<User | ErrorResponse>(`${import.meta.env.VITE_API_URL}/oauth`, { withCredentials: true })
-        .then(res => ('error' in res.data ? undefined : res.data))
-        .catch(() => undefined);
+        .then(res => ('error' in res.data ? null : res.data))
+        .catch(() => null);
 };
 
 export function getGuildsUser() {

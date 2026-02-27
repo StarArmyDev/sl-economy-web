@@ -5,7 +5,7 @@ const EMOJIS_COUNT = 50;
 const EMOJIS_COLUMNS = 11;
 const ITEM_SIZE = 22;
 
-const StyledEmojiPickerButton = styled.caption`
+const StyledEmojiPickerButton = styled.button`
     background: 0;
     padding: 0;
     margin: 0;
@@ -33,7 +33,10 @@ const StyledEmojiPickerButton = styled.caption`
         background-repeat: no-repeat;
         background-size: 242px 110px;
 
-        transition: filter 0.1s ease-in-out, opacity 0.1s ease-in-out, transform 0.1s ease-in-out;
+        transition:
+            filter 0.1s ease-in-out,
+            opacity 0.1s ease-in-out,
+            transform 0.1s ease-in-out;
         filter: grayscale(100%);
         opacity: 0.3;
     }

@@ -19,7 +19,7 @@ const StyledMemberMessageGroup = styled.div`
     }
 `;
 
-export const MemberMessageGroup = ({ member, time, children }: { member: User; time: Date; children: JSX.Element[] }) => (
+export const MemberMessageGroup = ({ member, time, children }: { member: User; time: Date; children: React.JSX.Element[] }) => (
     <StyledMemberMessageGroup>
         {React.Children.map(children, (child, index) =>
             React.cloneElement(child, { member, time, isHeading: index === 0, handleMemberClick }),
@@ -95,7 +95,7 @@ export const MemberMessage = ({
 }: {
     user: User;
     time: Date;
-    children: JSX.Element | string;
+    children: React.JSX.Element | string;
     reply?: Reply;
     isHeading?: boolean;
 }) => {

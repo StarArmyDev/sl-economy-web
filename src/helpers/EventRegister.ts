@@ -1,12 +1,8 @@
-import { AlertMessage } from '@app/models';
-
 /**
  * Añade eventos.
  * @extends ClientEvents
  */
 export interface ReactEvents {
-    changeLoaging: [boolean];
-    changeAlert: [AlertMessage];
     scroll: [any];
 }
 

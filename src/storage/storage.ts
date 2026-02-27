@@ -3,7 +3,8 @@ import { configureStore, Middleware } from '@reduxjs/toolkit';
 import storage from 'redux-persist/es/storage';
 import { createLogger } from 'redux-logger';
 import * as Sentry from '@sentry/react';
-import { rootReducer, ActionTypes } from '.';
+import { rootReducer } from './reducers';
+import { setUser } from './slices/webSlice';
 
 /**
  * Redux Setting
@@ -24,12 +25,19 @@ if (import.meta.env.MODE === 'development') {
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 const sentryReduxEnhancer = Sentry.createReduxEnhancer({
     actionTransformer: action => {
-        if (action.type === ActionTypes.SET_USER) {
-            return {
-                ...action,
-                access_token: '***',
-                refresh_token: '***',
-            };
+        if (action.type === setUser.type) {
+            // Check if payload has tokens and mask them if necessary
+            // Assuming payload is the user object which might contain tokens
+            if (action.payload && typeof action.payload === 'object') {
+                return {
+                    ...action,
+                    payload: {
+                        ...action.payload,
+                        accessToken: '***',
+                        refreshToken: '***',
+                    },
+                };
+            }
         }
         return action;
     },

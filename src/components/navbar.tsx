@@ -9,6 +9,72 @@ import { UpdateGuildsGQL, UserGuildsGQL } from '@app/graphql';
 import { useAppSelector } from '@app/storage';
 import iconImg from '@img/icon.png';
 
+const DropdownServer = React.memo<{ loading: boolean; load: boolean; guilds: GuildsModel; reloaderGuilds: () => void }>(
+    ({ loading, load, guilds, reloaderGuilds }) => {
+        if (loading || load)
+            return (
+                <div className="pe-4 pt-2">
+                    <Spinner animation="border" variant="warning" role="status" />
+                </div>
+            );
+
+        if (guilds.adminMutual.length > 0 || guilds.admin.length > 0)
+            return (
+                <NavDropdown title="Dashboard" id="dropdown-guilds">
+                    <div style={{ minWidth: 240 }}>
+                        {guilds.adminMutual.map(servidor => (
+                            <Link
+                                to={`/dashboard/${servidor.id}`}
+                                style={{ textDecoration: 'none', color: '#fff' }}
+                                key={`NI${servidor.id}`}>
+                                <div className="dropdown-item">
+                                    <Row>
+                                        <Col xs="1" className="material-icons pe-3">
+                                            settings
+                                        </Col>
+                                        <Col xs="10" className="text-wrap">
+                                            {servidor.name}
+                                        </Col>
+                                    </Row>
+                                </div>
+                            </Link>
+                        ))}
+                        {guilds.admin.length > 0 ? <NavDropdown.Divider /> : null}
+                        {guilds.admin.map(servidor => (
+                            <NavDropdown.Item
+                                key={`NI${servidor.id}`}
+                                href={`https://discord.com/oauth2/authorize?client_id=${import.meta.env.VITE_CLIENT_ID}&permissions=268437520&scope=bot&response_type=code&guild_id=${
+                                    servidor.id
+                                }&redirect_uri=${import.meta.env.BASE_URL?.replace(/\//gi, '%2F').replace(/:/gi, '%3A')}`}>
+                                <Row>
+                                    <Col xs="1" className="material-icons pe-3">
+                                        add
+                                    </Col>
+                                    <Col xs="10" className="text-wrap">
+                                        {servidor.name}
+                                    </Col>
+                                </Row>
+                            </NavDropdown.Item>
+                        ))}
+                        <NavDropdown.Divider />
+                        <NavDropdown.Item key="reloader" onClick={reloaderGuilds}>
+                            <Row>
+                                <Col xs="1" className="material-icons pe-3">
+                                    refresh
+                                </Col>
+                                <Col xs="10" className="text-wrap">
+                                    Refrescar
+                                </Col>
+                            </Row>
+                        </NavDropdown.Item>
+                    </div>
+                </NavDropdown>
+            );
+
+        return <></>;
+    },
+);
+
 export const NavBar: React.FC = () => {
     const user = useAppSelector(state => state.web.user);
 
@@ -71,67 +137,10 @@ export const NavBar: React.FC = () => {
                     <Nav fill>
                         {user ? (
                             <>
-                                {loading || load ? (
-                                    <div className="pe-4 pt-2">
-                                        <Spinner animation="border" variant="warning" role="status" />
-                                    </div>
-                                ) : guilds.adminMutual.length > 0 || guilds.admin.length > 0 ? (
-                                    <NavDropdown title="Dashboard" id="dropdown-guilds">
-                                        <div style={{ minWidth: 240 }}>
-                                            {guilds.adminMutual.map(servidor => (
-                                                <Link
-                                                    to={`/dashboard/${servidor.id}`}
-                                                    style={{ textDecoration: 'none', color: '#fff' }}
-                                                    key={`NI${servidor.id}`}>
-                                                    <div className="dropdown-item">
-                                                        <Row>
-                                                            <Col xs="1" className="material-icons pe-3">
-                                                                settings
-                                                            </Col>
-                                                            <Col xs="10" className="text-wrap">
-                                                                {servidor.name}
-                                                            </Col>
-                                                        </Row>
-                                                    </div>
-                                                </Link>
-                                            ))}
-                                            {guilds.admin.length > 0 ? <NavDropdown.Divider /> : null}
-                                            {guilds.admin.map(servidor => (
-                                                <NavDropdown.Item
-                                                    key={`NI${servidor.id}`}
-                                                    href={`https://discord.com/oauth2/authorize?client_id=${import.meta.env.VITE_CLIENT_ID}&permissions=268437520&scope=bot&response_type=code&guild_id=${
-                                                        servidor.id
-                                                    }&redirect_uri=${import.meta.env.BASE_URL?.replace(/\//gi, '%2F').replace(
-                                                        /:/gi,
-                                                        '%3A',
-                                                    )}`}>
-                                                    <Row>
-                                                        <Col xs="1" className="material-icons pe-3">
-                                                            add
-                                                        </Col>
-                                                        <Col xs="10" className="text-wrap">
-                                                            {servidor.name}
-                                                        </Col>
-                                                    </Row>
-                                                </NavDropdown.Item>
-                                            ))}
-                                            <NavDropdown.Divider />
-                                            <NavDropdown.Item key="reloader" onClick={reloaderGuilds}>
-                                                <Row>
-                                                    <Col xs="1" className="material-icons pe-3">
-                                                        refresh
-                                                    </Col>
-                                                    <Col xs="10" className="text-wrap">
-                                                        Refrescar
-                                                    </Col>
-                                                </Row>
-                                            </NavDropdown.Item>
-                                        </div>
-                                    </NavDropdown>
-                                ) : null}
-                                <Link to="/profile" style={{ textDecoration: 'none' }}>
-                                    <div className="nav-link">
-                                        {user ? (
+                                <DropdownServer loading={loading} load={load} guilds={guilds} reloaderGuilds={reloaderGuilds} />
+                                <NavDropdown
+                                    title={
+                                        <>
                                             <img
                                                 className="rounded"
                                                 style={{ borderRadius: 1, margin: '0px 10px 0px 10px' }}
@@ -146,49 +155,72 @@ export const NavBar: React.FC = () => {
                                                     e.target.style.width = '32px';
                                                 }}
                                             />
-                                        ) : null}
-                                        {user.username}
+                                            {user.username}
+                                        </>
+                                    }
+                                    id="dropdown-user">
+                                    <div style={{ minWidth: 240 }}>
+                                        <Link to="/profile" style={{ textDecoration: 'none', color: '#fff' }}>
+                                            <div className="dropdown-item">
+                                                <Row>
+                                                    <Col xs="1" className="material-icons pe-3">
+                                                        person
+                                                    </Col>
+                                                    <Col xs="10" className="text-wrap">
+                                                        Perfil
+                                                    </Col>
+                                                </Row>
+                                            </div>
+                                        </Link>
+                                        <NavDropdown.Divider />
+                                        <Link to="/logout" style={{ textDecoration: 'none', color: '#fff' }}>
+                                            <div className="dropdown-item">
+                                                <Row>
+                                                    <Col xs="1" className="material-icons pe-3">
+                                                        logout
+                                                    </Col>
+                                                    <Col xs="10" className="text-wrap">
+                                                        Cerrar Sesión
+                                                    </Col>
+                                                </Row>
+                                            </div>
+                                        </Link>
                                     </div>
-                                </Link>
-                                <Link to="/logout" style={{ textDecoration: 'none' }}>
-                                    <div className="nav-link">Cerrar Sesión</div>
-                                </Link>
+                                </NavDropdown>
                             </>
                         ) : (
-                            <>
-                                <Link
-                                    to="#"
-                                    onClick={() => {
-                                        if (windowReference == null || windowReference.closed) {
-                                            windowReference = window.open(
-                                                `${import.meta.env.VITE_API_URL}/oauth/login`,
-                                                '',
-                                                'toolbar=0,status=0,width=400,height=800',
-                                            );
-                                        } else {
-                                            windowReference.focus();
-                                        }
+                            <Link
+                                to="#"
+                                onClick={() => {
+                                    if (windowReference == null || windowReference.closed) {
+                                        windowReference = window.open(
+                                            `${import.meta.env.VITE_API_URL}/oauth/login`,
+                                            '',
+                                            'toolbar=0,status=0,width=400,height=800',
+                                        );
+                                    } else {
+                                        windowReference.focus();
+                                    }
 
-                                        let origin: string | null;
+                                    let origin: string | null;
 
-                                        if (windowReference)
-                                            setInterval(() => {
-                                                try {
-                                                    origin = windowReference!.location.origin;
-                                                } catch (_) {
-                                                    origin = null;
-                                                }
+                                    if (windowReference)
+                                        setInterval(() => {
+                                            try {
+                                                origin = windowReference!.location.origin;
+                                            } catch (_) {
+                                                origin = null;
+                                            }
 
-                                                if (origin && origin === window.location.origin) {
-                                                    windowReference!.close();
-                                                    window.location.reload();
-                                                }
-                                            }, 500);
-                                    }}
-                                    style={{ textDecoration: 'none' }}>
-                                    <div className="nav-link">Inciar Sesión</div>
-                                </Link>
-                            </>
+                                            if (origin && origin === window.location.origin) {
+                                                windowReference!.close();
+                                                window.location.reload();
+                                            }
+                                        }, 500);
+                                }}
+                                style={{ textDecoration: 'none' }}>
+                                <div className="nav-link">Inciar Sesión</div>
+                            </Link>
                         )}
                     </Nav>
                 </Navbar.Collapse>

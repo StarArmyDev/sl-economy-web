@@ -15,6 +15,10 @@ body {
     height: 98vh;
 }
 
+p {
+    color: #c7ccd1;
+}
+
 /* Trabajar con Firefox, Opera y Safari */
 * {
     scrollbar-width: auto;

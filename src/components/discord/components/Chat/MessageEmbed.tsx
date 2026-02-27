@@ -273,7 +273,7 @@ const openImage = (url: string) => {
 };
 
 export const MessagesEmbed = ({ embeds }: { embeds: Embed[] }) => {
-    const embedsElements: JSX.Element[] = [];
+    const embedsElements: React.JSX.Element[] = [];
 
     for (const embed of embeds) {
         embedsElements.push(createMessageEmbed(embed));

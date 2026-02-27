@@ -58,7 +58,7 @@ export const UserAvatar = ({
     avatarUrl?: string;
     isBig?: boolean;
     fadeHover?: boolean;
-    children?: JSX.Element;
+    children?: React.JSX.Element;
 }) => {
     const avatarSize = (isBig ? 90 : 30) + 'px';
     const statusSize = (isBig ? 18 : 10) + 'px';

@@ -1,7 +1,9 @@
 import { combineReducers } from 'redux';
 
-import { WebReducer } from './web';
+import webReducer from '../slices/webSlice';
+import uiReducer from '../slices/uiSlice';
 
 export const rootReducer = combineReducers({
-    web: WebReducer,
+    web: webReducer,
+    ui: uiReducer,
 });

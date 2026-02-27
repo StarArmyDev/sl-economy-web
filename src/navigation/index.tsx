@@ -1,5 +1,4 @@
 import { RouteObject, createBrowserRouter } from 'react-router-dom';
-import type { Router as RemixRouter } from '@remix-run/router';
 import * as Sentry from '@sentry/react';
 
 import * as Screens from '@app/screens';
@@ -22,7 +21,7 @@ export const routeAuthorized = (user: User | null | undefined, pathsname: `/${st
 };
 
 //? Rutas de la aplicación
-const sentryCreateBrowserRouter = Sentry.wrapCreateBrowserRouter(createBrowserRouter);
+const sentryCreateBrowserRouter = Sentry.wrapCreateBrowserRouterV6(createBrowserRouter);
 
 export const router = sentryCreateBrowserRouter(
     [
@@ -103,6 +102,6 @@ export const router = sentryCreateBrowserRouter(
     {
         basename: import.meta.env.VITE_BASE_URL || '/',
     },
-) as RemixRouter;
+);
 
 export default router;

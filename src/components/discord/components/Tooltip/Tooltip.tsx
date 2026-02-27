@@ -43,6 +43,6 @@ const StyledTooltip = styled.div`
     }
 `;
 
-export const Tooltip = ({ children, direction }: { children: JSX.Element | string; direction: string }) => (
+export const Tooltip = ({ children, direction }: { children: React.JSX.Element | string; direction: string }) => (
     <StyledTooltip className={direction}>{children}</StyledTooltip>
 );

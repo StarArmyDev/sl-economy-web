@@ -122,16 +122,21 @@ export const Dashboard: React.FC = () => {
             return window.location.replace('/error403');
         } else {
             setGuild(Servidor);
-            setLoading(false);
             setTabActive('bot');
-            onServerGQL({ variables: { id } });
+            onServerGQL({ variables: { id } })
+                .then(res => {
+                    if (res.data?.getServer) {
+                        onUpdateData(res.data.getServer);
+                    }
+                })
+                .finally(() => setLoading(false));
         }
     }, [id, user]);
 
     // Efecto separado para cargar datos cuando la query completa
     useEffect(() => {
         if (serverGQL.data?.getServer && !dbServer) {
-            setDbServer(serverGQL.data.getServer);
+            onUpdateData(serverGQL.data.getServer);
             setLoading(false);
         }
     }, [serverGQL.data, dbServer]);
@@ -152,6 +157,15 @@ export const Dashboard: React.FC = () => {
         if (db?.excludedChannels) {
             setChatExclude(db.excludedChannels);
         }
+    };
+
+    const onUpdateData = (data: ServerSystem) => {
+        setDbServer(data);
+
+        // Limpiar nulls del objeto para evitar problemas en los formularios
+        const cleanData = Object.fromEntries(Object.entries(data).filter(([_, value]) => value !== null && value !== undefined));
+
+        reset(cleanData);
     };
 
     const handleExcludedChannelsChange = (channelIds: string[]) => {
@@ -198,7 +212,7 @@ export const Dashboard: React.FC = () => {
             });
 
             if (result.data?.updateBotServer) {
-                setDbServer(prev => ({ ...prev, ...result.data!.updateBotServer }));
+                onUpdateData({ ...dbServer, ...result.data!.updateBotServer });
                 setAlert(at => [...at, { type: 'success', show: true, text: 'Configuración General guardada' }]);
             }
         } catch (error: any) {
@@ -259,7 +273,7 @@ export const Dashboard: React.FC = () => {
                     if (value) {
                         try {
                             // Si es string, intentar convertir a ms
-                            updateData.cooldown[key] = typeof value === 'string' ? ms(value) : value;
+                            updateData.cooldown[key] = typeof value === 'string' ? ms(value as any) : value;
                         } catch {
                             updateData.cooldown[key] = value;
                         }
@@ -275,7 +289,7 @@ export const Dashboard: React.FC = () => {
             });
 
             if (result.data?.updateEconomyServer) {
-                setDbServer(prev => ({ ...prev, ...result.data!.updateEconomyServer }));
+                onUpdateData({ ...dbServer, ...result.data!.updateEconomyServer });
                 setAlert(at => [...at, { type: 'success', show: true, text: 'Configuración de Economía guardada' }]);
             }
         } catch (error: any) {
@@ -636,8 +650,7 @@ export const Dashboard: React.FC = () => {
                                                         },
                                                     })
                                                 ).data?.updateServer;
-                                                setDbServer(newData);
-                                                reset();
+                                                if (newData) onUpdateData(newData);
                                                 setAlert(at => [
                                                     ...at,
                                                     { type: 'success', show: true, text: `Configuraciones eliminadas correctamente.` },

@@ -2,7 +2,8 @@ import { Container, Spinner } from 'react-bootstrap';
 import * as Sentry from '@sentry/react';
 import React from 'react';
 
-import { WebAction, useAppDispatch } from '@app/storage';
+import { useAppDispatch } from '@app/storage';
+import { setUser } from '@app/storage/slices/webSlice';
 
 export const Logout: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -10,7 +11,7 @@ export const Logout: React.FC = () => {
     React.useEffect(() => {
         // window.localStorage.removeItem("user");
 
-        dispatch(WebAction.onSetUser(null));
+        dispatch(setUser(null));
         Sentry.setUser(null);
         window.location.replace(`${import.meta.env.VITE_API_URL}/oauth/logout`);
     });

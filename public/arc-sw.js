@@ -6,16 +6,16 @@
     function n(r) {
         if (t[r]) return t[r].exports;
         var o = (t[r] = { i: r, l: !1, exports: {} });
-        return e[r].call(o.exports, o, o.exports, n), (o.l = !0), o.exports;
+        return (e[r].call(o.exports, o, o.exports, n), (o.l = !0), o.exports);
     }
-    (n.m = e),
+    ((n.m = e),
         (n.c = t),
         (n.d = function (e, t, r) {
             n.o(e, t) || Object.defineProperty(e, t, { enumerable: !0, get: r });
         }),
         (n.r = function (e) {
-            'undefined' != typeof Symbol && Symbol.toStringTag && Object.defineProperty(e, Symbol.toStringTag, { value: 'Module' }),
-                Object.defineProperty(e, '__esModule', { value: !0 });
+            ('undefined' != typeof Symbol && Symbol.toStringTag && Object.defineProperty(e, Symbol.toStringTag, { value: 'Module' }),
+                Object.defineProperty(e, '__esModule', { value: !0 }));
         }),
         (n.t = function (e, t) {
             if ((1 & t && (e = n(e)), 8 & t)) return e;
@@ -41,17 +41,17 @@
                     : function () {
                           return e;
                       };
-            return n.d(t, 'a', t), t;
+            return (n.d(t, 'a', t), t);
         }),
         (n.o = function (e, t) {
             return Object.prototype.hasOwnProperty.call(e, t);
         }),
         (n.p = ''),
-        n((n.s = 99));
+        n((n.s = 99)));
 })({
     2: function (e, t, n) {
         'use strict';
-        n.d(t, 'a', function () {
+        (n.d(t, 'a', function () {
             return r;
         }),
             n.d(t, 'f', function () {
@@ -83,7 +83,7 @@
             }),
             n.d(t, 'h', function () {
                 return v;
-            });
+            }));
         var r = {
                 images: ['bmp', 'jpeg', 'jpg', 'ttf', 'pict', 'svg', 'webp', 'eps', 'svgz', 'gif', 'png', 'ico', 'tif', 'tiff', 'bpg'],
                 video: [

@@ -63,10 +63,10 @@ export const Status = () => {
                                                     !bot && !backend
                                                         ? ''
                                                         : bot?.status === 2 && backend?.status === 2
-                                                        ? '#3bd671'
-                                                        : ![0, 2].includes(bot?.status || 0) && ![0, 2].includes(backend?.status || 0)
-                                                        ? '#ba3737'
-                                                        : '#f29030',
+                                                          ? '#3bd671'
+                                                          : ![0, 2].includes(bot?.status || 0) && ![0, 2].includes(backend?.status || 0)
+                                                            ? '#ba3737'
+                                                            : '#f29030',
                                             }}>
                                             circle
                                         </i>
@@ -78,17 +78,17 @@ export const Status = () => {
                                                     {bot?.status === 2 && backend?.status === 2
                                                         ? 'Todos los sitemas'
                                                         : ![0, 2].includes(bot?.status || 0) && ![0, 2].includes(backend?.status || 0)
-                                                        ? 'Todos los sistemas no'
-                                                        : 'Algunos Sistemas'}{' '}
+                                                          ? 'Todos los sistemas no'
+                                                          : 'Algunos Sistemas'}{' '}
                                                     <span
                                                         style={{
                                                             color:
                                                                 bot?.status === 2 && backend?.status === 2
                                                                     ? '#3bd671'
                                                                     : ![0, 2].includes(bot?.status || 0) &&
-                                                                      ![0, 2].includes(backend?.status || 0)
-                                                                    ? '#ba3737'
-                                                                    : '#f29030',
+                                                                        ![0, 2].includes(backend?.status || 0)
+                                                                      ? '#ba3737'
+                                                                      : '#f29030',
                                                         }}>
                                                         operativos
                                                     </span>

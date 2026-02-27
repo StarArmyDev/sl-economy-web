@@ -55,7 +55,7 @@ export const EconomySettings: React.FC<EconomySettingsProps> = ({
                                     {...register('currency.name')}
                                     placeholder={dbServer?.currency?.name ? dbServer.currency.name : 'Por Defecto: 🔶'}
                                 />
-                                {dbServer?.currency?.name != null ? (
+                                {dbServer?.currency?.name ? (
                                     <Button
                                         variant="outline-danger"
                                         name="deleteCooldownMensajes"
@@ -90,7 +90,7 @@ export const EconomySettings: React.FC<EconomySettingsProps> = ({
                                                     : 'No Configurado'
                                             }
                                         />
-                                        {dbServer?.payment?.messages?.min != null ? (
+                                        {dbServer?.payment?.messages?.min ? (
                                             <Button
                                                 variant="outline-danger"
                                                 name="deleteCooldownMensajes"
@@ -114,7 +114,7 @@ export const EconomySettings: React.FC<EconomySettingsProps> = ({
                                                     : 'No Configurado'
                                             }
                                         />
-                                        {dbServer?.payment?.messages?.max != null ? (
+                                        {dbServer?.payment?.messages?.max ? (
                                             <Button
                                                 variant="outline-danger"
                                                 name="deleteCooldownMensajes"
@@ -136,7 +136,7 @@ export const EconomySettings: React.FC<EconomySettingsProps> = ({
                                                 dbServer?.cooldown?.messages ? ConvertorTime(dbServer.cooldown.messages) : 'Por Defecto: 1m'
                                             }
                                         />
-                                        {dbServer?.cooldown?.messages != null ? (
+                                        {dbServer?.cooldown?.messages ? (
                                             <Button
                                                 variant="outline-danger"
                                                 name="deleteCooldownMensajes"

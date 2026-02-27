@@ -17,14 +17,14 @@ const StyledMessagesWrapper = styled.div`
     }
 `;
 
-const createMessageGroup = (groupId: string, member: User, time: Date, messages: JSX.Element[]) => (
+const createMessageGroup = (groupId: string, member: User, time: Date, messages: React.JSX.Element[]) => (
     <MemberMessageGroup key={groupId} member={member} time={time}>
         {messages}
     </MemberMessageGroup>
 );
 const createComponents = (components: Component[]) => {
-    const rowOneComponents: JSX.Element[] = [];
-    const rowTwoComponents: JSX.Element[] = [];
+    const rowOneComponents: React.JSX.Element[] = [];
+    const rowTwoComponents: React.JSX.Element[] = [];
 
     for (const component of components) {
         if (component.type === 'SelectMenu') rowOneComponents.push(<SelectMenu data={component} key={component.placeholder} />);
@@ -50,8 +50,8 @@ export const MessagesWrapper = ({
     }); */
 
     let lastUserId = '';
-    const groupsComponents: JSX.Element[] = [];
-    let messagesComponents: JSX.Element[] = [];
+    const groupsComponents: React.JSX.Element[] = [];
+    let messagesComponents: React.JSX.Element[] = [];
     let headingGroupMessage: Message | null = null;
 
     const closeMessageGroupAndClearMessages = () => {
@@ -65,8 +65,8 @@ export const MessagesWrapper = ({
     };
 
     messages.forEach((message, index) => {
-        const rowOneComponents: JSX.Element[] = [];
-        const rowTwoComponents: JSX.Element[] = [];
+        const rowOneComponents: React.JSX.Element[] = [];
+        const rowTwoComponents: React.JSX.Element[] = [];
 
         if (message.components) {
             const createCom = createComponents(message.components);
