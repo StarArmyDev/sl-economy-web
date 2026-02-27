@@ -149,8 +149,8 @@ export const ProfileGQL = gql`
 `;
 
 export const ProfilesUserGQL = gql`
-    query getProfiles($id: String!, $skip: Int = 0, $limit: Int = 25) {
-        AllProfilesOfUserOnServers(id: $id, skip: $skip, limit: $limit) {
+    query getProfiles($id: String!, $skip: Int = 0, $limit: Int = 25, $sort: sortProfile) {
+        AllProfilesOfUserOnServers(id: $id, skip: $skip, limit: $limit, sort: $sort) {
             _id
             dinero
             banco

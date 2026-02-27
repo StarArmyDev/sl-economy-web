@@ -2,6 +2,7 @@ import { RouterProvider, createRoutesFromChildren, matchRoutes, useLocation, use
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { PersistGate } from 'redux-persist/integration/react';
+import { Analytics } from '@vercel/analytics/react';
 import { Alert } from 'react-bootstrap';
 import * as Sentry from '@sentry/react';
 import { Provider } from 'react-redux';
@@ -153,6 +154,7 @@ const AppProvider: React.FC = () => (
                 <PersistGate loading={null} persistor={persistor}>
                     <I18nProvider>
                         <App />
+                        <Analytics />
                     </I18nProvider>
                 </PersistGate>
             </Provider>

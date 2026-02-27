@@ -4,7 +4,6 @@ import { useQuery } from '@apollo/client/react';
 import Skeleton from 'react-loading-skeleton';
 import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { debounce } from 'lodash';
 
 import type { AllProfilesInServer, GuildInfoModel, ProfileTop } from '@app/models';
 import { GuildGQL, ProfileGQL } from '../../graphql';
@@ -78,7 +77,11 @@ export const LeaderBoard: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [hasMore, setHasMore] = useState(true);
 
-    const debouncedSearch = debounce((term: string) => setSearchTerm(term), 300);
+    const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const debouncedSearch = useCallback((term: string) => {
+        if (debounceTimer.current) clearTimeout(debounceTimer.current);
+        debounceTimer.current = setTimeout(() => setSearchTerm(term), 300);
+    }, []);
 
     // Cambiar orden y resetear estado de paginación
     const handleSortChange = (newOrden: typeof orden) => {
@@ -140,7 +143,7 @@ export const LeaderBoard: React.FC = () => {
         });
     }, [data, fetchMore]);
 
-    const prevDataRef = useRef<any>();
+    const prevDataRef = useRef<any>(null);
 
     React.useEffect(() => {
         if (
